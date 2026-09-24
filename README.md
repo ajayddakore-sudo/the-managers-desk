@@ -1,26 +1,12 @@
-# The Manager's Desk — V2
+# The Manager's Desk V5
 
-A GitHub-ready prototype of a story-driven internal HR manager simulation.
+Single-file prototype for GitHub Pages.
 
-## What changed in V2
-- More premium, editorial manager workspace
-- More realistic desk / inbox presentation
-- Clear workday progression without game-like scoring
-- Plant HR vs Corporate HR context remains the first branching choice
-- Scenario evidence and decisions remain hidden from behavioural scoring
-- Demo session is retained in the browser via localStorage
-- HR Admin report is still available in demo mode
+## Flow
+Participant details -> Plant HR / Corporate HR -> Role story -> Meet same 9-person team -> Workday -> animated message pop-ups -> 12 scenarios using the same team -> end-of-day record.
 
-## Run locally
-Open `index.html` in a modern browser, or serve this folder through any static web server.
-
-## GitHub Pages
-The project is static and can be published through GitHub Pages for demonstration. Do not use GitHub Pages with real employee or manager data.
-
-## Production roadmap
-1. Microsoft Entra ID authentication
-2. Secure backend API
-3. Persistent database
-4. Server-side behavioural analysis
-5. HR Admin permissions / audit controls
-6. Production hosting
+## Notes
+- Fictional data only.
+- Participant ID/name/email are captured only in browser state for this prototype.
+- Decisions and viewed clues are stored in memory for the session and exported as JSON at completion.
+- Real company login/database still need to be added for production.
