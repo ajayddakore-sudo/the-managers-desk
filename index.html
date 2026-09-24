@@ -2,55 +2,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Manager's Desk</title>
-
 <style>
 :root{
-  --bg:#f4f2fa;
+  --ink:#20253a;
+  --muted:#717789;
+  --line:#e5e4ec;
   --paper:#fffdf9;
-  --ink:#20243a;
-  --muted:#707789;
-  --line:#e6e5ed;
-  --purple:#704ff5;
-  --violet:#956eff;
-  --pink:#e95d9e;
-  --coral:#ff7b62;
-  --cyan:#39bfd3;
-  --mint:#6fc38d;
-  --yellow:#ffd75d;
+  --bg:#f3f2fb;
+  --purple:#6b4cf6;
+  --violet:#9a70ff;
+  --pink:#e65b9d;
+  --coral:#ff7f61;
+  --cyan:#2fc2d6;
+  --mint:#64c391;
+  --yellow:#ffd764;
   --navy:#252a49;
   --soft:#f0ecff;
-  --shadow:0 22px 65px rgba(37,35,70,.15);
+  --shadow:0 26px 80px rgba(34,31,69,.15);
+  --shadow-sm:0 12px 35px rgba(34,31,69,.08);
 }
 
 *{box-sizing:border-box}
-
 html,body{
   margin:0;
   min-height:100%;
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   color:var(--ink);
   background:var(--bg)
 }
-
+body{overflow-x:hidden}
 button,input{font:inherit}
 button{cursor:pointer}
 
-.screen{display:none;min-height:100vh}
+.screen{
+  display:none;
+  min-height:100vh
+}
+
 .screen.active{display:flex}
 
 .fade{
-  animation:fade .42s ease both
+  animation:fade .45s ease both
 }
 
 @keyframes fade{
-  from{opacity:0;transform:translateY(12px)}
+  from{opacity:0;transform:translateY(14px)}
   to{opacity:1;transform:none}
 }
 
+@keyframes rise{
+  0%{opacity:0;transform:translateY(18px) scale(.98)}
+  100%{opacity:1;transform:none}
+}
+
 @keyframes float{
-  50%{transform:translateY(-5px)}
+  50%{transform:translateY(-4px)}
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.6);opacity:.4}
 }
 
 @keyframes pop{
@@ -58,166 +70,200 @@ button{cursor:pointer}
   to{opacity:1;transform:none}
 }
 
-@keyframes pulse{
-  50%{transform:scale(1.5);opacity:.45}
+@keyframes bubble{
+  0%{opacity:0;transform:translate(-50%,-30%) scale(.97)}
+  15%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-65%)}
 }
 
-/* ======================
+/* =====================
+   COMMON
+===================== */
+
+.eyebrow{
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:#8a8fa0
+}
+
+.brand{
+  font-weight:950;
+  letter-spacing:-.05em
+}
+
+.primary{
+  border:0;
+  border-radius:14px;
+  padding:14px 20px;
+  background:linear-gradient(90deg,var(--purple),var(--violet));
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 14px 25px rgba(107,76,246,.22);
+  transition:.18s
+}
+
+.primary:hover{
+  transform:translateY(-2px)
+}
+
+/* =====================
    LOGIN
-====================== */
+===================== */
 
 .login{
   align-items:center;
   justify-content:center;
   padding:24px;
   background:
-    radial-gradient(circle at 8% 8%,rgba(112,79,245,.17),transparent 26%),
-    radial-gradient(circle at 92% 86%,rgba(57,191,211,.15),transparent 26%),
-    linear-gradient(135deg,#eeedf8,#fff8ef)
+    radial-gradient(circle at 5% 5%,rgba(107,76,246,.14),transparent 25%),
+    radial-gradient(circle at 95% 90%,rgba(47,194,214,.14),transparent 25%),
+    linear-gradient(135deg,#efeff9,#fff8ee)
 }
 
 .login-shell{
-  width:min(1200px,100%);
-  min-height:700px;
+  width:min(1210px,100%);
+  min-height:710px;
   display:grid;
   grid-template-columns:1fr 1fr;
-  border-radius:32px;
-  overflow:hidden;
   background:var(--paper);
+  border-radius:34px;
+  overflow:hidden;
   box-shadow:var(--shadow)
 }
 
-.login-left{
+.login-hero{
   position:relative;
-  padding:56px;
+  padding:58px;
+  background:linear-gradient(145deg,#252a49 0%,#4a3c8d 100%);
   color:#fff;
-  overflow:hidden;
-  background:linear-gradient(145deg,#252a49,#59499b)
+  overflow:hidden
 }
 
-.login-left:before,
-.login-left:after{
+.login-hero:before,
+.login-hero:after{
   content:"";
   position:absolute;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:50%
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12)
 }
 
-.login-left:before{
-  width:500px;height:500px;
-  right:-230px;bottom:-260px
+.login-hero:before{
+  width:520px;
+  height:520px;
+  right:-230px;
+  bottom:-260px
 }
 
-.login-left:after{
-  width:330px;height:330px;
-  right:-135px;bottom:-175px
+.login-hero:after{
+  width:340px;
+  height:340px;
+  right:-145px;
+  bottom:-180px
 }
 
-.kicker{
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:.17em;
-  text-transform:uppercase;
-  opacity:.68
-}
-
-.login-left h1{
-  font-size:64px;
-  line-height:.87;
+.login-hero h1{
+  font-size:65px;
+  line-height:.86;
   letter-spacing:-.07em;
   margin:18px 0;
   position:relative;
-  z-index:2
+  z-index:1
 }
 
-.login-left h1 span{color:#ffa181}
+.login-hero h1 span{
+  color:#ffa17f
+}
 
-.login-left p{
-  max-width:500px;
+.login-hero p{
+  max-width:510px;
   font-size:17px;
   line-height:1.6;
-  color:rgba(255,255,255,.8);
+  color:rgba(255,255,255,.78);
   position:relative;
-  z-index:2
+  z-index:1
 }
 
-.desk-scene{
+.hero-scene{
   position:absolute;
-  left:34px;
-  right:25px;
+  left:36px;
+  right:28px;
   bottom:0;
   height:290px
 }
 
-.scene-window{
+.hero-window{
   position:absolute;
   left:0;
-  top:15px;
+  top:13px;
   width:315px;
-  height:160px;
-  border:8px solid #697387;
-  border-radius:18px;
-  background:#e5f2ef
+  height:165px;
+  border:8px solid #687184;
+  border-radius:20px;
+  background:#e5f1ee
 }
 
-.scene-window:before{
+.hero-window:before{
   content:"";
   position:absolute;
   left:50%;
   top:0;
   bottom:0;
   width:4px;
-  background:#697387
+  background:#687184
 }
 
-.scene-window:after{
+.hero-window:after{
   content:"";
   position:absolute;
   top:50%;
   left:0;
   right:0;
   height:4px;
-  background:#697387
+  background:#687184
 }
 
-.scene-sun{
+.hero-sun{
   position:absolute;
-  width:34px;height:34px;
-  right:18px;top:14px;
+  right:18px;
+  top:15px;
+  width:35px;
+  height:35px;
   border-radius:50%;
   background:var(--yellow)
 }
 
-.scene-table{
+.hero-table{
   position:absolute;
   left:4%;
   right:0;
-  bottom:22px;
-  height:58px;
-  border-radius:15px;
-  background:#956247;
-  box-shadow:0 15px 25px rgba(0,0,0,.18)
+  bottom:23px;
+  height:57px;
+  border-radius:16px;
+  background:#956146;
+  box-shadow:0 20px 30px rgba(0,0,0,.18)
 }
 
-.scene-monitor{
+.hero-screen{
   position:absolute;
   left:27%;
-  bottom:84px;
+  bottom:82px;
   width:205px;
-  height:129px;
-  border-radius:15px;
+  height:130px;
+  border-radius:16px;
   background:#202638
 }
 
-.scene-monitor:before{
+.hero-screen:before{
   content:"";
   position:absolute;
   inset:10px;
   border-radius:10px;
-  background:linear-gradient(135deg,#5967be,#41bfc8)
+  background:linear-gradient(135deg,#5964c0,#3cb7c7)
 }
 
-.scene-monitor:after{
+.hero-screen:after{
   content:"";
   position:absolute;
   left:64px;
@@ -225,82 +271,90 @@ button{cursor:pointer}
   bottom:-15px;
   height:15px;
   background:#5d6675;
-  border-radius:0 0 8px 8px
+  border-radius:0 0 9px 9px
 }
 
-.scene-cup{
+.hero-cup{
   position:absolute;
   right:19%;
-  bottom:74px;
-  width:41px;
-  height:37px;
+  bottom:73px;
+  width:43px;
+  height:38px;
   border-radius:0 0 12px 12px;
-  background:#fff3e9
+  background:#fff4ea
 }
 
-.scene-person{
+.hero-person{
   position:absolute;
-  right:7%;
-  bottom:45px;
-  width:125px;
-  height:190px;
+  right:5%;
+  bottom:47px;
+  width:130px;
+  height:185px;
   animation:float 4s ease-in-out infinite
 }
 
-.person-head{
+.hero-person .head{
   position:absolute;
-  left:35px;top:4px;
-  width:50px;height:50px;
+  left:37px;
+  top:4px;
+  width:48px;
+  height:48px;
   border-radius:50%;
-  background:#d39a77
+  background:#d29978
 }
 
-.person-hair{
+.hero-person .hair{
   position:absolute;
-  left:25px;top:-2px;
-  width:70px;height:56px;
+  left:26px;
+  top:-3px;
+  width:69px;
+  height:54px;
   border-radius:55%;
-  background:#32283a;
+  background:#30263a;
   z-index:2
 }
 
-.person-body{
+.hero-person .body{
   position:absolute;
-  left:12px;top:51px;
-  width:100px;height:123px;
-  border-radius:38px 38px 20px 20px;
+  left:13px;
+  top:49px;
+  width:103px;
+  height:128px;
+  border-radius:37px 37px 18px 18px;
   background:linear-gradient(180deg,var(--pink),var(--purple))
 }
 
-.login-right{
-  padding:56px;
+.login-form{
+  padding:58px;
   display:flex;
   flex-direction:column;
   justify-content:center
 }
 
-.login-right h2{
+.login-form h2{
   font-size:39px;
   line-height:1;
   letter-spacing:-.055em;
-  margin:10px 0
+  margin:10px 0 8px
 }
 
-.login-copy{
+.login-form p{
+  margin:0 0 24px;
   color:var(--muted);
-  line-height:1.55;
-  margin:0 0 24px
+  line-height:1.55
 }
 
-.field{margin-bottom:14px}
+.field{
+  margin-bottom:14px
+}
 
 .field label{
   display:block;
   font-size:10px;
   font-weight:900;
-  letter-spacing:.12em;
+  letter-spacing:.11em;
   text-transform:uppercase;
-  color:#767d8d;
+  color:#7a8090;
   margin-bottom:6px
 }
 
@@ -315,187 +369,198 @@ button{cursor:pointer}
 
 .field input:focus{
   border-color:var(--purple);
-  box-shadow:0 0 0 4px rgba(112,79,245,.1)
+  box-shadow:0 0 0 4px rgba(107,76,246,.1)
 }
 
-.note{
+.login-note{
   font-size:9px;
+  color:#999eaa;
   line-height:1.45;
-  color:#9a9fad;
-  margin:5px 0 12px
+  margin:-2px 0 10px
 }
 
 .error{
   min-height:18px;
-  color:#c14c45;
-  font-size:11px
+  font-size:11px;
+  color:#c54c43
 }
 
-.cta{
-  width:100%;
-  border:0;
-  border-radius:14px;
-  padding:15px;
-  color:#fff;
-  font-weight:900;
-  background:linear-gradient(90deg,var(--purple),var(--violet));
-  box-shadow:0 12px 24px rgba(112,79,245,.22)
-}
-
-/* ======================
+/* =====================
    STORY
-====================== */
+===================== */
 
 .story{
   align-items:center;
   justify-content:center;
   padding:24px;
   background:
-    radial-gradient(circle at 10% 10%,rgba(255,123,98,.14),transparent 24%),
-    radial-gradient(circle at 92% 85%,rgba(57,191,211,.12),transparent 25%),
-    #f6f4fb
+    radial-gradient(circle at 8% 10%,rgba(255,127,97,.13),transparent 24%),
+    radial-gradient(circle at 92% 85%,rgba(47,194,214,.11),transparent 26%),
+    #f6f4fc
 }
 
 .story-shell{
-  width:min(1160px,100%);
-  border-radius:30px;
-  overflow:hidden;
+  width:min(1170px,100%);
   background:var(--paper);
-  box-shadow:var(--shadow)
+  border-radius:30px;
+  box-shadow:var(--shadow);
+  overflow:hidden
 }
 
 .story-bar{
-  padding:17px 23px;
+  padding:17px 25px;
+  border-bottom:1px solid var(--line);
   display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid var(--line)
+  justify-content:space-between
 }
 
-.brand{font-weight:950;letter-spacing:-.04em}
-.story-time{font-size:11px;color:#7f8593}
+.story-time{
+  font-size:11px;
+  color:#7c8291
+}
 
 .story-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:40px;
-  padding:45px;
-  align-items:center
+  gap:42px;
+  align-items:center;
+  padding:46px
 }
 
 .story-grid h1{
-  font-size:48px;
-  line-height:.95;
-  letter-spacing:-.055em;
+  font-size:49px;
+  line-height:.94;
+  letter-spacing:-.06em;
   margin:12px 0 15px
 }
 
 .story-grid p{
-  max-width:540px;
-  line-height:1.62;
-  color:#6c7484
+  max-width:560px;
+  color:#6c7483;
+  line-height:1.64
+}
+
+.story-grid strong{
+  color:#313748
 }
 
 .dark-btn{
-  margin-top:13px;
+  margin-top:12px;
   border:0;
+  border-radius:13px;
+  padding:14px 19px;
   background:var(--navy);
   color:#fff;
-  padding:14px 19px;
-  border-radius:13px;
   font-weight:900
 }
 
-.story-visual{
-  height:380px;
-  border-radius:25px;
+.story-scene{
+  height:390px;
+  border-radius:26px;
   overflow:hidden;
   position:relative;
-  background:linear-gradient(180deg,#e8f4f1 0%,#f2e9ff 57%,#d69e78 58%,#be875f 100%)
+  background:
+    linear-gradient(
+      180deg,
+      #e8f4f1 0%,
+      #f1eaff 56%,
+      #d5a07c 57%,
+      #be865f 100%
+    )
 }
 
-.story-visual .desk{
+.story-scene .desk{
   position:absolute;
-  left:10%;right:8%;bottom:58px;
+  left:10%;
+  right:8%;
+  bottom:60px;
   height:49px;
-  background:#8e5f47;
-  border-radius:14px
+  border-radius:14px;
+  background:#8e6047
 }
 
-.story-visual .monitor{
+.story-scene .screen{
+  display:block;
   position:absolute;
-  left:28%;bottom:88px;
-  width:175px;height:108px;
+  left:27%;
+  bottom:89px;
+  width:175px;
+  height:108px;
   border-radius:15px;
   background:#202638
 }
 
-.story-visual .window{
+.story-scene .phone{
   position:absolute;
-  left:8%;top:30px;
-  width:44%;height:150px;
-  border:8px solid #697182;
-  border-radius:18px;
-  background:#e5f1ee
-}
-
-.story-visual .window:before{
-  content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;background:#697182
-}
-
-.story-visual .window:after{
-  content:"";position:absolute;left:0;right:0;top:50%;height:4px;background:#697182
-}
-
-.story-visual .phone{
-  position:absolute;
-  right:17%;bottom:73px;
-  width:48px;height:86px;
+  right:17%;
+  bottom:73px;
+  width:48px;
+  height:87px;
   border-radius:13px;
   background:#202638;
   transform:rotate(7deg)
 }
 
-.story-visual .visual-person{
+.story-scene .window{
   position:absolute;
-  right:6%;bottom:48px;
-  width:110px;height:180px
+  left:8%;
+  top:30px;
+  width:44%;
+  height:151px;
+  border:8px solid #687180;
+  border-radius:18px;
+  background:#e5f1ee
 }
 
-.visual-person .head{
+.story-scene .window:before{
+  content:"";
   position:absolute;
-  left:32px;top:0;
-  width:42px;height:42px;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:#687180
+}
+
+.story-scene .window:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  height:4px;
+  background:#687180
+}
+
+.story-scene .sun{
+  position:absolute;
+  right:15px;
+  top:13px;
+  width:30px;
+  height:30px;
   border-radius:50%;
-  background:#d19a77
+  background:var(--yellow)
 }
 
-.visual-person .hair{
+.visual-person{
   position:absolute;
-  left:24px;top:-4px;
-  width:57px;height:48px;
-  border-radius:50%;
-  background:#31273a
+  right:6%;
+  bottom:48px;
+  width:110px;
+  height:180px
 }
 
-.visual-person .body{
-  position:absolute;
-  left:10px;top:39px;
-  width:89px;height:108px;
-  border-radius:30px;
-  background:var(--coral)
-}
-
-/* ======================
+/* =====================
    TEAM
-====================== */
+===================== */
 
-.team{
+.team-screen{
   align-items:flex-start;
   justify-content:center;
   padding:22px;
   background:
-    radial-gradient(circle at 5% 8%,rgba(112,79,245,.1),transparent 24%),
-    #f6f5fa
+    radial-gradient(circle at 6% 8%,rgba(107,76,246,.1),transparent 24%),
+    #f7f6fb
 }
 
 .team-shell{
@@ -503,42 +568,42 @@ button{cursor:pointer}
   background:var(--paper);
   border-radius:30px;
   box-shadow:var(--shadow);
-  padding:25px
+  padding:26px
 }
 
 .team-head{
   display:flex;
   justify-content:space-between;
   align-items:end;
-  gap:18px;
+  gap:20px;
   margin-bottom:18px
 }
 
 .team-head h1{
-  font-size:39px;
+  font-size:40px;
   line-height:1;
   letter-spacing:-.055em;
-  margin:10px 0 7px
+  margin:9px 0 7px
 }
 
 .team-head p{
   margin:0;
-  max-width:800px;
+  max-width:820px;
   color:var(--muted);
-  line-height:1.52;
+  line-height:1.53;
   font-size:12px
 }
 
-.team-badge{
+.team-count{
   padding:8px 11px;
-  border-radius:999px;
   background:var(--soft);
+  border-radius:999px;
   color:#5d49ca;
   font-size:9px;
   font-weight:900
 }
 
-.team-grid{
+.people{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:11px
@@ -546,33 +611,33 @@ button{cursor:pointer}
 
 .person-card{
   display:flex;
-  gap:11px;
+  gap:12px;
   padding:12px;
   border:1px solid var(--line);
   border-radius:18px;
   background:#fff;
-  transition:.2s;
-  cursor:pointer
+  cursor:pointer;
+  transition:.2s
 }
 
 .person-card:hover{
   transform:translateY(-3px);
-  box-shadow:0 12px 24px rgba(0,0,0,.06)
+  box-shadow:var(--shadow-sm)
 }
 
-.face{
-  width:70px;
-  height:70px;
-  border-radius:17px;
+.portrait{
+  width:72px;
+  height:72px;
   overflow:hidden;
   flex:none;
-  background:#edf0f6
+  border-radius:18px;
+  background:#edf0f7
 }
 
-.face svg{
+.portrait svg{
+  display:block;
   width:100%;
-  height:100%;
-  display:block
+  height:100%
 }
 
 .person-name{
@@ -582,28 +647,30 @@ button{cursor:pointer}
 
 .person-role{
   font-size:9px;
-  color:#818897;
+  color:#828896;
   margin-top:2px
 }
 
-.person-text{
-  margin-top:6px;
-  color:#6d7583;
+.person-desc{
   font-size:9px;
-  line-height:1.42
+  line-height:1.42;
+  color:#6e7582;
+  margin-top:7px
 }
 
-.person-text strong{color:#444a57}
+.person-desc strong{
+  color:#464d5a
+}
 
 .team-footer{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:16px;
+  justify-content:space-between;
+  gap:15px;
   margin-top:17px;
   padding:14px 16px;
   border-radius:16px;
-  background:linear-gradient(90deg,#f0ebff,#fff0ea)
+  background:linear-gradient(90deg,#efebff,#fff0ea)
 }
 
 .team-footer p{
@@ -616,44 +683,44 @@ button{cursor:pointer}
 .team-footer button{
   border:0;
   border-radius:12px;
+  padding:12px 17px;
   background:var(--purple);
   color:#fff;
-  padding:12px 17px;
   font-weight:900
 }
 
-/* ======================
+/* =====================
    WORKDAY
-====================== */
+===================== */
 
 .work{
   flex-direction:column;
-  background:#f0f1f8
+  background:#eff0f7
 }
 
 .topbar{
   height:65px;
+  padding:0 20px;
   background:var(--paper);
   border-bottom:1px solid var(--line);
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:0 20px
+  align-items:center
 }
 
 .topbar-right{
   font-size:11px;
-  color:#626977;
-  font-weight:800
+  font-weight:850;
+  color:#646b79
 }
 
 .work-grid{
-  width:min(1400px,100%);
+  width:min(1410px,100%);
   margin:auto;
-  padding:12px;
   flex:1;
+  padding:12px;
   display:grid;
-  grid-template-columns:188px minmax(0,1fr) 245px;
+  grid-template-columns:185px minmax(0,1fr) 245px;
   gap:12px
 }
 
@@ -672,12 +739,12 @@ button{cursor:pointer}
 
 .user-card{
   padding:11px;
-  border-radius:15px;
   background:#f3f0e8;
+  border-radius:15px;
   margin-bottom:10px
 }
 
-.user-face{
+.user-avatar{
   width:40px;
   height:40px;
   border-radius:12px;
@@ -685,7 +752,7 @@ button{cursor:pointer}
   margin-bottom:7px
 }
 
-.user-face svg{
+.user-avatar svg{
   width:100%;
   height:100%
 }
@@ -697,7 +764,7 @@ button{cursor:pointer}
 
 .user-role{
   font-size:9px;
-  color:#818897;
+  color:#818796;
   margin-top:2px
 }
 
@@ -712,19 +779,20 @@ button{cursor:pointer}
   color:#6c7280
 }
 
-.nav:hover,.nav.active{
+.nav.active,
+.nav:hover{
   background:#efebff;
   color:#342d52
 }
 
-.sidebar-note{
+.side-note{
   margin-top:auto;
   padding:11px;
   border-radius:14px;
+  background:linear-gradient(135deg,#fff0ea,#efebff);
   font-size:9px;
   line-height:1.48;
-  color:#656c79;
-  background:linear-gradient(135deg,#fff0e9,#efebff)
+  color:#676e7b
 }
 
 .main{
@@ -758,13 +826,13 @@ button{cursor:pointer}
 
 .meter small{
   font-size:8px;
-  color:#989daa;
+  color:#969baa;
   text-transform:uppercase;
   font-weight:900;
   letter-spacing:.1em
 }
 
-.bar{
+.meter-bar{
   margin-top:5px;
   height:7px;
   background:#e9e7ef;
@@ -772,12 +840,12 @@ button{cursor:pointer}
   overflow:hidden
 }
 
-.bar span{
+.meter-bar span{
   display:block;
   width:0;
   height:100%;
-  transition:.4s;
-  background:linear-gradient(90deg,var(--purple),var(--pink))
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  transition:.5s
 }
 
 .office{
@@ -785,37 +853,62 @@ button{cursor:pointer}
   border-radius:21px;
   overflow:hidden;
   position:relative;
-  background:linear-gradient(180deg,#e8f5f1 0%,#f2eaff 56%,#d49a72 57%,#bc855f 100%)
+  background:
+    linear-gradient(
+      180deg,
+      #e8f5f1 0%,
+      #f2eaff 56%,
+      #d49a72 57%,
+      #bc855f 100%
+    )
 }
 
 .office-window{
   position:absolute;
-  left:7%;top:25px;
-  width:38%;height:127px;
+  left:7%;
+  top:25px;
+  width:38%;
+  height:127px;
   border:8px solid #687181;
   border-radius:18px;
   background:#e5f1ee
 }
 
 .office-window:before{
-  content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;background:#687181
+  content:"";
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:#687181
 }
 
 .office-window:after{
-  content:"";position:absolute;left:0;right:0;top:50%;height:4px;background:#687181
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  height:4px;
+  background:#687181
 }
 
 .office-sun{
   position:absolute;
-  right:14px;top:12px;
-  width:28px;height:28px;
+  right:14px;
+  top:12px;
+  width:28px;
+  height:28px;
   border-radius:50%;
   background:var(--yellow)
 }
 
 .office-desk{
   position:absolute;
-  left:10%;right:7%;bottom:45px;
+  left:10%;
+  right:7%;
+  bottom:45px;
   height:46px;
   background:#8e6047;
   border-radius:13px
@@ -823,16 +916,20 @@ button{cursor:pointer}
 
 .office-monitor{
   position:absolute;
-  left:28%;bottom:70px;
-  width:176px;height:108px;
+  left:28%;
+  bottom:70px;
+  width:176px;
+  height:108px;
   background:#202638;
   border-radius:14px
 }
 
 .office-phone{
   position:absolute;
-  right:17%;bottom:61px;
-  width:47px;height:84px;
+  right:17%;
+  bottom:61px;
+  width:47px;
+  height:84px;
   background:#202638;
   border-radius:12px;
   transform:rotate(6deg)
@@ -840,15 +937,18 @@ button{cursor:pointer}
 
 .office-cup{
   position:absolute;
-  right:27%;bottom:57px;
-  width:37px;height:31px;
+  right:27%;
+  bottom:57px;
+  width:37px;
+  height:31px;
   background:#fff4e8;
   border-radius:0 0 10px 10px
 }
 
 .office-note{
   position:absolute;
-  right:7%;top:24px;
+  right:7%;
+  top:24px;
   width:115px;
   background:#ffe27f;
   padding:10px;
@@ -860,7 +960,8 @@ button{cursor:pointer}
 
 .office-bubble{
   position:absolute;
-  left:50%;top:28%;
+  left:50%;
+  top:28%;
   transform:translate(-50%,-50%);
   background:#fff;
   border-radius:15px;
@@ -874,12 +975,6 @@ button{cursor:pointer}
 
 .office-bubble.show{
   animation:bubble 2.1s ease forwards
-}
-
-@keyframes bubble{
-  0%{opacity:0;transform:translate(-50%,-30%) scale(.97)}
-  15%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-65%)}
 }
 
 .quick-grid{
@@ -932,8 +1027,8 @@ button{cursor:pointer}
 .dot{
   width:7px;
   height:7px;
-  background:var(--pink);
   border-radius:50%;
+  background:var(--pink);
   animation:pulse 1.5s infinite
 }
 
@@ -951,7 +1046,9 @@ button{cursor:pointer}
   border-bottom:1px solid #e5e6ee
 }
 
-.agenda-row:last-child{border-bottom:0}
+.agenda-row:last-child{
+  border-bottom:0
+}
 
 .a-time{
   width:40px;
@@ -968,17 +1065,19 @@ button{cursor:pointer}
 .message{
   border-radius:15px;
   padding:12px;
-  background:linear-gradient(135deg,#fff0e9,#eeeaff);
+  background:linear-gradient(135deg,#fff0ea,#eeeaff);
   font-size:9px;
   line-height:1.45;
   cursor:pointer
 }
 
-.message strong{font-size:10px}
+.message strong{
+  font-size:10px
+}
 
-/* ======================
+/* =====================
    MODALS
-====================== */
+===================== */
 
 .overlay{
   display:none;
@@ -992,32 +1091,35 @@ button{cursor:pointer}
   padding:18px
 }
 
-.overlay.show{display:flex}
+.overlay.show{
+  display:flex
+}
 
 .modal{
   width:min(850px,100%);
   max-height:92vh;
   overflow:auto;
-  border-radius:28px;
   background:var(--paper);
+  border-radius:28px;
   box-shadow:0 34px 90px rgba(0,0,0,.24);
-  animation:pop .28s ease
+  animation:rise .3s ease
 }
 
 .modal-head{
   position:relative;
-  padding:23px 25px 18px;
+  padding:24px 25px 18px;
   border-bottom:1px solid var(--line);
-  background:linear-gradient(135deg,#eeeaff,#fff0e9)
+  background:linear-gradient(135deg,#eeeaff,#fff0ea)
 }
 
 .close{
   position:absolute;
   right:14px;
   top:13px;
-  width:36px;height:36px;
-  border-radius:50%;
+  width:36px;
+  height:36px;
   border:1px solid var(--line);
+  border-radius:50%;
   background:#fff;
   font-size:18px
 }
@@ -1031,7 +1133,7 @@ button{cursor:pointer}
 }
 
 .modal-title{
-  font-size:28px;
+  font-size:29px;
   line-height:1.03;
   letter-spacing:-.045em;
   margin:9px 0 6px
@@ -1039,9 +1141,9 @@ button{cursor:pointer}
 
 .modal-intro{
   font-size:11px;
-  color:#68707e;
   line-height:1.55;
-  max-width:720px
+  color:#68707e;
+  max-width:740px
 }
 
 .modal-body{
@@ -1049,31 +1151,34 @@ button{cursor:pointer}
 }
 
 .background{
+  padding:14px;
   border-radius:15px;
-  padding:13px;
-  margin-bottom:13px;
-  background:#f7f6fa;
+  background:#f6f5fa;
+  color:#646c79;
+  line-height:1.55;
   font-size:10px;
-  line-height:1.52;
-  color:#656c79
+  margin-bottom:13px
 }
 
-.background strong{color:#343949}
+.background strong{
+  display:block;
+  color:#343949;
+  margin-bottom:5px
+}
 
 .character{
   display:flex;
   gap:11px;
-  align-items:flex-start;
+  padding:13px;
+  border-radius:16px;
   border:1px solid var(--line);
   background:#fff;
-  border-radius:16px;
-  padding:13px;
   margin-bottom:13px
 }
 
 .character-face{
-  width:54px;
-  height:54px;
+  width:56px;
+  height:56px;
   border-radius:14px;
   overflow:hidden;
   flex:none
@@ -1097,7 +1202,7 @@ button{cursor:pointer}
 
 .character-message{
   font-size:11px;
-  line-height:1.48;
+  line-height:1.5;
   color:#444b58;
   margin-top:5px
 }
@@ -1120,8 +1225,8 @@ button{cursor:pointer}
 }
 
 .info button:hover{
-  background:#faf8ff;
-  border-color:#bcb0ee
+  border-color:#bcb0ee;
+  background:#faf8ff
 }
 
 .question{
@@ -1138,16 +1243,16 @@ button{cursor:pointer}
 
 .action{
   text-align:left;
-  padding:12px 13px;
   border:1px solid var(--line);
   border-radius:14px;
   background:#fff;
+  padding:12px 13px;
   transition:.18s
 }
 
 .action:hover{
   transform:translateX(3px);
-  border-color:#b8acec;
+  border-color:#b6aaee;
   box-shadow:0 8px 18px rgba(112,79,245,.08)
 }
 
@@ -1158,8 +1263,8 @@ button{cursor:pointer}
 
 .action-copy{
   font-size:8.5px;
+  color:#747b86;
   line-height:1.42;
-  color:#747b87;
   margin-top:3px
 }
 
@@ -1167,7 +1272,7 @@ button{cursor:pointer}
   margin-top:14px;
   padding:14px;
   border-radius:16px;
-  background:linear-gradient(135deg,#eefbf4,#f0ebff);
+  background:linear-gradient(135deg,#effbf4,#f0ebff);
   animation:fade .35s ease
 }
 
@@ -1180,15 +1285,15 @@ button{cursor:pointer}
 }
 
 .followup h3{
-  margin:5px 0;
-  font-size:15px
+  font-size:15px;
+  margin:5px 0
 }
 
 .followup p{
   margin:0;
   color:#687180;
   font-size:9px;
-  line-height:1.48
+  line-height:1.5
 }
 
 .followup button{
@@ -1209,17 +1314,17 @@ button{cursor:pointer}
 }
 
 .profile{
+  display:flex;
+  gap:9px;
   border:1px solid var(--line);
   border-radius:14px;
-  padding:10px;
-  display:flex;
-  gap:9px
+  padding:10px
 }
 
-.profile .face{
+.profile .portrait{
   width:45px;
   height:45px;
-  border-radius:11px
+  border-radius:12px
 }
 
 .profile-name{
@@ -1240,95 +1345,157 @@ button{cursor:pointer}
   margin-top:3px
 }
 
-/* ======================
+/* =====================
    END
-====================== */
+===================== */
 
 .end{
   align-items:center;
   justify-content:center;
   padding:24px;
   background:
-    radial-gradient(circle at 10% 10%,rgba(112,79,245,.13),transparent 24%),
-    radial-gradient(circle at 90% 85%,rgba(57,191,211,.1),transparent 25%),
-    #f6f5fa
+    radial-gradient(circle at 8% 10%,rgba(107,76,246,.13),transparent 25%),
+    radial-gradient(circle at 92% 85%,rgba(47,194,214,.11),transparent 25%),
+    #f6f5fb
 }
 
 .end-card{
   width:min(760px,100%);
   padding:58px 34px;
+  text-align:center;
   border-radius:30px;
   background:var(--paper);
-  text-align:center;
   box-shadow:var(--shadow)
 }
 
 .end-icon{
-  width:70px;height:70px;
+  width:72px;
+  height:72px;
+  border-radius:22px;
   display:grid;
   place-items:center;
   margin:0 auto 16px;
-  border-radius:21px;
-  background:linear-gradient(135deg,#eeeaff,#fff0e9);
-  font-size:29px
+  background:linear-gradient(135deg,#eeeaff,#fff0ea);
+  font-size:30px
 }
 
 .end-card h1{
-  margin:0;
   font-size:49px;
   line-height:.95;
-  letter-spacing:-.06em
+  letter-spacing:-.06em;
+  margin:0
 }
 
 .end-card p{
-  max-width:530px;
-  margin:15px auto 25px;
-  color:#727987;
+  max-width:540px;
+  margin:14px auto 25px;
+  color:#727986;
   line-height:1.58
 }
 
 .save{
   border:0;
   border-radius:13px;
-  padding:13px 18px;
   background:var(--navy);
   color:#fff;
+  padding:13px 18px;
   font-weight:900
 }
 
-/* ======================
+/* =====================
    RESPONSIVE
-====================== */
+===================== */
 
-@media(max-width:1050px){
+@media(max-width:1060px){
   .work-grid{
     grid-template-columns:180px 1fr
   }
-  .right-panel{display:none}
-  .team-grid{grid-template-columns:1fr 1fr}
+
+  .right-panel{
+    display:none
+  }
+
+  .people{
+    grid-template-columns:1fr 1fr
+  }
 }
 
 @media(max-width:800px){
-  .login-shell{grid-template-columns:1fr}
-  .login-left{min-height:440px;padding:38px}
-  .login-right{padding:38px 24px}
-  .login-left h1{font-size:49px}
-  .story-grid{grid-template-columns:1fr;padding:32px 24px}
-  .story-grid h1{font-size:40px}
-  .team-grid{grid-template-columns:1fr}
-  .work-grid{grid-template-columns:1fr}
-  .sidebar{display:none}
+
+  .login-shell{
+    grid-template-columns:1fr
+  }
+
+  .login-hero{
+    min-height:430px
+  }
+
+  .story-grid{
+    grid-template-columns:1fr;
+    padding:32px 24px
+  }
+
+  .people{
+    grid-template-columns:1fr
+  }
+
+  .work-grid{
+    grid-template-columns:1fr
+  }
+
+  .sidebar{
+    display:none
+  }
 }
 
 @media(max-width:560px){
-  .login{padding:10px}
-  .login-left,.login-right{padding:28px 20px}
-  .story{padding:10px}
-  .story-grid{padding:25px 18px}
-  .story-visual{height:290px}
-  .modal-head,.modal-body{padding:19px}
-  .profile-grid{grid-template-columns:1fr}
-  .quick-grid{grid-template-columns:1fr}
+
+  .login{
+    padding:10px
+  }
+
+  .login-left,
+  .login-form{
+    padding:28px 20px
+  }
+
+  .login-hero h1{
+    font-size:48px
+  }
+
+  .story{
+    padding:10px
+  }
+
+  .story-grid{
+    padding:24px 18px
+  }
+
+  .story-grid h1{
+    font-size:38px
+  }
+
+  .team-shell{
+    padding:18px
+  }
+
+  .team-head{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .modal-head,
+  .modal-body{
+    padding:19px
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr
+  }
+
+  .quick-grid{
+    grid-template-columns:1fr
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -1344,17 +1511,17 @@ button{cursor:pointer}
 
 <div id="app">
 
-<!-- ======================
+<!-- =====================
      PARTICIPANT
-====================== -->
+===================== -->
 
 <section class="screen login active" id="loginScreen">
 
   <div class="login-shell fade">
 
-    <div class="login-left">
+    <div class="login-hero">
 
-      <div class="kicker">
+      <div class="eyebrow">
         Internal HR simulation
       </div>
 
@@ -1369,20 +1536,22 @@ button{cursor:pointer}
         Meet your people first. Then see what finds its way to your desk.
       </p>
 
-      <div class="desk-scene">
+      <div class="hero-scene">
 
-        <div class="scene-window">
-          <div class="scene-sun"></div>
+        <div class="hero-window">
+          <div class="hero-sun"></div>
         </div>
 
-        <div class="scene-table"></div>
-        <div class="scene-monitor"></div>
-        <div class="scene-cup"></div>
+        <div class="hero-table"></div>
 
-        <div class="scene-person">
-          <div class="person-hair"></div>
-          <div class="person-head"></div>
-          <div class="person-body"></div>
+        <div class="hero-screen"></div>
+
+        <div class="hero-cup"></div>
+
+        <div class="hero-person">
+          <div class="hair"></div>
+          <div class="head"></div>
+          <div class="body"></div>
         </div>
 
       </div>
@@ -1390,59 +1559,66 @@ button{cursor:pointer}
     </div>
 
 
-    <div class="login-right">
+    <div class="login-form">
 
-      <div class="kicker">
-        Before your day starts
+      <div class="eyebrow">
+        Before the day starts
       </div>
 
       <h2>
         Let's get you into the day.
       </h2>
 
-      <p class="login-copy">
-        Enter a few details so we know who is taking part.
+      <p>
+        Enter a few details so we can link the simulation to you.
       </p>
 
 
       <form id="participantForm">
 
         <div class="field">
-          <label>Your name</label>
+          <label>Name</label>
           <input
-            id="name"
+            id="pName"
             required
-            placeholder="Full name"
-          >
+            placeholder="Full name">
         </div>
+
 
         <div class="field">
           <label>Employee ID</label>
           <input
-            id="employeeId"
+            id="pId"
             required
-            placeholder="Employee ID"
-          >
+            placeholder="Employee ID">
         </div>
+
 
         <div class="field">
           <label>Work email</label>
           <input
-            id="email"
+            id="pEmail"
             type="email"
             required
-            placeholder="name@company.com"
-          >
+            placeholder="name@company.com">
         </div>
 
-        <div class="note">
-          In the final enterprise version, this can be replaced with
+
+        <div class="login-note">
+          In the final enterprise version, this can be replaced by
           company Microsoft login. For this prototype, details are entered manually.
         </div>
 
-        <div class="error" id="error"></div>
 
-        <button class="cta" type="submit">
+        <div
+          class="error"
+          id="formError">
+        </div>
+
+
+        <button
+          class="primary"
+          type="submit">
           START THE DAY →
         </button>
 
@@ -1455,15 +1631,18 @@ button{cursor:pointer}
 </section>
 
 
-<!-- ======================
+<!-- =====================
      STORY
-====================== -->
+===================== -->
 
-<section class="screen story" id="storyScreen">
+<section
+  class="screen story"
+  id="storyScreen">
 
   <div class="story-shell fade">
 
     <div class="story-bar">
+
       <div class="brand">
         THE MANAGER'S DESK
       </div>
@@ -1471,6 +1650,7 @@ button{cursor:pointer}
       <div class="story-time">
         MONDAY · 08:45 AM
       </div>
+
     </div>
 
 
@@ -1478,7 +1658,7 @@ button{cursor:pointer}
 
       <div>
 
-        <div class="kicker">
+        <div class="eyebrow">
           A little context before you begin
         </div>
 
@@ -1487,38 +1667,39 @@ button{cursor:pointer}
         </h1>
 
         <p id="storyText">
-          They do not all work the same way.
-          They do not all need the same things from you.
-          And the week ahead will bring a few ordinary management moments.
+          They don't all work the same way. They don't all need
+          the same things from you. Over the next few days,
+          ordinary people situations will come across your desk.
         </p>
 
         <p>
-          There is no need to prepare for a test.
-          Simply respond as you would at work.
+          <strong>
+            There is nothing to prepare for. Simply respond as you would at work.
+          </strong>
         </p>
 
-        <button class="dark-btn" id="meetTeamBtn">
+        <button
+          class="dark-btn"
+          id="meetTeamBtn">
           MEET YOUR TEAM →
         </button>
 
       </div>
 
 
-      <div class="story-visual">
+      <div class="story-scene">
 
         <div class="window">
-          <div class="sun2"></div>
+          <div class="sun"></div>
         </div>
 
         <div class="desk"></div>
-        <div class="monitor"></div>
+
+        <div class="screen"></div>
+
         <div class="phone"></div>
 
-        <div class="visual-person">
-          <div class="hair"></div>
-          <div class="head"></div>
-          <div class="body"></div>
-        </div>
+        <div class="visual-person"></div>
 
       </div>
 
@@ -1529,11 +1710,13 @@ button{cursor:pointer}
 </section>
 
 
-<!-- ======================
+<!-- =====================
      TEAM
-====================== -->
+===================== -->
 
-<section class="screen team" id="teamScreen">
+<section
+  class="screen team-screen"
+  id="teamScreen">
 
   <div class="team-shell fade">
 
@@ -1541,37 +1724,41 @@ button{cursor:pointer}
 
       <div>
 
-        <div class="kicker">
-          Your HR team
+        <div class="eyebrow">
+          Your team
         </div>
 
         <h1>
-          Before the week starts, get to know your people.
+          Before the week gets busy, get to know your people.
         </h1>
 
         <p>
-          These are the same nine people who will appear throughout the simulation.
-          Their experience, strengths, history and aspirations may matter later.
-          Click on anyone to explore their profile.
+          These nine people stay with you throughout the simulation.
+          Their roles, experiences, strengths and aspirations will come up
+          naturally as the week unfolds.
         </p>
 
       </div>
 
-      <div class="team-badge">
-        9 TEAM MEMBERS
+      <div class="team-count">
+        9 PEOPLE
       </div>
 
     </div>
 
 
-    <div class="team-grid" id="teamGrid"></div>
+    <div
+      class="people"
+      id="peopleGrid">
+    </div>
 
 
     <div class="team-footer">
 
       <p>
-        <strong>Keep this team in mind.</strong>
-        You will meet the same people again in different situations.
+        <strong>One team. Many moments.</strong><br>
+        You will see the same people again — in different situations
+        and at different points in the week.
       </p>
 
       <button id="enterDeskBtn">
@@ -1585,11 +1772,13 @@ button{cursor:pointer}
 </section>
 
 
-<!-- ======================
+<!-- =====================
      WORKDAY
-====================== -->
+===================== -->
 
-<section class="screen work" id="workScreen">
+<section
+  class="screen work"
+  id="workScreen">
 
   <div class="topbar">
 
@@ -1612,9 +1801,14 @@ button{cursor:pointer}
 
       <div class="user-card">
 
-        <div class="user-face" id="managerFace"></div>
+        <div
+          class="user-avatar"
+          id="managerAvatar">
+        </div>
 
-        <div class="user-name" id="sideName">
+        <div
+          class="user-name"
+          id="sideName">
           Manager
         </div>
 
@@ -1629,23 +1823,37 @@ button{cursor:pointer}
         ◉ My desk
       </button>
 
-      <button class="nav" id="teamBtn">
+
+      <button
+        class="nav"
+        id="teamBtn">
         ♙ My team
       </button>
 
-      <button class="nav" id="dayBtn">
+
+      <button
+        class="nav"
+        id="dayBtn">
         ▣ My day
       </button>
 
-      <button class="nav" id="messagesBtn">
+
+      <button
+        class="nav"
+        id="messagesBtn">
         ✉ Messages
       </button>
 
 
-      <div class="sidebar-note">
-        <strong>One small reminder.</strong><br><br>
+      <div class="side-note">
+
+        <strong>One small reminder.</strong>
+
+        <br><br>
+
         There may be more context than what appears first.
         Look around before you decide.
+
       </div>
 
     </aside>
@@ -1659,11 +1867,14 @@ button{cursor:pointer}
 
           <h2>
             Good morning,
-            <span id="firstName">Manager</span>.
+            <span id="firstName">
+              Manager
+            </span>.
           </h2>
 
           <div class="main-sub">
-            The week is moving. Your first message is already waiting.
+            The week is moving.
+            Your first message is already waiting.
           </div>
 
         </div>
@@ -1675,7 +1886,7 @@ button{cursor:pointer}
             0 of 12 moments
           </small>
 
-          <div class="bar">
+          <div class="meter-bar">
             <span id="meterFill"></span>
           </div>
 
@@ -1690,21 +1901,36 @@ button{cursor:pointer}
           <div class="office-sun"></div>
         </div>
 
+
         <div class="office-note">
-          <strong>09:15</strong><br>
-          Team check-in<br><br>
+
+          <strong>09:15</strong>
+
+          <br>
+
+          Team check-in
+
+          <br><br>
+
           <span style="opacity:.55">
             A few things on your list.
           </span>
+
         </div>
 
+
         <div class="office-desk"></div>
+
         <div class="office-monitor"></div>
+
         <div class="office-phone"></div>
+
         <div class="office-cup"></div>
 
-        <div class="office-bubble" id="officeBubble">
-          New message
+
+        <div
+          class="office-bubble"
+          id="officeBubble">
         </div>
 
       </div>
@@ -1718,11 +1944,15 @@ button{cursor:pointer}
             What's next
           </div>
 
-          <div class="quick-title" id="nextTitle">
+          <div
+            class="quick-title"
+            id="nextTitle">
             Your inbox is quiet.
           </div>
 
-          <div class="quick-copy" id="nextCopy">
+          <div
+            class="quick-copy"
+            id="nextCopy">
             Enjoy it while it lasts.
           </div>
 
@@ -1732,7 +1962,7 @@ button{cursor:pointer}
         <div class="quick">
 
           <div class="quick-label">
-            The day
+            Your day
           </div>
 
           <div class="quick-title">
@@ -1740,7 +1970,8 @@ button{cursor:pointer}
           </div>
 
           <div class="quick-copy">
-            A normal Monday. A few things will need your attention.
+            A normal Monday. A full calendar. And a few conversations
+            that may stay with you longer than expected.
           </div>
 
         </div>
@@ -1753,8 +1984,13 @@ button{cursor:pointer}
     <aside class="right-panel panel">
 
       <div class="rtitle">
-        <span>Today's calendar</span>
+
+        <span>
+          Today's calendar
+        </span>
+
         <span class="dot"></span>
+
       </div>
 
 
@@ -1784,12 +2020,21 @@ button{cursor:pointer}
 
 
       <div class="rtitle">
-        <span>Messages</span>
-        <span id="msgCount">1 new</span>
+
+        <span>
+          Messages
+        </span>
+
+        <span id="messageCount">
+          1 new
+        </span>
+
       </div>
 
 
-      <div class="message" id="messageCard">
+      <div
+        class="message"
+        id="messageCard">
 
         <strong id="messagePerson">
           Riya Mehta
@@ -1810,11 +2055,13 @@ button{cursor:pointer}
 </section>
 
 
-<!-- ======================
+<!-- =====================
      END
-====================== -->
+===================== -->
 
-<section class="screen end" id="endScreen">
+<section
+  class="screen end"
+  id="endScreen">
 
   <div class="end-card fade">
 
@@ -1822,7 +2069,7 @@ button{cursor:pointer}
       ✦
     </div>
 
-    <div class="kicker">
+    <div class="eyebrow">
       The day is done
     </div>
 
@@ -1831,12 +2078,14 @@ button{cursor:pointer}
     </h1>
 
     <p>
-      You have worked through a series of everyday moments
-      with the same HR team. Your responses have been recorded
-      for this simulation.
+      You have worked through a series of ordinary moments
+      with the same team. Your responses have been recorded
+      for the simulation.
     </p>
 
-    <button class="save" id="saveBtn">
+    <button
+      class="save"
+      id="saveBtn">
       SAVE MY SIMULATION RECORD
     </button>
 
@@ -1845,63 +2094,99 @@ button{cursor:pointer}
 </section>
 
 
-<!-- ======================
+<!-- =====================
      SCENARIO MODAL
-====================== -->
+===================== -->
 
-<div class="overlay" id="scenarioOverlay">
+<div
+  class="overlay"
+  id="scenarioOverlay">
 
   <div class="modal">
 
     <div class="modal-head">
 
-      <button class="close" id="closeScenario">
+      <button
+        class="close"
+        id="closeScenario">
         ×
       </button>
 
-      <div class="modal-time" id="scenarioTime"></div>
+      <div
+        class="modal-time"
+        id="scenarioTime">
+      </div>
 
-      <div class="modal-title" id="scenarioTitle"></div>
+      <div
+        class="modal-title"
+        id="scenarioTitle">
+      </div>
 
-      <div class="modal-intro" id="scenarioIntro"></div>
+      <div
+        class="modal-intro"
+        id="scenarioIntro">
+      </div>
 
     </div>
 
 
     <div class="modal-body">
 
-      <div class="background" id="scenarioBackground"></div>
+
+      <div
+        class="background"
+        id="scenarioBackground">
+      </div>
 
 
       <div class="character">
 
-        <div class="character-face" id="characterFace"></div>
+        <div
+          class="character-face"
+          id="characterFace">
+        </div>
 
         <div>
 
-          <div class="character-name" id="characterName"></div>
+          <div
+            class="character-name"
+            id="characterName">
+          </div>
 
-          <div class="character-role" id="characterRole"></div>
+          <div
+            class="character-role"
+            id="characterRole">
+          </div>
 
-          <div class="character-message" id="characterMessage"></div>
+          <div
+            class="character-message"
+            id="characterMessage">
+          </div>
 
         </div>
 
       </div>
 
 
-      <div class="info" id="infoButtons"></div>
-
-
-      <div class="question" id="scenarioQuestion"></div>
-
-
-      <div class="actions" id="scenarioActions"></div>
+      <div
+        class="info"
+        id="infoButtons">
+      </div>
 
 
       <div
-        id="followupHolder">
+        class="question"
+        id="scenarioQuestion">
       </div>
+
+
+      <div
+        class="actions"
+        id="scenarioActions">
+      </div>
+
+
+      <div id="followupHolder"></div>
 
     </div>
 
@@ -1910,15 +2195,21 @@ button{cursor:pointer}
 </div>
 
 
-<!-- TEAM MODAL -->
+<!-- =====================
+     TEAM MODAL
+===================== -->
 
-<div class="overlay" id="teamOverlay">
+<div
+  class="overlay"
+  id="teamOverlay">
 
   <div class="modal">
 
     <div class="modal-head">
 
-      <button class="close" id="closeTeam">
+      <button
+        class="close"
+        id="closeTeam">
         ×
       </button>
 
@@ -1927,11 +2218,11 @@ button{cursor:pointer}
       </div>
 
       <div class="modal-title">
-        Keep your team close.
+        The people at your desk.
       </div>
 
       <div class="modal-intro">
-        The same nine people will appear again as the week unfolds.
+        Their stories continue across the simulation.
       </div>
 
     </div>
@@ -1939,7 +2230,10 @@ button{cursor:pointer}
 
     <div class="modal-body">
 
-      <div class="profile-grid" id="profileGrid"></div>
+      <div
+        class="profile-grid"
+        id="profileGrid">
+      </div>
 
     </div>
 
@@ -1948,15 +2242,21 @@ button{cursor:pointer}
 </div>
 
 
-<!-- DAY MODAL -->
+<!-- =====================
+     DAY MODAL
+===================== -->
 
-<div class="overlay" id="dayOverlay">
+<div
+  class="overlay"
+  id="dayOverlay">
 
   <div class="modal">
 
     <div class="modal-head">
 
-      <button class="close" id="closeDay">
+      <button
+        class="close"
+        id="closeDay">
         ×
       </button>
 
@@ -1969,7 +2269,7 @@ button{cursor:pointer}
       </div>
 
       <div class="modal-intro">
-        The rest will find you as the day moves along.
+        The rest will find you as the day unfolds.
       </div>
 
     </div>
@@ -2014,23 +2314,8 @@ button{cursor:pointer}
 
 
 <div
-  id="toast"
-  style="
-    position:fixed;
-    right:20px;
-    top:20px;
-    z-index:90;
-    background:#252a49;
-    color:#fff;
-    padding:12px 14px;
-    border-radius:14px;
-    box-shadow:0 16px 35px rgba(0,0,0,.2);
-    font-size:10px;
-    font-weight:850;
-    opacity:0;
-    transform:translateY(-12px);
-    pointer-events:none;
-    transition:.25s">
+  class="toast"
+  id="toast">
 </div>
 
 
@@ -2042,109 +2327,168 @@ button{cursor:pointer}
     document.getElementById(id);
 
 
-  /* ======================
+  /* =====================
      EMBEDDED FACES
-  ====================== */
+  ===================== */
 
-  const palettes = [
-    ['#ca8d70','#29252d','#5268bd'],
-    ['#d29b79','#3d2b2b','#df6092'],
-    ['#b97960','#222832','#40a8ba'],
-    ['#ce9575','#352a24','#5d9b75'],
-    ['#d5a080','#443029','#e3a844'],
-    ['#a86f59','#211f25','#8c61cb'],
-    ['#c88d6f','#472d2d','#477ab4'],
-    ['#d09a77','#241f2a','#8066d8'],
-    ['#b97860','#352b27','#ed805f']
+  const facePalettes = [
+
+    ['#ca8d70','#29252d','#5570b8','#f1c29f'],
+    ['#d29a78','#38282c','#e05a94','#f6c6ac'],
+    ['#b97d63','#23282e','#39a6ba','#e9b495'],
+    ['#cf9677','#352b27','#5d9c75','#efbe9e'],
+    ['#d4a07f','#443128','#e1aa42','#f3c6aa'],
+    ['#a96f58','#211f25','#8d62cc','#e3ad93'],
+    ['#c98d70','#442e2e','#4d79b9','#efbc9d'],
+    ['#d09b78','#282129','#7c62d5','#f1c0a4'],
+    ['#b97960','#342a27','#ec8063','#e9b08e']
+
   ];
 
 
   function faceSVG(i){
 
     const p =
-      palettes[i % palettes.length];
+      facePalettes[
+        i % facePalettes.length
+      ];
+
+
+    const eyeY =
+      i % 2
+      ? 57
+      : 58;
+
+
+    const hair =
+      i % 3 === 0
+
+      ? `
+        <path
+          d="M25 42 C29 14,72 13,77 42
+             L72 54 C62 43,43 42,30 54Z"
+          fill="${p[1]}"/>
+      `
+
+      : `
+        <path
+          d="M28 46 C25 22,71 16,74 49
+             L67 54 C60 42,43 42,29 52Z"
+          fill="${p[1]}"/>
+      `;
+
 
     return `
+
       <svg
         viewBox="0 0 100 100"
-        xmlns="http://www.w3.org/2000/svg">
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
 
         <defs>
+
           <linearGradient
             id="shirt${i}"
             x1="0"
-            x2="1"
             y1="0"
+            x2="1"
             y2="1">
+
             <stop
               offset="0"
               stop-color="${p[2]}"/>
+
             <stop
               offset="1"
               stop-color="#ffffff"/>
+
           </linearGradient>
+
         </defs>
+
 
         <rect
           width="100"
           height="100"
           rx="18"
-          fill="#edf0f6"/>
+          fill="#edf0f7"/>
+
 
         <circle
-          cx="79"
-          cy="20"
-          r="17"
+          cx="82"
+          cy="18"
+          r="18"
           fill="#fff"
-          opacity=".28"/>
+          opacity=".3"/>
+
 
         <path
-          d="M17 100
-             C22 78 78 78 83 100"
+          d="M15 100 C20 76,80 76,85 100"
           fill="url(#shirt${i})"/>
 
+
         <rect
-          x="32"
-          y="43"
-          width="36"
-          height="36"
-          rx="17"
+          x="31"
+          y="40"
+          width="38"
+          height="40"
+          rx="18"
           fill="${p[0]}"/>
 
-        <path
-          d="M29 49
-             C27 22 77 18 72 53
-             C61 43 47 42 29 49Z"
-          fill="${p[1]}"/>
+
+        ${hair}
+
 
         <circle
           cx="43"
-          cy="59"
-          r="2.5"
-          fill="#28313c"/>
+          cy="${eyeY}"
+          r="2.3"
+          fill="#27303b"/>
+
 
         <circle
           cx="57"
-          cy="59"
-          r="2.5"
-          fill="#28313c"/>
+          cy="${eyeY}"
+          r="2.3"
+          fill="#27303b"/>
+
 
         <path
-          d="M43 69
-             Q50 74 57 69"
+          d="M43 69 Q50 73 57 69"
           fill="none"
-          stroke="#7e5149"
+          stroke="#81534a"
           stroke-width="2"
           stroke-linecap="round"/>
 
+
+        ${
+          i % 2
+          ?
+
+          `
+            <path
+              d="M31 39 C31 25,67 18,72 38"
+              fill="none"
+              stroke="${p[1]}"
+              stroke-width="5"
+              stroke-linecap="round"/>
+          `
+
+          :
+
+          ''
+        }
+
       </svg>
+
     `;
+
   }
 
 
-  /* ======================
-     TEAM
-  ====================== */
+  /* =====================
+     TEAM DATA
+  ===================== */
 
   const team = [
 
@@ -2155,8 +2499,9 @@ button{cursor:pointer}
       years:'5 years',
       known:'Reliable when the pressure is on.',
       history:'Has led several important HR projects and is often the first person the team turns to when deadlines are tight.',
-      potential:'Could take on larger strategic ownership.'
+      potential:'Could take on broader strategic ownership.'
     },
+
 
     {
       id:'riya',
@@ -2164,9 +2509,10 @@ button{cursor:pointer}
       role:'HR Executive',
       years:'3.5 years',
       known:'Strong on execution and follow-through.',
-      history:'Has delivered difficult, coordination-heavy work with very little escalation, but has had fewer visible assignments.',
+      history:'Has delivered difficult coordination-heavy work with little escalation, but has had fewer visible assignments.',
       potential:'Wants broader exposure and more ownership.'
     },
+
 
     {
       id:'sonal',
@@ -2174,9 +2520,10 @@ button{cursor:pointer}
       role:'HR Operations Specialist',
       years:'2.5 years',
       known:'Thorough and dependable.',
-      history:'Usually handles the detail that keeps the team moving. She contributes strongly but does not always put herself forward.',
+      history:'Handles detail-heavy work that keeps the team moving and rarely asks for the spotlight.',
       potential:'Wants to lead something end-to-end.'
     },
+
 
     {
       id:'vikram',
@@ -2184,9 +2531,10 @@ button{cursor:pointer}
       role:'Employee Relations Partner',
       years:'6 years',
       known:'Calm in difficult situations.',
-      history:'Deep HR experience and strong internal relationships. Often relied on for sensitive matters.',
-      potential:'Could mentor newer team members.'
+      history:'Deep HR experience and strong internal relationships. Often trusted with sensitive matters.',
+      potential:'Could mentor newer HR team members.'
     },
+
 
     {
       id:'neha',
@@ -2194,9 +2542,10 @@ button{cursor:pointer}
       role:'Talent Acquisition Specialist',
       years:'4 years',
       known:'Fast and delivery-focused.',
-      history:'Has a strong record of closing difficult hiring assignments and often volunteers when something needs to move quickly.',
-      potential:'Interested in broader talent work.'
+      history:'Strong record on difficult hiring assignments and often volunteers when something needs to move quickly.',
+      potential:'Interested in broader talent responsibilities.'
     },
+
 
     {
       id:'karan',
@@ -2205,8 +2554,9 @@ button{cursor:pointer}
       years:'4.5 years',
       known:'Strong with senior stakeholders.',
       history:'Frequently represents the team in leadership conversations and has built a strong internal network.',
-      potential:'Interested in larger HR programme leadership.'
+      potential:'Interested in strategic project leadership.'
     },
+
 
     {
       id:'meera',
@@ -2218,6 +2568,7 @@ button{cursor:pointer}
       potential:'Could grow into programme leadership.'
     },
 
+
     {
       id:'arjun',
       name:'Arjun Das',
@@ -2225,8 +2576,9 @@ button{cursor:pointer}
       years:'2 years',
       known:'Analytical and quietly persistent.',
       history:'Often solves difficult reporting problems that others do not see. His work is critical but rarely the most visible.',
-      potential:'Could take on more visible analytical ownership.'
+      potential:'Could take on more visible analytics ownership.'
     },
+
 
     {
       id:'pooja',
@@ -2235,191 +2587,991 @@ button{cursor:pointer}
       years:'1.5 years',
       known:'Positive and eager to learn.',
       history:'Early in her career. Mostly supports routine work but has shown strong learning speed when given responsibility.',
-      potential:'Could develop quickly with the right exposure.'
+      potential:'Could develop quickly with structured stretch work.'
     }
 
   ];
 
 
   function person(id){
+
     return team.find(
       x => x.id === id
     );
+
   }
 
 
   function personIndex(id){
+
     return team.findIndex(
       x => x.id === id
     );
+
   }
 
 
   function escape(text){
 
     return String(text)
-      .replace(/[&<>"']/g,m => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
-      })[m]);
+      .replace(
+        /[&<>"']/g,
+        m => ({
+          '&':'&amp;',
+          '<':'&lt;',
+          '>':'&gt;',
+          '"':'&quot;',
+          "'":'&#39;'
+        })[m]
+      );
 
   }
 
+
+  /* =====================
+     SCENARIOS
+  ===================== */
+
+  const scenarios = [
+
+    {
+      time:'09:06 AM',
+
+      title:'Riya would like to take this one',
+
+      intro:
+        'Your day has barely started when Riya catches you before the team check-in.',
+
+      person:'riya',
+
+      background:
+        'A new HR project is about to begin. Riya has handled the difficult coordination work on the last project, but the conversations with senior leadership were mostly handled by Amit and Karan. This time, she wants to take more ownership.',
+
+      message:
+        '“I would really like to be considered for this one. I feel ready for something with a little more ownership.”',
+
+      info:[
+
+        [
+          'Last project',
+          'Riya completed the previous project ahead of schedule.'
+        ],
+
+        [
+          'Recent exposure',
+          'Amit and Karan have had more visible assignments recently.'
+        ],
+
+        [
+          'Earlier conversation',
+          'Riya has asked once before for broader exposure.'
+        ]
+
+      ],
+
+      question:
+        'How do you take the conversation forward?',
+
+      actions:[
+
+        [
+          'Hear her out',
+          'Ask what kind of ownership she is looking for and what she feels ready to take on.',
+          'You leave the conversation with a clearer picture of what Riya wants and where she may need support.'
+        ],
+
+        [
+          'Keep it open',
+          'Tell her you will keep her in mind when the right opportunity comes up.',
+          'The conversation ends positively, but the next step is still unclear.'
+        ],
+
+        [
+          'Explain your usual approach',
+          'Tell her that visible projects generally go to people who have already handled them.',
+          'Riya understands your logic, but she is still unsure what she needs to do differently.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'09:48 AM',
+
+      title:'You need the HR pack before noon',
+
+      intro:
+        'A leadership review has moved forward. Someone needs to pull the pack together quickly.',
+
+      person:'amit',
+
+      background:
+        'Amit has prepared similar packs three times and can probably turn this around without much supervision. Arjun built much of the reporting behind two earlier packs, but has never owned the final output. Amit also already has two urgent tasks today.',
+
+      message:
+        '“I can take it. I already know what needs to go into it.”',
+
+      info:[
+
+        [
+          'Amit',
+          'Has done three similar assignments.'
+        ],
+
+        [
+          'Arjun',
+          'Built the analytics behind two earlier packs.'
+        ],
+
+        [
+          'Capacity',
+          'Amit already has two deadlines today.'
+        ]
+
+      ],
+
+      question:
+        'What do you do?',
+
+      actions:[
+
+        [
+          'Protect the deadline',
+          'Give it to Amit because speed matters today.',
+          'The work is likely to move quickly.'
+        ],
+
+        [
+          'Give Arjun the ownership',
+          'Ask Arjun to take it with a clear check-in before the review.',
+          'Arjun gets a chance to own visible work with a safety net.'
+        ],
+
+        [
+          'Work it out together',
+          'Ask Amit and Arjun to divide the work with clear ownership.',
+          'The job moves quickly while both contributions remain visible.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'10:26 AM',
+
+      title:'There is one seat left',
+
+      intro:
+        'An external development programme has one place available. Two people have shown interest.',
+
+      person:'neha',
+
+      background:
+        'Neha has been performing strongly and attended two external programmes last year. Meera has also been delivering well, but has had little external development exposure this year. Both are likely to take on broader responsibilities next year.',
+
+      message:
+        '“This one would help me build capability beyond hiring. I would really like to attend.”',
+
+      info:[
+
+        [
+          'Neha',
+          'Strong performance and two programmes last year.'
+        ],
+
+        [
+          'Meera',
+          'Good delivery but fewer development opportunities this year.'
+        ],
+
+        [
+          'Future roles',
+          'Both may take on broader responsibilities.'
+        ]
+
+      ],
+
+      question:
+        'How do you decide?',
+
+      actions:[
+
+        [
+          'Look at performance',
+          'Give the seat to the stronger performer today.',
+          'The decision is simple and performance-led.'
+        ],
+
+        [
+          'Look at the wider picture',
+          'Consider role need, previous development exposure and future responsibilities.',
+          'The decision takes more than current performance into account.'
+        ],
+
+        [
+          'Create a clear rotation',
+          'Use a simple approach so development opportunities do not depend on who asks first.',
+          'The immediate decision also creates a basis for future opportunities.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'11:14 AM',
+
+      title:'Meera has done most of the design work',
+
+      intro:
+        'A senior HR leader has offered you twenty minutes to review a new capability initiative.',
+
+      person:'meera',
+
+      background:
+        'Meera designed the core programme. Karan has represented the team in several leadership conversations and is very comfortable with senior stakeholders. You have one meeting to decide how to use.',
+
+      message:
+        '“I know the detail really well. I can walk them through the design if that helps.”',
+
+      info:[
+
+        [
+          'Karan',
+          'Has joined the last three senior HR discussions.'
+        ],
+
+        [
+          'Meera',
+          'Designed the programme structure and content.'
+        ],
+
+        [
+          'Exposure',
+          'Meera has had very little senior-facing work this quarter.'
+        ]
+
+      ],
+
+      question:
+        'Who do you take into the room?',
+
+      actions:[
+
+        [
+          'Keep it familiar',
+          'Take Karan because he already knows the room.',
+          'The meeting is predictable and efficient.'
+        ],
+
+        [
+          'Create the opportunity',
+          'Take Meera and prepare her beforehand.',
+          'Meera gets direct exposure with support.'
+        ],
+
+        [
+          'Use both strengths',
+          'Take both and divide the conversation clearly.',
+          'The visible and technical contributions are both represented.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'12:02 PM',
+
+      title:'The work behind the work',
+
+      intro:
+        'Before lunch, leadership sends a simple question: “Who helped make this happen?”',
+
+      person:'arjun',
+
+      background:
+        'Karan presented the final output. Riya handled much of the coordination. Arjun rebuilt the reporting logic and solved two problems that could have delayed the review. Most of that work was invisible to leadership.',
+
+      message:
+        '“It was mostly just some backend work. Karan did the presentation.”',
+
+      info:[
+
+        [
+          'Visible part',
+          'Karan represented the work in the meeting.'
+        ],
+
+        [
+          'Execution',
+          'Riya managed the difficult coordination.'
+        ],
+
+        [
+          'Technical contribution',
+          'Arjun rebuilt the reporting logic.'
+        ]
+
+      ],
+
+      question:
+        'What do you say?',
+
+      actions:[
+
+        [
+          'Mention the presenter',
+          'Talk about Karan because he represented the final work.',
+          'Leadership hears about the most visible part of the project.'
+        ],
+
+        [
+          'Explain the contributions',
+          'Describe who contributed what.',
+          'The different pieces of work become visible.'
+        ],
+
+        [
+          'Keep it at team level',
+          'Thank the whole team without naming individuals.',
+          'The team receives collective recognition.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'01:08 PM',
+
+      title:'You need one person to own the next project',
+
+      intro:
+        'After lunch, a cross-functional HR project needs a clear owner by the end of the day.',
+
+      person:'karan',
+
+      background:
+        'Karan is the obvious safe choice: he knows the stakeholders and has delivered several visible projects. Riya and Arjun have the capability, but fewer chances to own a project from start to finish.',
+
+      message:
+        '“I can get this moving quickly. I already know the stakeholders.”',
+
+      info:[
+
+        [
+          'Karan',
+          'Strong stakeholder relationships.'
+        ],
+
+        [
+          'Riya',
+          'Strong execution and fewer end-to-end projects.'
+        ],
+
+        [
+          'Arjun',
+          'Strong analytical capability and limited project ownership.'
+        ]
+
+      ],
+
+      question:
+        'How do you approach the decision?',
+
+      actions:[
+
+        [
+          'Choose certainty',
+          'Ask Karan to take it.',
+          'The project starts with a proven owner.'
+        ],
+
+        [
+          'Use the project to build capability',
+          'Give someone else ownership with clear support and review points.',
+          'The project becomes both a delivery and development opportunity.'
+        ],
+
+        [
+          'Talk to the team first',
+          'Ask interested people about capacity and readiness before assigning it.',
+          'You bring more information into the decision.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'02:04 PM',
+
+      title:'The two cases look strangely similar',
+
+      intro:
+        'A process miss from this afternoon reminds you of one you handled earlier this month.',
+
+      person:'sonal',
+
+      background:
+        'A trusted high performer made the same validation mistake earlier and received an informal reminder. Sonal has now made a comparable error. Her issue was caught before any external impact.',
+
+      message:
+        '“I’ve fixed it. I just want to understand what you expect from me next time.”',
+
+      info:[
+
+        [
+          'Earlier case',
+          'The other employee was given an informal reminder.'
+        ],
+
+        [
+          'Current case',
+          'Sonal has made a comparable process miss.'
+        ],
+
+        [
+          'Impact',
+          'Neither issue created an external error.'
+        ]
+
+      ],
+
+      question:
+        'Before you respond, what do you do?',
+
+      actions:[
+
+        [
+          'Use your judgement',
+          'Handle Sonal’s case based on her overall track record.',
+          'You consider the individual context, but the earlier standard remains part of the story.'
+        ],
+
+        [
+          'Pause and compare',
+          'Check whether you would respond the same way in the earlier case.',
+          'You bring consistency into the decision before responding.'
+        ],
+
+        [
+          'Focus on the correction',
+          'Ask Sonal to fix it and move on.',
+          'The immediate issue is resolved.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'02:43 PM',
+
+      title:'Riya wants a clearer answer about growth',
+
+      intro:
+        'Riya stays back after a meeting and asks you a question she has been thinking about for some time.',
+
+      person:'riya',
+
+      background:
+        'Riya has delivered solid work, but much of it has been execution-heavy. She has asked more than once for broader exposure. Today she wants something more concrete than “keep performing”.',
+
+      message:
+        '“I’m not asking for a title. I just want to know what I need to demonstrate to be considered for bigger work.”',
+
+      info:[
+
+        [
+          'Recent delivery',
+          'Her last two projects were successful.'
+        ],
+
+        [
+          'Exposure',
+          'She has fewer senior-facing assignments than some peers.'
+        ],
+
+        [
+          'Previous feedback',
+          'She has been told she is dependable but needs more ownership.'
+        ]
+
+      ],
+
+      question:
+        'How do you take the conversation forward?',
+
+      actions:[
+
+        [
+          'Keep it broad',
+          'Tell her strong performance will bring opportunities.',
+          'The message is positive, but the next step stays vague.'
+        ],
+
+        [
+          'Make it practical',
+          'Discuss specific experiences and responsibilities she needs next.',
+          'Riya leaves with something concrete to work towards.'
+        ],
+
+        [
+          'Wait for the formal cycle',
+          'Ask her to revisit the question during the next talent discussion.',
+          'The formal process remains intact, but the immediate conversation is deferred.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'03:15 PM',
+
+      title:'Pooja could take this with support',
+
+      intro:
+        'One difficult piece of work is still unassigned. It needs patience and judgement, but not necessarily the most senior person.',
+
+      person:'pooja',
+
+      background:
+        'Vikram has done this type of work before and can complete it quickly. Pooja has been asking for more meaningful responsibility and has shown that she learns quickly when she is given a clear structure.',
+
+      message:
+        '“I’d like to try something bigger if you think there is a way I can handle it.”',
+
+      info:[
+
+        [
+          'Vikram',
+          'Six years of experience and strong judgement.'
+        ],
+
+        [
+          'Pooja',
+          'One-and-a-half years but quick to learn.'
+        ],
+
+        [
+          'Support',
+          'You can review the work midway through the week.'
+        ]
+
+      ],
+
+      question:
+        'What do you do?',
+
+      actions:[
+
+        [
+          'Give it to experience',
+          'Ask Vikram to take it.',
+          'The work is likely to move with very little supervision.'
+        ],
+
+        [
+          'Create a supported stretch',
+          'Give Pooja ownership with a clear review point.',
+          'Pooja gets meaningful exposure with a safety net.'
+        ],
+
+        [
+          'Give her a defined part',
+          'Let Pooja own one part while Vikram handles the rest.',
+          'You create some exposure without moving all the responsibility at once.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'03:48 PM',
+
+      title:'You notice who speaks first',
+
+      intro:
+        'During the afternoon team check-in, you notice something that has been happening for a while.',
+
+      person:'sonal',
+
+      background:
+        'Amit and Karan tend to speak first. Sonal, Meera and Arjun often contribute through preparation and follow-up. The meetings are still productive, so the pattern has not needed attention until now.',
+
+      message:
+        'Sonal listens while the discussion moves quickly to the next point.',
+
+      info:[
+
+        [
+          'Speaking pattern',
+          'Amit and Karan usually open discussions.'
+        ],
+
+        [
+          'Other contribution',
+          'Sonal and Arjun often prepare the supporting work.'
+        ],
+
+        [
+          'Recent example',
+          'Sonal’s process suggestion improved the last reporting cycle.'
+        ]
+
+      ],
+
+      question:
+        'What do you do with what you have noticed?',
+
+      actions:[
+
+        [
+          'Let the meeting flow',
+          'The discussion is moving, so leave the style alone.',
+          'The meeting remains efficient and the participation pattern continues.'
+        ],
+
+        [
+          'Create more space',
+          'Deliberately make room for quieter team members in important discussions.',
+          'More people get an opportunity to contribute visibly.'
+        ],
+
+        [
+          'Follow up later',
+          'Speak individually with quieter team members after the meeting.',
+          'You may hear useful views, although the meeting dynamic remains unchanged.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'04:20 PM',
+
+      title:'The contribution nobody saw',
+
+      intro:
+        'The afternoon ends with one more recognition note from leadership.',
+
+      person:'arjun',
+
+      background:
+        'Arjun solved a difficult reporting problem before the final review. Because the problem disappeared before the meeting, leadership never saw the work behind it. Karan presented the finished output.',
+
+      message:
+        '“It was just some backend work. I’m fine with Karan getting the credit for the presentation.”',
+
+      info:[
+
+        [
+          'Arjun',
+          'Solved the underlying reporting issue.'
+        ],
+
+        [
+          'Karan',
+          'Presented the finished output.'
+        ],
+
+        [
+          'Recognition',
+          'Arjun has not had public recognition this year.'
+        ]
+
+      ],
+
+      question:
+        'How do you respond?',
+
+      actions:[
+
+        [
+          'Mention the visible lead',
+          'Talk about Karan because he represented the work.',
+          'The most visible contribution is the one leadership hears about.'
+        ],
+
+        [
+          'Make the contribution visible',
+          'Explain the work Arjun did behind the result.',
+          'Leadership gets a fuller picture of how the outcome was achieved.'
+        ],
+
+        [
+          'Thank the whole team',
+          'Keep the response at team level.',
+          'The team is recognised collectively.'
+        ]
+
+      ]
+
+    },
+
+
+    {
+      time:'04:52 PM',
+
+      title:'Before you close the laptop',
+
+      intro:
+        'You start planning next month’s visible HR projects and something catches your eye.',
+
+      person:'meera',
+
+      background:
+        'A small group has handled most of the work that senior leaders see this quarter. They have delivered strongly. At the same time, Riya, Meera and Arjun have all asked for broader exposure.',
+
+      message:
+        'You look back across the last few months before making next month’s plan.',
+
+      info:[
+
+        [
+          'Amit',
+          'Consistent delivery and trusted with urgency.'
+        ],
+
+        [
+          'Karan',
+          'Strong stakeholder confidence and high visibility.'
+        ],
+
+        [
+          'Others',
+          'Good capability with fewer high-visibility assignments.'
+        ]
+
+      ],
+
+      question:
+        'What do you do next?',
+
+      actions:[
+
+        [
+          'Keep the pattern',
+          'Use the people who have consistently delivered.',
+          'The allocation remains familiar and low-risk.'
+        ],
+
+        [
+          'Review the pattern',
+          'Look back at who has already had which opportunities.',
+          'The history of opportunity allocation becomes part of the decision.'
+        ],
+
+        [
+          'Widen the mix',
+          'Plan visible ownership across a broader group.',
+          'The next month creates room for more people to demonstrate capability.'
+        ]
+
+      ]
+
+    }
+
+  ];
+
+
+  let participant = null;
+  let current = 0;
+
+  const answers = [];
+  const evidence = [];
+
+
+  /* =====================
+     NAVIGATION
+  ===================== */
 
   function go(id){
 
     document
       .querySelectorAll('.screen')
-      .forEach(s =>
-        s.classList.remove('active')
+      .forEach(
+        x =>
+          x.classList.remove('active')
       );
+
 
     $(id)
       .classList
       .add('active');
 
-    window.scrollTo(0,0);
+
+    window.scrollTo(
+      0,
+      0
+    );
 
   }
 
 
-  function showToast(text){
+  function toast(msg){
 
     const t =
       $('toast');
 
+
     t.textContent =
-      text;
+      msg;
 
-    t.style.opacity =
-      '1';
 
-    t.style.transform =
-      'translateY(0)';
+    t.classList
+      .add('show');
 
-    clearTimeout(window.__toast);
+
+    clearTimeout(
+      window.__toast
+    );
+
 
     window.__toast =
-      setTimeout(() => {
-
-        t.style.opacity =
-          '0';
-
-        t.style.transform =
-          'translateY(-12px)';
-
-      },2500);
+      setTimeout(
+        () =>
+          t.classList
+            .remove('show'),
+        2500
+      );
 
   }
 
 
-  /* ======================
-     TEAM RENDER
-  ====================== */
+  /* =====================
+     TEAM
+  ===================== */
 
   function renderTeam(){
 
-    $('teamGrid').innerHTML =
-      team.map((p,i) => `
+    $('peopleGrid').innerHTML =
 
-        <div
-          class="person-card"
-          data-id="${p.id}">
+      team
+        .map(
+          (x,i) => `
 
-          <div class="face">
-            ${faceSVG(i)}
-          </div>
+            <div
+              class="person-card"
+              data-id="${x.id}">
 
-          <div>
+              <div class="portrait">
+                ${faceSVG(i)}
+              </div>
 
-            <div class="person-name">
-              ${escape(p.name)}
+              <div>
+
+                <div class="person-name">
+                  ${escape(x.name)}
+                </div>
+
+                <div class="person-role">
+                  ${escape(x.role)}
+                  ·
+                  ${escape(x.years)}
+                </div>
+
+                <div class="person-desc">
+
+                  <strong>Known for:</strong>
+                  ${escape(x.known)}
+
+                  <br><br>
+
+                  <strong>Background:</strong>
+                  ${escape(x.history)}
+
+                  <br><br>
+
+                  <strong>Potential:</strong>
+                  ${escape(x.potential)}
+
+                </div>
+
+              </div>
+
             </div>
-
-            <div class="person-role">
-              ${escape(p.role)}
-              ·
-              ${escape(p.years)}
-            </div>
-
-            <div class="person-text">
-
-              <strong>Known for:</strong>
-              ${escape(p.known)}
-
-              <br><br>
-
-              <strong>Background:</strong>
-              ${escape(p.history)}
-
-              <br><br>
-
-              <strong>Potential:</strong>
-              ${escape(p.potential)}
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `).join('');
+          `
+        )
+        .join('');
 
 
     document
       .querySelectorAll('.person-card')
-      .forEach(card => {
-
-        card.addEventListener(
-          'click',
-          () =>
-            showProfile(
-              card.dataset.id
-            )
-        );
-
-      });
+      .forEach(
+        card =>
+          card.addEventListener(
+            'click',
+            () =>
+              showProfile(
+                card.dataset.id
+              )
+          )
+      );
 
 
     $('profileGrid').innerHTML =
-      team.map((p,i) => `
 
-        <div class="profile">
+      team
+        .map(
+          (x,i) => `
 
-          <div class="face">
-            ${faceSVG(i)}
-          </div>
+            <div class="profile">
 
-          <div>
+              <div class="portrait">
+                ${faceSVG(i)}
+              </div>
 
-            <div class="profile-name">
-              ${escape(p.name)}
+              <div>
+
+                <div class="profile-name">
+                  ${escape(x.name)}
+                </div>
+
+                <div class="profile-role">
+                  ${escape(x.role)}
+                  ·
+                  ${escape(x.years)}
+                </div>
+
+                <div class="profile-text">
+                  ${escape(x.known)}
+                  ${escape(x.potential)}
+                </div>
+
+              </div>
+
             </div>
 
-            <div class="profile-role">
-              ${escape(p.role)}
-            </div>
-
-            <div class="profile-text">
-              ${escape(p.potential)}
-            </div>
-
-          </div>
-
-        </div>
-
-      `).join('');
+          `
+        )
+        .join('');
 
   }
 
 
   function showProfile(id){
 
-    const p =
+    const x =
       person(id);
+
 
     const i =
       personIndex(id);
@@ -2428,67 +3580,83 @@ button{cursor:pointer}
     $('scenarioTime').textContent =
       'TEAM PROFILE';
 
+
     $('scenarioTitle').textContent =
-      p.name;
+      x.name;
+
 
     $('scenarioIntro').textContent =
-      `${p.role} · ${p.years}`;
+      `${x.role} · ${x.years}`;
+
 
     $('scenarioBackground').innerHTML =
-      `<strong>Known for:</strong> ${escape(p.known)}
+
+      `<strong>What you know about ${escape(x.name)}</strong>
+       ${escape(x.history)}
        <br><br>
-       <strong>Background:</strong> ${escape(p.history)}
-       <br><br>
-       <strong>Potential:</strong> ${escape(p.potential)}`;
+       <strong>Potential</strong>
+       ${escape(x.potential)}`;
+
 
     $('characterFace').innerHTML =
       faceSVG(i);
 
+
     $('characterName').textContent =
-      p.name;
+      x.name;
+
 
     $('characterRole').textContent =
-      p.role;
+      x.role;
+
 
     $('characterMessage').textContent =
-      p.known;
+      x.known;
+
 
     $('infoButtons').innerHTML =
       '';
 
+
     $('scenarioQuestion').textContent =
-      'A little more about them';
+      'A little more context';
+
 
     $('scenarioActions').innerHTML = `
 
       <div class="action">
 
         <div class="action-head">
-          Recent contribution
+          Role and experience
         </div>
 
         <div class="action-copy">
-          ${escape(p.history)}
+          ${escape(x.role)}
+          ·
+          ${escape(x.years)}
         </div>
 
       </div>
+
 
       <div class="action">
 
         <div class="action-head">
-          Future potential
+          What they are working towards
         </div>
 
         <div class="action-copy">
-          ${escape(p.potential)}
+          ${escape(x.potential)}
         </div>
 
       </div>
 
     `;
 
+
     $('followupHolder').innerHTML =
       '';
+
 
     $('scenarioOverlay')
       .classList
@@ -2497,678 +3665,47 @@ button{cursor:pointer}
   }
 
 
-  /* ======================
-     SCENARIOS
-  ====================== */
-
-  const scenarios = [
-
-    {
-      time:'09:06 AM',
-      title:'The first request of the week',
-      intro:'Your week has barely started when Riya catches you before the team check-in.',
-      person:'riya',
-      background:'Last month, Riya handled most of the coordination for a difficult HR project. The work was delivered well, but the senior conversations around it were largely handled by Amit and Karan. A new project is now about to begin.',
-      message:'“I would really like to be considered for the new project. I feel ready for something with a little more ownership.”',
-      info:[
-        ['Project history','Riya completed the last project ahead of schedule.'],
-        ['Recent exposure','Amit and Karan have had more leadership-facing assignments.'],
-        ['Previous ask','Riya had asked once before for broader exposure.']
-      ],
-      question:'How do you respond?',
-      actions:[
-        ['Keep it open','Tell her you will keep her in mind when the right opportunity comes up.','The conversation ends quickly. Riya knows you heard her, but the next step is still unclear.'],
-        ['Understand what she wants','Ask what kind of work she would like to take on and what she feels ready for.','You leave the conversation with a clearer picture of what Riya wants and where she may need support.'],
-        ['Explain how you usually choose','Tell her the visible projects normally go to people who have already done them.','Riya understands your logic, although she is unsure what she needs to do differently to get the next opportunity.']
-      ]
-    },
-
-    {
-      time:'09:48 AM',
-      title:'The person you always call',
-      intro:'A senior HR review needs a short pack before noon. There is not much time.',
-      person:'amit',
-      background:'Amit has prepared similar packs several times. He is quick, dependable and knows what senior leaders usually ask. Arjun has built much of the reporting behind previous packs, but has not owned one himself.',
-      message:'“I can take this. I already know what needs to go into it.”',
-      info:[
-        ['Amit','Has handled three similar assignments.'],
-        ['Arjun','Built the analytics behind two previous packs.'],
-        ['Today','Amit already has two urgent tasks.']
-      ],
-      question:'Who do you give the work to?',
-      actions:[
-        ['Go with experience','Give it to Amit so the deadline is protected.','The pack will probably move quickly, but another team member remains behind the scenes.'],
-        ['Create a stretch','Give Arjun the ownership and agree a quick review point.','Arjun gets an opportunity to own visible work, with a clear safety net.'],
-        ['Share the job','Ask Amit and Arjun to divide the work clearly.','The work moves quickly, while both people have visible responsibility.']
-      ]
-    },
-
-    {
-      time:'10:31 AM',
-      title:'A seat on the programme',
-      intro:'You receive one seat for an external development programme. Two people have expressed interest.',
-      person:'neha',
-      background:'Neha has been performing strongly and attended two external programmes last year. Meera has also been delivering well, but has had very little external development exposure this year.',
-      message:'“This one would actually help me move beyond pure hiring work. I would really like to attend.”',
-      info:[
-        ['Neha','Strong performance and two external programmes last year.'],
-        ['Meera','Strong delivery but limited external development this year.'],
-        ['Future role','Both may take on broader responsibilities next year.']
-      ],
-      question:'How do you decide?',
-      actions:[
-        ['Choose the strongest performer','Give the seat to the person currently performing strongest.','The decision is simple and performance-led, but previous development exposure is not considered.'],
-        ['Look at the wider picture','Consider role need, previous exposure and future responsibilities.','You make the decision using more than one piece of information.'],
-        ['Create a rotation principle','Use a clear approach so development opportunities do not depend on who asks first.','The immediate decision is made, and the basis can also guide future opportunities.']
-      ]
-    },
-
-    {
-      time:'11:18 AM',
-      title:'Who should present?',
-      intro:'A senior HR leader has offered a short meeting about a new capability initiative.',
-      person:'meera',
-      background:'Meera designed the core programme. Karan has represented the team in the last three senior conversations and is very comfortable in that setting. You only have one place in the meeting.',
-      message:'“I can take you through the design if you think it would help. I know the details well.”',
-      info:[
-        ['Karan','Has presented three times to senior leadership recently.'],
-        ['Meera','Built the programme structure and content.'],
-        ['Readiness','Meera has not yet presented at this level.']
-      ],
-      question:'Who do you take?',
-      actions:[
-        ['Take the familiar face','Take Karan because he already knows the stakeholders.','The meeting is predictable and efficient, but the exposure pattern stays largely unchanged.'],
-        ['Create an opportunity','Take Meera and spend time preparing her first.','Meera gets direct exposure and enters the meeting with context and support.'],
-        ['Share the room','Take both and clearly divide the discussion.','Both contribute, while the role of each person is visible.']
-      ]
-    },
-
-    {
-      time:'12:06 PM',
-      title:'The work behind the work',
-      intro:'The morning closes with a successful HR initiative. A leadership note asks who should be thanked.',
-      person:'arjun',
-      background:'Karan presented the final output. Riya managed much of the difficult coordination. Arjun rebuilt the reporting logic and solved two data problems that could have delayed the review.',
-      message:'“I was mostly helping with the data. The team did the rest.”',
-      info:[
-        ['Visible contribution','Karan represented the work in the meeting.'],
-        ['Execution','Riya managed the coordination.'],
-        ['Technical contribution','Arjun rebuilt the reporting logic.']
-      ],
-      question:'What do you include in your response?',
-      actions:[
-        ['Name the presenter','Mention Karan because he represented the final work.','Leadership hears about the visible role, while the supporting work remains less visible.'],
-        ['Explain the different contributions','Describe who contributed what.','Each person's role becomes clearer, including the work that happened behind the scenes.'],
-        ['Keep it team-level','Thank the whole team without naming anyone.','The team receives collective recognition, although individual contributions remain less differentiated.']
-      ]
-    },
-
-    {
-      time:'01:14 PM',
-      title:'A bigger piece of work',
-      intro:'After lunch, a cross-functional HR project needs one person to own the first phase.',
-      person:'karan',
-      background:'Karan is the obvious safe choice. He has strong stakeholder relationships and has delivered several visible projects. At the same time, Riya and Arjun have the capability but have had fewer chances to demonstrate ownership.',
-      message:'“I can get this moving quickly. I already know the stakeholders.”',
-      info:[
-        ['Karan','Strong stakeholder relationships and proven delivery.'],
-        ['Riya','Strong execution, fewer end-to-end projects.'],
-        ['Arjun','Strong analytical capability, limited project ownership.']
-      ],
-      question:'What is your approach?',
-      actions:[
-        ['Choose certainty','Ask Karan to take it.','The project starts quickly, using someone with a strong track record.'],
-        ['Use it to build capability','Give ownership to someone who has the capability but less exposure, with support.','The project becomes both a delivery opportunity and a development opportunity.'],
-        ['Talk to the team first','Ask interested people about capacity and readiness before deciding.','You bring more information into the decision before assigning ownership.']
-      ]
-    },
-
-    {
-      time:'02:02 PM',
-      title:'The same mistake',
-      intro:'You notice two similar process errors from different points in the month.',
-      person:'sonal',
-      background:'An employee you rely on heavily made the same validation mistake earlier and received an informal reminder. Sonal has now made a comparable mistake. Her error was caught before the report left the team.',
-      message:'“I have fixed it. I just want to understand what you would like me to do differently next time.”',
-      info:[
-        ['Earlier case','The other employee was given an informal reminder.'],
-        ['Current case','Sonal's error was caught before external impact.'],
-        ['History','Sonal has had one previous process miss.']
-      ],
-      question:'Before you respond, what do you do?',
-      actions:[
-        ['Use the full context','Handle Sonal’s case based on her overall track record.','You consider the individual context, but the standard used in the earlier case remains relevant.'],
-        ['Check your standard','Pause and consider whether you would respond the same way in both cases.','You bring consistency into your decision before deciding the response.'],
-        ['Focus only on correction','Ask Sonal to fix it and move on.','The immediate issue is resolved, but the broader pattern is left unexplored.']
-      ]
-    },
-
-    {
-      time:'02:41 PM',
-      title:'“What do I need to do?”',
-      intro:'Riya stays back after a meeting and asks a more difficult question about her growth.',
-      person:'riya',
-      background:'Riya has delivered solid work, but much of it has been execution-heavy. She has asked more than once for broader exposure and is now looking for something more concrete than general encouragement.',
-      message:'“I’m not asking for a title. I just want to know what I need to demonstrate to be considered for bigger work.”',
-      info:[
-        ['Recent delivery','Her last two projects were completed successfully.'],
-        ['Exposure','She has fewer leadership-facing assignments than Amit and Karan.'],
-        ['Previous feedback','She has been told she is dependable but needs more ownership.']
-      ],
-      question:'How do you take the conversation forward?',
-      actions:[
-        ['Keep it general','Tell her strong performance will bring opportunities.','The message is positive, but Riya leaves without a clear next step.'],
-        ['Make it practical','Discuss specific experiences and responsibilities she needs next.','Riya leaves with something concrete to work toward.'],
-        ['Wait for the formal cycle','Ask her to revisit the question during the next talent discussion.','The formal process remains intact, but the immediate development conversation is deferred.']
-      ]
-    },
-
-    {
-      time:'03:18 PM',
-      title:'The difficult assignment',
-      intro:'One piece of challenging work remains for the week. It needs judgement and patience rather than seniority.',
-      person:'vikram',
-      background:'Vikram has handled difficult work before and can probably take this without much supervision. Pooja has asked for more meaningful work and has shown strong learning speed, but has not owned something similar end-to-end.',
-      message:'“I can take it if you want a safe pair of hands.”',
-      info:[
-        ['Vikram','Six years of experience and strong judgement.'],
-        ['Pooja','One-and-a-half years, but fast learning and strong follow-through.'],
-        ['Support','You can review the work midway through the week.']
-      ],
-      question:'What is your approach?',
-      actions:[
-        ['Give it to experience','Ask Vikram to take it.','The work is likely to move with minimal supervision.'],
-        ['Create a supported stretch','Give Pooja ownership with a clear review point.','Pooja gets a meaningful stretch while you retain visibility on the work.'],
-        ['Give her one part','Let Pooja own a defined part while Vikram handles the rest.','You create some exposure without transferring the entire risk.']
-      ]
-    },
-
-    {
-      time:'03:52 PM',
-      title:'Who gets heard?',
-      intro:'During your team check-in, you notice a pattern that you had not paid much attention to before.',
-      person:'sonal',
-      background:'Amit and Karan tend to speak first. Sonal, Meera and Arjun often contribute through preparation and follow-up. The meetings still get the job done, but you realise visibility and participation are not necessarily the same thing.',
-      message:'Sonal listens quietly while the discussion moves ahead.',
-      info:[
-        ['Speaking pattern','Amit and Karan usually open discussions.'],
-        ['Contribution pattern','Several quieter team members do significant preparation.'],
-        ['Recent example','Sonal’s process suggestion improved the reporting cycle.']
-      ],
-      question:'What do you do with what you have noticed?',
-      actions:[
-        ['Let the meeting flow','The discussion is moving, so leave the style alone.','The meeting remains efficient and the existing participation pattern continues.'],
-        ['Create more space','Deliberately invite quieter members into important discussions.','More people get an opportunity to contribute visibly.'],
-        ['Follow up later','Speak individually with quieter team members after the meeting.','You may hear useful views, although the meeting dynamic itself remains unchanged.']
-      ]
-    },
-
-    {
-      time:'04:20 PM',
-      title:'The contribution nobody saw',
-      intro:'A senior leader sends one final message asking who helped solve a reporting issue.',
-      person:'arjun',
-      background:'Arjun rebuilt the reporting logic behind a difficult HR dashboard. Karan presented the finished dashboard. The issue was invisible to leadership because Arjun solved it before the presentation.',
-      message:'“It was only some backend cleanup. Karan did the presentation.”',
-      info:[
-        ['Arjun','Solved the underlying reporting issue.'],
-        ['Karan','Presented the finished output.'],
-        ['Recognition','Arjun has not received public recognition this year.']
-      ],
-      question:'How do you respond?',
-      actions:[
-        ['Mention the presenter','Talk about Karan because he represented the work.','Leadership hears about the visible role, while the technical contribution remains less visible.'],
-        ['Make the contribution visible','Explain that Arjun solved the underlying issue.','The contribution behind the visible output becomes part of the story.'],
-        ['Thank everyone','Keep the response at team level.','The team is recognised collectively without distinguishing the individual work.']
-      ]
-    },
-
-    {
-      time:'04:47 PM',
-      title:'One last planning decision',
-      intro:'Before you close your laptop, you start planning the visible HR projects for next month.',
-      person:'meera',
-      background:'You look back and realise that a small group has handled most of the work senior leaders see. They have delivered strongly. At the same time, Riya, Meera and Arjun have all asked for broader exposure.',
-      message:'You pause at your desk. There is no urgent deadline forcing you to decide immediately.',
-      info:[
-        ['Amit','Consistent delivery and trusted with urgency.'],
-        ['Karan','Strong stakeholder confidence and high visibility.'],
-        ['Riya / Meera / Arjun','Good capability with fewer high-visibility assignments.']
-      ],
-      question:'What do you do next?',
-      actions:[
-        ['Continue the pattern','Use the people who have consistently delivered.','The allocation remains low-risk and familiar.'],
-        ['Review the pattern','Look back at who has already had which opportunities.','You bring the history of opportunity allocation into your decision.'],
-        ['Widen the mix','Plan visible ownership across a broader group.','The next month creates room for more people to demonstrate capability.']
-      ]
-    }
-
-  ];
-
-
-  /* ======================
-     STATE
-  ====================== */
-
-  let currentScenario =
-    0;
-
-  const answers = [];
-  const informationViewed = [];
-
-
-  /* ======================
-     START PARTICIPANT
-  ====================== */
-
-  $('participantForm')
-    .addEventListener(
-      'submit',
-      e => {
-
-        e.preventDefault();
-
-        const name =
-          $('name').value.trim();
-
-        const employeeId =
-          $('employeeId').value.trim();
-
-        const email =
-          $('email').value.trim();
-
-
-        if(
-          !name ||
-          !employeeId ||
-          !email
-        ){
-
-          $('error').textContent =
-            'Please complete all three fields.';
-
-          return;
-        }
-
-
-        $('error').textContent =
-          '';
-
-
-        window.participant = {
-          name,
-          employeeId,
-          email
-        };
-
-
-        $('storyText').textContent =
-          `${name}, you lead a team of nine HR professionals. They have different strengths, different histories and different ambitions. Over the week, a series of ordinary management moments will come across your desk. Respond as you would in real life.`;
-
-        go('storyScreen');
-
-      }
-    );
-
-
-  /* ======================
-     TEAM
-  ====================== */
-
-  $('meetTeamBtn')
-    .addEventListener(
-      'click',
-      () => {
-
-        renderTeam();
-
-        go('teamScreen');
-
-      }
-    );
-
-
-  /* ======================
+  /* =====================
      WORKDAY
-  ====================== */
+  ===================== */
 
-  $('enterDeskBtn')
-    .addEventListener(
-      'click',
-      () => {
+  function startWorkday(){
 
-        $('workUser').textContent =
-          window.participant.name;
+    current = 0;
 
-        $('sideName').textContent =
-          window.participant.name;
+    answers.length = 0;
 
-        $('firstName').textContent =
-          window.participant.name
-            .split(/\s+/)[0];
-
-        $('managerFace').innerHTML =
-          faceSVG(0);
-
-        updateMeter();
-
-        go('workScreen');
-
-        setTimeout(
-          () => pulseScenario(0),
-          700
-        );
-
-      }
-    );
+    evidence.length = 0;
 
 
-  function pulseScenario(i){
-
-    const s =
-      scenarios[i];
-
-    const p =
-      person(s.person);
-
-    $('officeBubble').textContent =
-      `${p.name} has sent you a message`;
-
-    $('officeBubble')
-      .classList
-      .remove('show');
-
-    void $('officeBubble').offsetWidth;
-
-    $('officeBubble')
-      .classList
-      .add('show');
+    $('workUser').textContent =
+      participant.name;
 
 
-    $('messagePerson').textContent =
-      p.name;
-
-    $('messageText').textContent =
-      s.message;
-
-    $('nextTitle').textContent =
-      s.title;
-
-    $('nextCopy').textContent =
-      s.intro;
-
-    $('workClock').textContent =
-      s.time;
+    $('sideName').textContent =
+      participant.name;
 
 
-    showToast(
-      `NEW MESSAGE · ${s.time}`
-    );
+    $('firstName').textContent =
+      participant.name
+        .split(/\s+/)[0];
+
+
+    $('managerAvatar').innerHTML =
+      faceSVG(0);
+
+
+    updateMeter();
+
+
+    go('workScreen');
 
 
     setTimeout(
-      () => showScenario(i),
-      900
+      () =>
+        pulse(0),
+      650
     );
-
-  }
-
-
-  /* ======================
-     SCENARIO
-  ====================== */
-
-  function showScenario(i){
-
-    currentScenario =
-      i;
-
-    const s =
-      scenarios[i];
-
-    const p =
-      person(s.person);
-
-    const pi =
-      personIndex(s.person);
-
-
-    $('scenarioTime').textContent =
-      `${s.time} · THE DESK`;
-
-    $('scenarioTitle').textContent =
-      s.title;
-
-    $('scenarioIntro').textContent =
-      s.intro;
-
-    $('scenarioBackground').innerHTML =
-      `<strong>Here's what is happening.</strong>
-       ${escape(s.background)}`;
-
-
-    $('characterFace').innerHTML =
-      faceSVG(pi);
-
-    $('characterName').textContent =
-      p.name;
-
-    $('characterRole').textContent =
-      `${p.role} · ${p.years}`;
-
-    $('characterMessage').textContent =
-      s.message;
-
-
-    $('scenarioQuestion').textContent =
-      s.question;
-
-
-    $('followupHolder').innerHTML =
-      '';
-
-
-    const info =
-      $('infoButtons');
-
-    info.innerHTML =
-      '';
-
-
-    s.info.forEach(
-      (item,j) => {
-
-        const b =
-          document.createElement('button');
-
-        b.type =
-          'button';
-
-        b.textContent =
-          `⌕ ${item[0]}`;
-
-        b.addEventListener(
-          'click',
-          () => {
-
-            informationViewed.push({
-              scenario:i,
-              item:item[0],
-              timestamp:new Date().toISOString()
-            });
-
-            showToast(
-              `${item[0]} · ${item[1]}`
-            );
-
-          }
-        );
-
-        info.appendChild(b);
-
-      }
-    );
-
-
-    const actions =
-      $('scenarioActions');
-
-    actions.innerHTML =
-      '';
-
-
-    s.actions.forEach(
-      (action,j) => {
-
-        const b =
-          document.createElement('button');
-
-        b.type =
-          'button';
-
-        b.className =
-          'action';
-
-        b.innerHTML = `
-          <div class="action-head">
-            ${String.fromCharCode(65+j)}.
-            ${escape(action[0])}
-          </div>
-
-          <div class="action-copy">
-            ${escape(action[1])}
-          </div>
-        `;
-
-
-        b.addEventListener(
-          'click',
-          () => choose(
-            i,
-            j
-          )
-        );
-
-
-        actions.appendChild(b);
-
-      }
-    );
-
-
-    $('scenarioOverlay')
-      .classList
-      .add('show');
-
-  }
-
-
-  function choose(i,j){
-
-    const s =
-      scenarios[i];
-
-    const p =
-      person(s.person);
-
-
-    answers.push({
-
-      scenario:
-        s.title,
-
-      person:
-        p.name,
-
-      selectedAction:
-        s.actions[j][0],
-
-      informationViewed:
-        informationViewed.filter(
-          x =>
-            x.scenario === i
-        ),
-
-      timestamp:
-        new Date().toISOString()
-
-    });
-
-
-    $('scenarioActions')
-      .innerHTML =
-      '';
-
-
-    $('scenarioQuestion')
-      .textContent =
-      'A little later…';
-
-
-    $('followupHolder').innerHTML = `
-
-      <div class="followup">
-
-        <div class="followup-label">
-          What happens next
-        </div>
-
-        <h3>
-          The day moves on.
-        </h3>
-
-        <p>
-          ${escape(s.actions[j][2])}
-        </p>
-
-        <button id="continueBtn">
-          CONTINUE →
-        </button>
-
-      </div>
-
-    `;
-
-
-    $('continueBtn')
-      .addEventListener(
-        'click',
-        () => {
-
-          $('scenarioOverlay')
-            .classList
-            .remove('show');
-
-          updateMeter();
-
-
-          const next =
-            i + 1;
-
-
-          if(
-            next <
-            scenarios.length
-          ){
-
-            setTimeout(
-              () =>
-                pulseScenario(next),
-              500
-            );
-
-          }else{
-
-            setTimeout(
-              () =>
-                go('endScreen'),
-              600
-            );
-
-          }
-
-        }
-      );
 
   }
 
@@ -3192,16 +3729,467 @@ button{cursor:pointer}
   }
 
 
-  /* ======================
-     POPUPS
-  ====================== */
+  function pulse(i){
+
+    const s =
+      scenarios[i];
+
+
+    const x =
+      person(
+        s.person
+      );
+
+
+    $('workClock').textContent =
+      s.time;
+
+
+    $('messagePerson').textContent =
+      x.name;
+
+
+    $('messageText').textContent =
+      s.message;
+
+
+    $('nextTitle').textContent =
+      s.title;
+
+
+    $('nextCopy').textContent =
+      s.intro;
+
+
+    $('officeBubble').textContent =
+      `${x.name} has sent you a message`;
+
+
+    $('officeBubble')
+      .classList
+      .remove('show');
+
+
+    void
+      $('officeBubble')
+        .offsetWidth;
+
+
+    $('officeBubble')
+      .classList
+      .add('show');
+
+
+    toast(
+      `NEW MESSAGE · ${s.time}`
+    );
+
+
+    setTimeout(
+      () =>
+        showScenario(i),
+      850
+    );
+
+  }
+
+
+  /* =====================
+     SCENARIO
+  ===================== */
+
+  function showScenario(i){
+
+    current = i;
+
+
+    const s =
+      scenarios[i];
+
+
+    const x =
+      person(
+        s.person
+      );
+
+
+    const idx =
+      personIndex(
+        s.person
+      );
+
+
+    $('scenarioTime').textContent =
+      `${s.time} · THE DESK`;
+
+
+    $('scenarioTitle').textContent =
+      s.title;
+
+
+    $('scenarioIntro').textContent =
+      s.intro;
+
+
+    $('scenarioBackground').innerHTML =
+      `<strong>Here's what is happening.</strong>
+       ${escape(s.background)}`;
+
+
+    $('characterFace').innerHTML =
+      faceSVG(idx);
+
+
+    $('characterName').textContent =
+      x.name;
+
+
+    $('characterRole').textContent =
+      `${x.role} · ${x.years}`;
+
+
+    $('characterMessage').textContent =
+      s.message;
+
+
+    $('scenarioQuestion').textContent =
+      s.question;
+
+
+    $('followupHolder').innerHTML =
+      '';
+
+
+    $('infoButtons').innerHTML =
+      '';
+
+
+    s.info.forEach(
+      (item) => {
+
+        const b =
+          document.createElement(
+            'button'
+          );
+
+
+        b.type =
+          'button';
+
+
+        b.textContent =
+          '⌕ ' + item[0];
+
+
+        b.addEventListener(
+          'click',
+          () => {
+
+            evidence.push({
+
+              scenario:i,
+
+              item:item[0],
+
+              time:
+                new Date()
+                  .toISOString()
+
+            });
+
+
+            toast(
+              `${item[0]} · ${item[1]}`
+            );
+
+          }
+        );
+
+
+        $('infoButtons')
+          .appendChild(b);
+
+      }
+    );
+
+
+    $('scenarioActions')
+      .innerHTML =
+      '';
+
+
+    s.actions.forEach(
+      (a,j) => {
+
+        const b =
+          document.createElement(
+            'button'
+          );
+
+
+        b.type =
+          'button';
+
+
+        b.className =
+          'action';
+
+
+        b.innerHTML = `
+
+          <div class="action-head">
+            ${String.fromCharCode(65+j)}.
+            ${escape(a[0])}
+          </div>
+
+          <div class="action-copy">
+            ${escape(a[1])}
+          </div>
+
+        `;
+
+
+        b.addEventListener(
+          'click',
+          () =>
+            choose(
+              i,
+              j
+            )
+        );
+
+
+        $('scenarioActions')
+          .appendChild(b);
+
+      }
+    );
+
+
+    $('scenarioOverlay')
+      .classList
+      .add('show');
+
+  }
+
+
+  function choose(i,j){
+
+    const s =
+      scenarios[i];
+
+
+    const x =
+      person(
+        s.person
+      );
+
+
+    answers.push({
+
+      scenario:
+        s.title,
+
+      person:
+        x.name,
+
+      choice:
+        s.actions[j][0],
+
+      informationViewed:
+        evidence.filter(
+          e =>
+            e.scenario === i
+        ),
+
+      timestamp:
+        new Date()
+          .toISOString()
+
+    });
+
+
+    $('scenarioActions')
+      .innerHTML =
+      '';
+
+
+    $('scenarioQuestion').textContent =
+      'A little later…';
+
+
+    $('followupHolder').innerHTML = `
+
+      <div class="followup">
+
+        <div class="followup-label">
+          The day moves on
+        </div>
+
+        <h3>
+          One conversation leads into another.
+        </h3>
+
+        <p>
+          ${escape(
+            s.actions[j][2]
+          )}
+        </p>
+
+        <button
+          id="continueBtn">
+          CONTINUE →
+        </button>
+
+      </div>
+
+    `;
+
+
+    $('continueBtn')
+      .addEventListener(
+        'click',
+        () => {
+
+          $('scenarioOverlay')
+            .classList
+            .remove('show');
+
+
+          updateMeter();
+
+
+          const next =
+            i + 1;
+
+
+          if(
+            next <
+            scenarios.length
+          ){
+
+            setTimeout(
+              () =>
+                pulse(next),
+              500
+            );
+
+          }else{
+
+            setTimeout(
+              () =>
+                go('endScreen'),
+              650
+            );
+
+          }
+
+        }
+      );
+
+  }
+
+
+  /* =====================
+     EVENT BINDINGS
+  ===================== */
+
+  $('participantForm')
+    .addEventListener(
+      'submit',
+      e => {
+
+        e.preventDefault();
+
+
+        const name =
+          $('pName')
+            .value
+            .trim();
+
+
+        const employeeId =
+          $('pId')
+            .value
+            .trim();
+
+
+        const email =
+          $('pEmail')
+            .value
+            .trim();
+
+
+        if(
+          !name ||
+          !employeeId ||
+          !email
+        ){
+
+          $('formError')
+            .textContent =
+            'Please complete all three fields.';
+
+
+          return;
+
+        }
+
+
+        $('formError')
+          .textContent =
+          '';
+
+
+        participant = {
+
+          name,
+
+          employeeId,
+
+          email
+
+        };
+
+
+        $('storyText')
+          .textContent =
+          `${name}, you lead a team of nine HR professionals. They have different strengths, different histories and different ambitions. Over the next few days, ordinary management moments will come across your desk.`;
+
+
+
+        go('storyScreen');
+
+      }
+    );
+
+
+  $('meetTeamBtn')
+    .addEventListener(
+      'click',
+      () => {
+
+        renderTeam();
+
+        go('teamScreen');
+
+      }
+    );
+
+
+  $('enterDeskBtn')
+    .addEventListener(
+      'click',
+      startWorkday
+    );
+
 
   $('messageCard')
     .addEventListener(
       'click',
       () =>
         showScenario(
-          currentScenario
+          current
         )
     );
 
@@ -3211,7 +4199,7 @@ button{cursor:pointer}
       'click',
       () =>
         showScenario(
-          currentScenario
+          current
         )
     );
 
@@ -3267,7 +4255,9 @@ button{cursor:pointer}
 
 
   document
-    .querySelectorAll('.overlay')
+    .querySelectorAll(
+      '.overlay'
+    )
     .forEach(
       overlay => {
 
@@ -3292,9 +4282,9 @@ button{cursor:pointer}
     );
 
 
-  /* ======================
-     SAVE RECORD
-  ====================== */
+  /* =====================
+     SAVE
+  ===================== */
 
   $('saveBtn')
     .addEventListener(
@@ -3309,17 +4299,16 @@ button{cursor:pointer}
           version:
             'V8',
 
-          participant:
-            window.participant,
+          participant,
 
           completedAt:
-            new Date().toISOString(),
+            new Date()
+              .toISOString(),
 
           responses:
             answers,
 
-          informationViewed:
-            informationViewed
+          evidence
 
         };
 
@@ -3357,7 +4346,7 @@ button{cursor:pointer}
 
 
         a.download =
-          `manager-desk-${window.participant.employeeId}-${Date.now()}.json`;
+          `manager-desk-${participant.employeeId}-${Date.now()}.json`;
 
 
         document
@@ -3366,6 +4355,7 @@ button{cursor:pointer}
 
 
         a.click();
+
 
         a.remove();
 
