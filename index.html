@@ -1,1280 +1,1854 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>The Manager's Desk — HR Team Simulation</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Manager's Desk</title>
 <style>
-  :root{
-    --ink:#1d2430;
-    --muted:#6e7683;
-    --soft:#f6f7f9;
-    --line:#e5e8ed;
-    --paper:#fff;
-    --accent:#1f5f66;
-    --accent2:#0f3f45;
-    --warm:#c8893a;
-    --shadow:0 18px 50px rgba(25,35,45,.08);
-    --radius:18px;
-  }
-
-  *{box-sizing:border-box}
-
-  body{
-    margin:0;
-    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-    background:#eef1f3;
-    color:var(--ink)
-  }
-
-  button,input{font:inherit}
-  button{cursor:pointer}
-
-  .app{min-height:100vh}
-
-  .topbar{
-    height:72px;
-    background:rgba(255,255,255,.95);
-    backdrop-filter:blur(16px);
-    border-bottom:1px solid var(--line);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 30px;
-    position:sticky;
-    top:0;
-    z-index:30
-  }
-
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:13px;
-    font-weight:700;
-    letter-spacing:.2px
-  }
-
-  .brand-mark{
-    width:35px;
-    height:35px;
-    border-radius:10px;
-    background:linear-gradient(145deg,var(--accent),#24444a);
-    display:grid;
-    place-items:center;
-    color:#fff;
-    font-size:13px;
-    box-shadow:0 8px 18px rgba(31,95,102,.2)
-  }
-
-  .top-meta{
-    display:flex;
-    gap:20px;
-    align-items:center;
-    color:var(--muted);
-    font-size:13px
-  }
-
-  .chip{
-    padding:7px 11px;
-    border:1px solid var(--line);
-    background:#fafbfc;
-    border-radius:99px
-  }
-
-  .screen{
-    max-width:1220px;
-    margin:0 auto;
-    padding:42px 28px 72px
-  }
-
-  .hidden{display:none!important}
-
-  .fade-in{
-    animation:fadeIn .45s ease both
-  }
-
-  @keyframes fadeIn{
-    from{
-      opacity:0;
-      transform:translateY(8px)
-    }
-    to{
-      opacity:1;
-      transform:none
-    }
-  }
-
-  .login-wrap{
-    min-height:calc(100vh - 72px);
-    display:grid;
-    place-items:center;
-    padding:34px
-  }
-
-  .login-card{
-    width:min(740px,100%);
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:28px;
-    box-shadow:var(--shadow);
-    overflow:hidden
-  }
-
-  .login-hero{
-    padding:44px 46px 30px;
-    background:linear-gradient(
-      135deg,
-      #153e43 0%,
-      #245d62 62%,
-      #d8e3e2 160%
-    );
-    color:#fff
-  }
-
-  .login-hero .eyebrow{
-    color:rgba(255,255,255,.7)
-  }
-
-  .eyebrow{
-    text-transform:uppercase;
-    letter-spacing:.15em;
-    font-size:11px;
-    font-weight:700;
-    color:var(--muted);
-    margin-bottom:12px
-  }
-
-  h1,h2,h3,p{
-    margin-top:0
-  }
-
-  h1{
-    font-size:44px;
-    line-height:1.04;
-    letter-spacing:-.045em;
-    margin-bottom:15px
-  }
-
-  .login-hero p{
-    max-width:580px;
-    color:rgba(255,255,255,.83);
-    font-size:16px;
-    line-height:1.65;
-    margin-bottom:0
-  }
-
-  .login-form{
-    padding:32px 46px 42px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px
-  }
-
-  .field{
-    display:flex;
-    flex-direction:column;
-    gap:8px
-  }
-
-  .field.full{
-    grid-column:1/-1
-  }
-
-  label{
-    font-size:12px;
-    font-weight:700;
-    color:#4e5866
-  }
-
-  input{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid #d9dde3;
-    border-radius:12px;
-    background:#fff;
-    outline:none;
-    transition:border .2s,box-shadow .2s
-  }
-
-  input:focus{
-    border-color:var(--accent);
-    box-shadow:0 0 0 4px rgba(31,95,102,.08)
-  }
-
-  .primary{
-    border:0;
-    background:var(--accent);
-    color:#fff;
-    border-radius:12px;
-    padding:13px 18px;
-    font-weight:700;
-    transition:.2s;
-    box-shadow:0 10px 22px rgba(31,95,102,.17)
-  }
-
-  .primary:hover{
-    transform:translateY(-1px);
-    background:var(--accent2)
-  }
-
-  .secondary{
-    border:1px solid var(--line);
-    background:#fff;
-    color:var(--ink);
-    border-radius:12px;
-    padding:12px 16px;
-    font-weight:650
-  }
-
-  .login-actions{
-    grid-column:1/-1;
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-    padding-top:8px
-  }
-
-  .disclaimer{
-    font-size:11px;
-    color:#8a919b;
-    line-height:1.5;
-    grid-column:1/-1
-  }
-
-  .intro{
-    display:grid;
-    grid-template-columns:1.3fr .7fr;
-    gap:24px;
-    align-items:stretch;
-    margin-top:18px
-  }
-
-  .intro-copy,
-  .intro-visual{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow)
-  }
-
-  .intro-copy{
-    padding:44px
-  }
-
-  .intro-copy h2{
-    font-size:38px;
-    letter-spacing:-.035em;
-    line-height:1.08;
-    margin-bottom:18px
-  }
-
-  .intro-copy p{
-    font-size:16px;
-    line-height:1.78;
-    color:#505a68;
-    max-width:750px
-  }
-
-  .quote{
-    margin:28px 0 0;
-    padding:20px 22px;
-    border-left:4px solid var(--warm);
-    background:#fbf8f2;
-    color:#3c4148;
-    border-radius:0 12px 12px 0;
-    line-height:1.7
-  }
-
-  .intro-visual{
-    padding:22px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    background:linear-gradient(155deg,#f5f9f9,#eff2f1)
-  }
-
-  .desk-window{
-    height:100%;
-    border-radius:14px;
-    background:#fff;
-    border:1px solid #dfe4e6;
-    padding:16px;
-    position:relative;
-    overflow:hidden
-  }
-
-  .window-bar{
-    display:flex;
-    gap:6px;
-    margin-bottom:16px
-  }
-
-  .dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#d7dadd
-  }
-
-  .dot:first-child{background:#e5b0a8}
-  .dot:nth-child(2){background:#e8d19e}
-  .dot:nth-child(3){background:#a7c9bf}
-
-  .fake-line{
-    height:9px;
-    border-radius:99px;
-    background:#e8ecee;
-    margin-bottom:9px
-  }
-
-  .fake-line.w1{width:72%}
-  .fake-line.w2{width:45%}
-  .fake-line.w3{width:88%}
-  .fake-line.w4{width:62%}
-
-  .sticky-note{
-    position:absolute;
-    right:26px;
-    bottom:27px;
-    width:170px;
-    padding:14px;
-    background:#fbf6e9;
-    border:1px solid #ece1c9;
-    box-shadow:0 8px 18px rgba(34,30,19,.08);
-    transform:rotate(-2deg);
-    font-size:12px;
-    line-height:1.5
-  }
-
-  .team-head{
-    display:flex;
-    align-items:end;
-    justify-content:space-between;
-    margin:42px 0 18px
-  }
-
-  .team-head h2{
-    font-size:27px;
-    letter-spacing:-.03em;
-    margin:0
-  }
-
-  .team-head p{
-    margin:0;
-    color:var(--muted);
-    font-size:14px
-  }
-
-  .team-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px
-  }
-
-  .person{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:17px;
-    display:grid;
-    grid-template-columns:68px 1fr;
-    gap:14px;
-    align-items:start;
-    transition:.2s;
-    min-height:130px
-  }
-
-  .person:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 30px rgba(30,38,47,.06)
-  }
-
-  .portrait{
-    width:68px;
-    height:68px;
-    border-radius:50%;
-    overflow:hidden;
-    background:#eceeef;
-    border:3px solid #fff;
-    box-shadow:0 7px 15px rgba(0,0,0,.08)
-  }
-
-  .person h3{
-    font-size:15px;
-    margin:2px 0 4px
-  }
-
-  .role{
-    font-size:12px;
-    color:var(--accent);
-    font-weight:700;
-    margin-bottom:9px
-  }
-
-  .person p{
-    font-size:12px;
-    color:var(--muted);
-    line-height:1.55;
-    margin:0
-  }
-
-  .continue-row{
-    display:flex;
-    justify-content:flex-end;
-    margin-top:20px
-  }
-
-  .workspace{
-    display:grid;
-    grid-template-columns:250px minmax(0,1fr);
-    gap:20px;
-    align-items:start
-  }
-
-  .side{
-    position:sticky;
-    top:93px;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:16px;
-    box-shadow:0 8px 25px rgba(23,32,42,.05)
-  }
-
-  .side-title{
-    font-size:11px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    font-weight:800;
-    color:#8c949f;
-    margin:4px 8px 12px
-  }
-
-  .day{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    padding:11px 10px;
-    border-radius:11px;
-    color:#64707d;
-    margin-bottom:4px;
-    font-size:13px
-  }
-
-  .day.active{
-    background:#eef5f5;
-    color:var(--accent);
-    font-weight:750
-  }
-
-  .day .n{
-    width:24px;
-    height:24px;
-    border-radius:7px;
-    background:#f0f2f4;
-    display:grid;
-    place-items:center;
-    font-size:11px;
-    font-weight:800
-  }
-
-  .day.active .n{
-    background:var(--accent);
-    color:#fff
-  }
-
-  .private-note{
-    margin-top:14px;
-    padding:12px;
-    border-top:1px solid var(--line);
-    font-size:11px;
-    color:#7b838e;
-    line-height:1.55
-  }
-
-  .desk{
-    min-width:0
-  }
-
-  .status{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:15px;
-    padding:13px 16px;
-    margin-bottom:15px
-  }
-
-  .status-left{
-    display:flex;
-    gap:10px;
-    align-items:center
-  }
-
-  .status-time{
-    font-weight:800
-  }
-
-  .status-context{
-    color:var(--muted);
-    font-size:13px
-  }
-
-  .status-right{
-    display:flex;
-    gap:8px;
-    align-items:center
-  }
-
-  .pill{
-    padding:6px 10px;
-    background:#f7f8f9;
-    border-radius:99px;
-    font-size:11px;
-    color:#68717d;
-    border:1px solid #eef0f2
-  }
-
-  .scene{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:20px;
-    box-shadow:var(--shadow);
-    overflow:hidden
-  }
-
-  .scene-head{
-    padding:26px 30px 20px;
-    border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#fff,#fbfcfc)
-  }
-
-  .scene-head h2{
-    font-size:29px;
-    letter-spacing:-.035em;
-    line-height:1.12;
-    margin-bottom:9px
-  }
-
-  .scene-head p{
-    font-size:14px;
-    color:#596270;
-    line-height:1.7;
-    margin:0;
-    max-width:930px
-  }
-
-  .feed{
-    padding:24px 30px 28px;
-    display:flex;
-    flex-direction:column;
-    gap:16px
-  }
-
-  .message{
-    display:grid;
-    grid-template-columns:42px minmax(0,1fr);
-    gap:11px;
-    align-items:start
-  }
-
-  .message .mini{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    overflow:hidden;
-    background:#eee;
-    border:2px solid #fff;
-    box-shadow:0 3px 9px rgba(0,0,0,.08)
-  }
-
-  .bubble{
-    background:#f7f8f9;
-    border:1px solid #eaedf0;
-    border-radius:0 15px 15px 15px;
-    padding:13px 15px;
-    line-height:1.65;
-    font-size:13px;
-    color:#414a56;
-    max-width:840px
-  }
-
-  .bubble .meta{
-    font-size:10px;
-    color:#8a929d;
-    margin-bottom:5px;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    font-weight:800
-  }
-
-  .bubble.important{
-    background:#f6f3ed;
-    border-color:#eee2cf
-  }
-
-  .bubble.manager{
-    background:#edf5f5;
-    border-color:#d8e7e7;
-    margin-left:auto;
-    border-radius:15px 0 15px 15px
-  }
-
-  .message.manager{
-    grid-template-columns:minmax(0,1fr) 42px
-  }
-
-  .message.manager .mini{
-    grid-column:2
-  }
-
-  .message.manager .bubble{
-    grid-column:1;
-    grid-row:1
-  }
-
-  .info-row{
-    display:flex;
-    gap:9px;
-    flex-wrap:wrap;
-    margin:4px 0 2px 53px
-  }
-
-  .info-btn{
-    background:#fff;
-    border:1px solid #dde2e5;
-    border-radius:10px;
-    padding:9px 12px;
-    font-size:11px;
-    color:#51606a;
-    font-weight:700
-  }
-
-  .info-btn:hover{
-    border-color:#bfc9cd;
-    background:#fafcfc
-  }
-
-  .decision-box{
-    margin-top:8px;
-    padding:22px;
-    background:#fcfcfd;
-    border-top:1px solid var(--line)
-  }
-
-  .decision-box h3{
-    font-size:17px;
-    margin-bottom:7px
-  }
-
-  .decision-box .hint{
-    font-size:12px;
-    color:#7c8490;
-    line-height:1.55;
-    margin-bottom:15px
-  }
-
-  .choices{
-    display:grid;
-    gap:9px
-  }
-
-  .choice{
-    position:relative;
-    border:1px solid #dfe3e7;
-    border-radius:12px;
-    background:#fff;
-    padding:13px 15px;
-    text-align:left;
-    color:#39424c;
-    font-size:13px;
-    line-height:1.55;
-    transition:.2s
-  }
-
-  .choice:hover{
-    border-color:#aebbc0;
-    box-shadow:0 6px 18px rgba(34,43,51,.05)
-  }
-
-  .choice.selected{
-    border-color:var(--accent);
-    background:#eef5f5;
-    box-shadow:0 0 0 3px rgba(31,95,102,.06)
-  }
-
-  .choice small{
-    display:block;
-    color:#88909b;
-    font-size:10px;
-    margin-top:5px
-  }
-
-  .decision-footer{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:16px
-  }
-
-  .note{
-    font-size:11px;
-    color:#828a94
-  }
-
-  .consequence{
-    margin:18px 30px 28px;
-    padding:18px 20px;
-    border:1px solid #e4e8ea;
-    border-radius:14px;
-    background:linear-gradient(180deg,#fbfcfc,#f7f9f9);
-    display:none
-  }
-
-  .consequence.show{
-    display:block;
-    animation:fadeIn .35s ease both
-  }
-
-  .consequence h4{
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    color:#77818b;
-    margin-bottom:8px
-  }
-
-  .consequence p{
-    font-size:13px;
-    line-height:1.7;
-    color:#434c56;
-    margin:0
-  }
-
-  .next-row{
-    display:flex;
-    justify-content:flex-end;
-    margin-top:13px
-  }
-
-  .candidate-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-top:14px
-  }
-
-  .candidate{
-    border:1px solid #dfe3e7;
-    border-radius:15px;
-    background:#fff;
-    padding:14px;
-    text-align:left
-  }
-
-  .candidate-top{
-    display:flex;
-    gap:10px;
-    align-items:center
-  }
-
-  .candidate .portrait{
-    width:46px;
-    height:46px
-  }
-
-  .candidate h4{
-    margin:0 0 2px;
-    font-size:14px
-  }
-
-  .candidate .role{
-    margin:0;
-    font-size:10px
-  }
-
-  .candidate p{
-    font-size:11px;
-    color:#717a86;
-    line-height:1.55;
-    margin:12px 0 0
-  }
-
-  .candidate button{
-    margin-top:12px;
-    width:100%;
-    padding:9px;
-    border:1px solid #dce1e4;
-    background:#fff;
-    border-radius:9px;
-    font-size:11px;
-    font-weight:750;
-    color:#42515a
-  }
-
-  .candidate button:hover{
-    background:#f7f9f9
-  }
-
-  .evidence{
-    padding:15px;
-    border:1px dashed #cfd7da;
-    background:#fafcfc;
-    border-radius:13px;
-    margin-top:15px;
-    display:none
-  }
-
-  .evidence.show{
-    display:block;
-    animation:fadeIn .35s ease both
-  }
-
-  .evidence h4{
-    font-size:12px;
-    margin-bottom:7px
-  }
-
-  .evidence ul{
-    margin:0;
-    padding-left:17px;
-    color:#616b76;
-    font-size:11px;
-    line-height:1.7
-  }
-
-  .modal{
-    position:fixed;
-    inset:0;
-    background:rgba(19,27,33,.43);
-    backdrop-filter:blur(5px);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:22px;
-    z-index:60
-  }
-
-  .modal.show{
-    display:flex
-  }
-
-  .modal-card{
-    width:min(650px,100%);
-    background:#fff;
-    border-radius:20px;
-    border:1px solid #e1e5e7;
-    box-shadow:0 30px 80px rgba(0,0,0,.2);
-    overflow:hidden
-  }
-
-  .modal-head{
-    padding:18px 20px;
-    border-bottom:1px solid var(--line);
-    display:flex;
-    justify-content:space-between;
-    align-items:center
-  }
-
-  .modal-head h3{
-    margin:0;
-    font-size:16px
-  }
-
-  .close{
-    border:0;
-    background:#f4f5f6;
-    width:31px;
-    height:31px;
-    border-radius:9px
-  }
-
-  .modal-body{
-    padding:21px;
-    font-size:13px;
-    line-height:1.75;
-    color:#525d68
-  }
-
-  .done{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:20px;
-    box-shadow:var(--shadow);
-    padding:48px;
-    max-width:850px;
-    margin:58px auto 0;
-    text-align:center
-  }
-
-  .done h2{
-    font-size:37px;
-    letter-spacing:-.04em
-  }
-
-  .done p{
-    color:#67717c;
-    line-height:1.75;
-    max-width:650px;
-    margin:0 auto 24px
-  }
-
-  .done .meta-box{
-    background:#f6f8f8;
-    border:1px solid #e0e7e7;
-    border-radius:14px;
-    padding:15px;
-    text-align:left;
-    margin:0 auto 20px;
-    max-width:580px;
-    font-size:12px;
-    color:#5f6873
-  }
-
-  .download{
-    display:inline-flex;
-    gap:8px;
-    align-items:center
-  }
-
-  @media(max-width:950px){
-    .intro{grid-template-columns:1fr}
-    .team-grid{grid-template-columns:1fr 1fr}
-    .workspace{grid-template-columns:1fr}
-    .side{
-      position:static;
-      display:flex;
-      gap:4px;
-      overflow:auto
-    }
-    .side-title,.private-note{display:none}
-    .day{min-width:125px}
-  }
-
-  @media(max-width:680px){
-    .topbar{padding:0 16px}
-    .top-meta{display:none}
-    .screen{padding:24px 14px 50px}
-    .login-form{
-      grid-template-columns:1fr;
-      padding:26px
-    }
-    .login-hero{padding:32px 26px}
-    .login-hero h1{font-size:34px}
-    .intro-copy{padding:29px}
-    .intro-copy h2{font-size:31px}
-    .team-grid,.candidate-grid{grid-template-columns:1fr}
-    .scene-head,.feed{
-      padding-left:18px;
-      padding-right:18px
-    }
-    .info-row{margin-left:0}
-    .consequence{
-      margin-left:18px;
-      margin-right:18px
-    }
-    .status{
-      gap:10px;
-      align-items:flex-start
-    }
-    .status-context{display:none}
-    .decision-footer{
-      gap:8px;
-      align-items:flex-end;
-      flex-direction:column
-    }
-  }
+:root{
+  --navy:#10253a;
+  --navy2:#17324d;
+  --blue:#2f6bff;
+  --teal:#14a7a0;
+  --mint:#e2f7f4;
+  --amber:#f1a63a;
+  --coral:#e66b61;
+  --ink:#17212b;
+  --muted:#6b7785;
+  --paper:#ffffff;
+  --mist:#eef3f6;
+  --line:#dfe7ed;
+  --shadow:0 18px 50px rgba(16,37,58,.12);
+  --shadow2:0 8px 28px rgba(16,37,58,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  padding:0;
+  background:#eaf0f4;
+  color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh;overflow-x:hidden}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:80;
+  height:68px;
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  backdrop-filter:blur(16px)
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-weight:800;
+  letter-spacing:.1px
+}
+.brandMark{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:linear-gradient(145deg,var(--blue),var(--teal));
+  font-size:11px;
+  box-shadow:0 7px 18px rgba(47,107,255,.24)
+}
+.topInfo{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+.liveDot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#27b47c;
+  box-shadow:0 0 0 5px rgba(39,180,124,.1);
+  animation:pulse 2s infinite
+}
+@keyframes pulse{
+  50%{
+    box-shadow:0 0 0 9px rgba(39,180,124,0)
+  }
+}
+.topName{
+  font-size:12px;
+  color:#5b6875
+}
+.topPill{
+  padding:7px 10px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:10px;
+  color:#6d7883;
+  background:#fafcfd
+}
+.screen{
+  max-width:1260px;
+  margin:0 auto;
+  padding:34px 24px 70px
+}
+.card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow)
+}
+.btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  padding:11px 15px;
+  border-radius:11px;
+  font-weight:750;
+  transition:.18s;
+  box-shadow:0 4px 10px rgba(20,30,40,.03)
+}
+.btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(20,30,40,.08)
+}
+.btn.primary{
+  background:var(--navy);
+  border-color:var(--navy);
+  color:#fff
+}
+.btn.primary:hover{
+  background:#0c1d2d
+}
+.btn.accent{
+  background:linear-gradient(135deg,var(--blue),#4b86ff);
+  border-color:transparent;
+  color:#fff
+}
+.btn.small{
+  padding:8px 10px;
+  font-size:11px
+}
+.eyebrow{
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-size:10px;
+  font-weight:850;
+  color:#778390
+}
+h1,h2,h3,h4,p{margin-top:0}
+h1{
+  font-size:52px;
+  line-height:1;
+  letter-spacing:-.05em
+}
+h2{
+  font-size:35px;
+  line-height:1.04;
+  letter-spacing:-.04em
+}
+h3{font-size:19px}
+p{line-height:1.72}
+
+/* LOGIN */
+.loginWrap{
+  min-height:calc(100vh - 68px);
+  display:grid;
+  place-items:center;
+  padding:34px 18px
+}
+.loginCard{
+  width:min(980px,100%);
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  overflow:hidden
+}
+.loginVisual{
+  min-height:530px;
+  padding:38px;
+  background:
+   radial-gradient(circle at 72% 18%,rgba(47,107,255,.32),transparent 32%),
+   radial-gradient(circle at 20% 75%,rgba(20,167,160,.28),transparent 32%),
+   linear-gradient(150deg,#0d2033,#14324f 58%,#1c5e64);
+  color:#fff;
+  position:relative;
+  overflow:hidden
+}
+.loginVisual h1{
+  max-width:520px;
+  margin:20px 0 14px
+}
+.loginVisual p{
+  color:rgba(255,255,255,.79);
+  max-width:540px
+}
+.visualBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;
+  font-size:10px
+}
+.visualDesk{
+  position:absolute;
+  right:-18px;
+  bottom:-25px;
+  width:63%;
+  height:48%;
+  border-radius:28px 28px 0 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.16)
+}
+.visualScreen{
+  position:absolute;
+  right:10%;
+  bottom:20%;
+  width:45%;
+  height:36%;
+  border-radius:13px;
+  background:#f9fbfc;
+  border:6px solid #d0d7dc;
+  box-shadow:0 20px 55px rgba(0,0,0,.28);
+  overflow:hidden
+}
+.vsTop{
+  height:20px;
+  background:#e7ecef;
+  display:flex;
+  gap:5px;
+  align-items:center;
+  padding-left:8px
+}
+.vsDot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#c6ced3
+}
+.vsBody{padding:12px}
+.vsBar{
+  height:8px;
+  background:#e8edf0;
+  border-radius:99px;
+  margin-bottom:7px
+}
+.vsBar.a{width:78%}
+.vsBar.b{width:56%}
+.vsBar.c{width:89%}
+.vsBar.d{width:66%}
+.phone{
+  position:absolute;
+  left:8%;
+  bottom:8%;
+  width:92px;
+  height:160px;
+  border-radius:18px;
+  background:#1d2630;
+  border:5px solid #3b4650;
+  transform:rotate(-8deg);
+  box-shadow:0 16px 36px rgba(0,0,0,.28)
+}
+.phone::before{
+  content:"";
+  position:absolute;
+  left:13px;
+  right:13px;
+  top:15px;
+  height:110px;
+  border-radius:9px;
+  background:linear-gradient(180deg,#dce8ea,#f6f7f9)
+}
+.phone::after{
+  content:"";
+  position:absolute;
+  left:33px;
+  right:33px;
+  bottom:10px;
+  height:5px;
+  border-radius:99px;
+  background:#6b7882
+}
+.loginForm{
+  padding:42px 38px;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-bottom:14px
+}
+.field label{
+  font-size:11px;
+  font-weight:800;
+  color:#586574
+}
+.field input{
+  padding:12px 13px;
+  border:1px solid #d5dde4;
+  border-radius:10px;
+  outline:none
+}
+.field input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(47,107,255,.08)
+}
+.loginFoot{
+  margin-top:9px;
+  display:flex;
+  justify-content:flex-end
+}
+.loginHint{
+  font-size:10px;
+  color:#89939e;
+  line-height:1.55;
+  margin-top:14px
+}
+
+/* OPENING */
+.opening{
+  display:grid;
+  grid-template-columns:1.02fr .98fr;
+  gap:18px
+}
+.storyPanel{padding:42px 44px}
+.storyPanel p{
+  color:#596572;
+  max-width:700px
+}
+.officePanel{
+  padding:16px;
+  min-height:430px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#dfe9ed,#eff5f6 56%,#d5e1e6)
+}
+.officeScene{
+  position:relative;
+  height:100%;
+  min-height:398px;
+  border-radius:15px;
+  background:linear-gradient(180deg,#eaf4f5,#e9edef 68%,#d9dad6);
+  overflow:hidden;
+  border:1px solid #d5dfe3
+}
+.sun{
+  position:absolute;
+  right:12%;
+  top:9%;
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  background:rgba(244,201,117,.55);
+  filter:blur(2px)
+}
+.windowLarge{
+  position:absolute;
+  right:5%;
+  top:7%;
+  width:48%;
+  height:47%;
+  border:7px solid #d5dfe4;
+  background:linear-gradient(180deg,#b6dce5,#d9eff1);
+  border-radius:10px
+}
+.windowLarge::before,
+.windowLarge::after{
+  content:"";
+  position:absolute;
+  background:#d5dfe4
+}
+.windowLarge::before{
+  top:0;
+  bottom:0;
+  width:7px;
+  left:49%
+}
+.windowLarge::after{
+  left:0;
+  right:0;
+  height:7px;
+  top:51%
+}
+.plant{
+  position:absolute;
+  right:61%;
+  bottom:15%;
+  width:54px;
+  height:100px
+}
+.plant::before{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:12px;
+  width:30px;
+  height:28px;
+  background:#b67b4a;
+  border-radius:5px 5px 12px 12px
+}
+.plant::after{
+  content:"";
+  position:absolute;
+  bottom:24px;
+  left:0;
+  width:54px;
+  height:76px;
+  background:
+  radial-gradient(circle at 50% 30%,#4d8f71 0 13px,transparent 14px),
+  radial-gradient(circle at 22% 53%,#5b9b78 0 12px,transparent 13px),
+  radial-gradient(circle at 75% 52%,#47836a 0 13px,transparent 14px)
+}
+.deskSurface{
+  position:absolute;
+  left:6%;
+  bottom:15%;
+  width:67%;
+  height:24px;
+  background:#8b6c54;
+  border-radius:6px;
+  box-shadow:0 11px 0 #765940
+}
+.monitor{
+  position:absolute;
+  left:18%;
+  bottom:30%;
+  width:32%;
+  height:30%;
+  background:#2d3f4d;
+  border:7px solid #75828a;
+  border-radius:11px;
+  box-shadow:0 18px 30px rgba(31,48,61,.24)
+}
+.monitor::before{
+  content:"";
+  position:absolute;
+  left:7%;
+  right:7%;
+  top:8%;
+  bottom:10%;
+  border-radius:5px;
+  background:linear-gradient(180deg,#dbe9ea 0 22%,#f8fbfb 22% 100%),#fff
+}
+.keyboard{
+  position:absolute;
+  left:22%;
+  bottom:25%;
+  width:24%;
+  height:13px;
+  background:#c2cbce;
+  border-radius:4px
+}
+.coffee{
+  position:absolute;
+  left:57%;
+  bottom:26%;
+  width:32px;
+  height:33px;
+  border-radius:7px;
+  background:#f7eee4;
+  border:3px solid #bda78d
+}
+.clockBig{
+  position:absolute;
+  left:5%;
+  top:5%;
+  background:rgba(255,255,255,.9);
+  padding:8px 10px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:850;
+  box-shadow:var(--shadow2)
+}
+.floatNote{
+  position:absolute;
+  left:59%;
+  top:61%;
+  padding:11px 13px;
+  background:#fff;
+  border:1px solid #dfe7ea;
+  border-radius:11px;
+  box-shadow:var(--shadow2);
+  font-size:10px;
+  animation:floatIn .7s ease both
+}
+.floatNote b{
+  display:block;
+  color:var(--navy);
+  margin-bottom:3px
+}
+@keyframes floatIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
+}
+
+/* INTRO */
+.teamIntro{padding:34px}
+.introGrid{
+  display:grid;
+  grid-template-columns:230px 1fr;
+  gap:26px;
+  align-items:center
+}
+.portraitLarge{
+  width:230px;
+  height:270px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow2);
+  background:#e9eff2
+}
+.portraitLarge img,
+.portrait img{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+.personName{
+  font-size:37px;
+  letter-spacing:-.04em;
+  margin:7px 0 4px
+}
+.gradeLine{
+  font-size:12px;
+  color:#5e6974;
+  font-weight:700
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin:18px 0
+}
+.stat{
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fafcfd
+}
+.stat span{
+  display:block;
+  font-size:9px;
+  color:#84909a;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800;
+  margin-bottom:5px
+}
+.stat b{font-size:14px}
+.cueGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px
+}
+.cue{
+  padding:12px 13px;
+  background:#f6f9fa;
+  border-left:3px solid #c5d9dc;
+  border-radius:0 10px 10px 0
+}
+.cue span{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8a959e;
+  font-weight:800;
+  display:block;
+  margin-bottom:4px
+}
+.cue p{
+  font-size:11px;
+  color:#596570;
+  margin:0;
+  line-height:1.55
+}
+.introBottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:19px
+}
+
+/* TEAM MORNING */
+.teamLive{padding:30px}
+.morningStage{
+  min-height:370px;
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #d5e0e4;
+  background:
+    radial-gradient(circle at 75% 13%,rgba(244,199,117,.28),transparent 22%),
+    linear-gradient(160deg,#e5eef0,#f4f5f4 60%,#dce2df)
+}
+.morningFloor{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:95px;
+  background:#d4d5d0
+}
+.morningDesk{
+  position:absolute;
+  left:15%;
+  bottom:78px;
+  width:70%;
+  height:20px;
+  background:#8d6a4d;
+  border-radius:5px
+}
+.staff{
+  position:absolute;
+  bottom:98px;
+  width:95px;
+  text-align:center;
+  animation:arrive .7s ease both
+}
+.staffFace{
+  width:62px;
+  height:62px;
+  margin:auto;
+  border-radius:50%;
+  overflow:hidden;
+  border:3px solid #fff;
+  box-shadow:0 8px 15px rgba(20,30,38,.12)
+}
+.staffName{
+  font-size:10px;
+  font-weight:800;
+  margin-top:6px
+}
+.staffRole{
+  font-size:8px;
+  color:#7a858d
+}
+.s1{left:8%;animation-delay:.05s}
+.s2{left:24%;animation-delay:.18s}
+.s3{left:40%;animation-delay:.31s}
+.s4{left:56%;animation-delay:.44s}
+.s5{left:72%;animation-delay:.57s}
+.s6{left:82%;animation-delay:.7s}
+@keyframes arrive{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:none}
+}
+.morningFeed{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px
+}
+.morningMsg{
+  padding:12px 13px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#fff
+}
+.morningMsg b{font-size:11px}
+.morningMsg p{
+  font-size:11px;
+  color:#63707a;
+  margin:4px 0 0
+}
+
+/* SIM */
+.teamBar{
+  position:sticky;
+  top:79px;
+  z-index:35;
+  display:flex;
+  gap:6px;
+  align-items:center;
+  padding:7px 9px;
+  margin-bottom:12px;
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:15px;
+  box-shadow:var(--shadow2);
+  overflow-x:auto;
+  scrollbar-width:none
+}
+.teamBar::-webkit-scrollbar{display:none}
+.teamLabel{
+  padding:0 7px;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#87919a;
+  font-weight:900;
+  white-space:nowrap
+}
+.teamPill{
+  border:0;
+  background:#fff;
+  padding:5px 7px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  white-space:nowrap
+}
+.teamPill:hover{background:#eef5f5}
+.teamThumb{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  overflow:hidden;
+  border:1px solid #dae2e5
+}
+.teamPill b{
+  display:block;
+  font-size:10px;
+  text-align:left
+}
+.teamPill small{
+  display:block;
+  font-size:8px;
+  color:#818b94;
+  text-align:left
+}
+.simLayout{
+  display:grid;
+  grid-template-columns:185px minmax(0,1fr) 225px;
+  gap:12px;
+  align-items:start
+}
+.leftNav,
+.activityPanel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:15px;
+  box-shadow:var(--shadow2)
+}
+.leftNav{
+  position:sticky;
+  top:145px;
+  padding:12px
+}
+.navTitle{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#87919a;
+  font-weight:900;
+  margin:4px 7px 9px
+}
+.navItem{
+  padding:10px 9px;
+  border-radius:9px;
+  font-size:11px;
+  color:#65717d;
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+.navItem.active{
+  background:#edf4fb;
+  color:var(--blue);
+  font-weight:800
+}
+.navIcon{
+  width:22px;
+  height:22px;
+  border-radius:7px;
+  background:#f0f3f5;
+  display:grid;
+  place-items:center;
+  font-size:10px
+}
+.activityPanel{
+  position:sticky;
+  top:145px;
+  padding:12px;
+  max-height:calc(100vh - 170px);
+  overflow:auto
+}
+.actTitle{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#87919a;
+  font-weight:900;
+  margin:4px 7px 10px
+}
+.activityItem{
+  padding:10px 8px;
+  border-bottom:1px solid #eef1f3
+}
+.activityItem:last-child{border-bottom:0}
+.activityItem b{font-size:10px}
+.activityItem span{
+  display:block;
+  font-size:9px;
+  color:#7d8892;
+  margin-top:3px;
+  line-height:1.45
+}
+.workArea{min-width:0}
+.clockBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 13px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:11px;
+  margin-bottom:11px
+}
+.clockMain{
+  font-size:13px;
+  font-weight:850
+}
+.clockSub{
+  font-size:10px;
+  color:#7d8790
+}
+.liveBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:9px;
+  color:#41715c
+}
+.liveBadge .liveDot{
+  width:7px;
+  height:7px
+}
+
+/* EVENT */
+.eventWindow{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden
+}
+.eventHero{
+  min-height:175px;
+  padding:26px 27px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#132941,#21435e 65%,#26777a);
+  color:#fff
+}
+.eventHero::after{
+  content:"";
+  position:absolute;
+  right:-60px;
+  top:-95px;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.14),transparent 68%)
+}
+.eventHero .eyebrow{
+  color:rgba(255,255,255,.62)
+}
+.eventHero h2{
+  margin:8px 0 9px;
+  max-width:790px
+}
+.eventHero p{
+  font-size:12px;
+  color:rgba(255,255,255,.8);
+  max-width:840px;
+  margin:0
+}
+.eventContent{padding:21px 26px}
+.contextStrip{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-bottom:14px
+}
+.contextChip{
+  padding:7px 9px;
+  border-radius:999px;
+  background:#f3f6f8;
+  border:1px solid #e3eaee;
+  font-size:9px;
+  color:#697580
+}
+.message{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:10px;
+  align-items:start;
+  margin-bottom:13px
+}
+.msgFace{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid #fff;
+  box-shadow:0 5px 12px rgba(18,30,40,.1)
+}
+.bubble{
+  padding:12px 14px;
+  background:#f6f8f9;
+  border:1px solid #e3e8eb;
+  border-radius:0 13px 13px 13px;
+  max-width:820px
+}
+.msgMeta{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8a949d;
+  font-weight:800;
+  margin-bottom:5px
+}
+.bubble p{
+  font-size:12px;
+  color:#46535f;
+  margin:0
+}
+.notice{
+  padding:13px 14px;
+  background:#f4f8fb;
+  border:1px solid #dae7f1;
+  border-radius:11px;
+  margin-bottom:13px;
+  font-size:11px;
+  line-height:1.6;
+  color:#5f6b75
+}
+.notice b{color:var(--navy)}
+.recordMiniGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:12px 0 15px
+}
+.recordMini{
+  padding:10px;
+  border:1px solid #e5e9ec;
+  border-radius:10px;
+  background:#fafbfc
+}
+.recordMini span{
+  display:block;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8b959e;
+  font-weight:800;
+  margin-bottom:4px
+}
+.recordMini b{font-size:11px}
+.evidenceRow{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:12px 0 15px
+}
+.evidenceBtn{
+  border:1px solid #dfe6ea;
+  background:#fff;
+  border-radius:11px;
+  padding:11px;
+  text-align:left;
+  transition:.18s
+}
+.evidenceBtn:hover{
+  border-color:#b9c7ce;
+  background:#f8fbfc
+}
+.evidenceBtn b{
+  font-size:10px;
+  display:block
+}
+.evidenceBtn span{
+  font-size:9px;
+  color:#84909a;
+  display:block;
+  margin-top:3px
+}
+.decisionBlock{
+  border-top:1px solid var(--line);
+  padding-top:17px;
+  margin-top:12px
+}
+.decisionBlock h3{
+  margin-bottom:5px;
+  font-size:16px
+}
+.decisionHint{
+  font-size:10px;
+  color:#7d8892;
+  line-height:1.55;
+  margin-bottom:11px
+}
+.choiceGrid{
+  display:grid;
+  gap:8px
+}
+.choice{
+  border:1px solid #dce3e8;
+  background:#fff;
+  border-radius:11px;
+  padding:12px 13px;
+  text-align:left;
+  transition:.15s
+}
+.choice:hover{
+  border-color:#b9c8d1;
+  background:#fafcfd
+}
+.choice.selected{
+  border-color:var(--blue);
+  background:#eef4ff;
+  box-shadow:0 0 0 3px rgba(47,107,255,.06)
+}
+.choice strong{
+  display:block;
+  font-size:11px;
+  margin-bottom:4px
+}
+.choice span{
+  font-size:10px;
+  line-height:1.55;
+  color:#7a858e
+}
+.actionRow{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:12px
+}
+.carry{
+  padding:15px 16px;
+  background:#f8fafb;
+  border-top:1px solid var(--line);
+  display:none
+}
+.carry.show{
+  display:block;
+  animation:rise .35s ease
+}
+.carry .eyebrow{margin-bottom:5px}
+.carry p{
+  font-size:11px;
+  color:#596671;
+  line-height:1.6;
+  margin:0
+}
+@keyframes rise{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+
+/* MODAL */
+.modalBack{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(11,21,31,.48);
+  backdrop-filter:blur(6px);
+  display:none;
+  place-items:center;
+  padding:20px
+}
+.modalBack.show{display:grid}
+.modal{
+  width:min(820px,100%);
+  max-height:88vh;
+  overflow:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 35px 90px rgba(0,0,0,.22)
+}
+.modalHead{
+  padding:15px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between
+}
+.modalHead h3{
+  margin:0;
+  font-size:14px
+}
+.close{
+  width:31px;
+  height:31px;
+  border:0;
+  background:#f1f4f5;
+  border-radius:8px
+}
+.modalBody{padding:18px}
+.profileTop{
+  display:flex;
+  gap:13px;
+  align-items:center;
+  margin-bottom:16px
+}
+.profilePhoto{
+  width:64px;
+  height:64px;
+  border-radius:13px;
+  overflow:hidden
+}
+.profileName{
+  font-size:18px;
+  margin:0 0 2px
+}
+.profileGrade{
+  font-size:10px;
+  color:#77828c
+}
+.profileGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:15px
+}
+.profileBlock{
+  border:1px solid #e4e9ec;
+  border-radius:10px;
+  padding:11px;
+  background:#fafbfc
+}
+.profileBlock span{
+  display:block;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8b949d;
+  font-weight:800;
+  margin-bottom:4px
+}
+.profileBlock b{font-size:11px}
+.sectionHead{
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#808b95;
+  font-weight:900;
+  margin:15px 0 8px
+}
+.tbl{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10px
+}
+.tbl td,.tbl th{
+  padding:7px 6px;
+  border-bottom:1px solid #edf0f2;
+  text-align:left
+}
+.tbl th{
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:#8c969f
+}
+.noteBox{
+  padding:11px;
+  background:#f6f9fa;
+  border-radius:10px;
+  border:1px solid #e4eaed;
+  font-size:10px;
+  line-height:1.55;
+  color:#5f6b75
+}
+
+/* REPORT */
+.reportHeader{
+  padding:34px;
+  background:linear-gradient(135deg,#132a42,#20516b 63%,#1e7877);
+  color:#fff;
+  border-radius:18px
+}
+.reportHeader h2{margin:7px 0 8px}
+.reportHeader p{
+  color:rgba(255,255,255,.82);
+  font-size:12px;
+  max-width:760px;
+  margin:0
+}
+.reportGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:11px;
+  margin-top:15px
+}
+.repCard{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  box-shadow:var(--shadow2)
+}
+.repLabel{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.11em;
+  color:#818c95;
+  font-weight:900
+}
+.repLevel{
+  font-size:15px;
+  font-weight:850;
+  margin:8px 0 6px;
+  color:var(--navy)
+}
+.bar{
+  height:7px;
+  background:#edf1f3;
+  border-radius:999px;
+  overflow:hidden;
+  margin:8px 0 10px
+}
+.bar i{
+  display:block;
+  height:100%;
+  width:50%;
+  background:linear-gradient(90deg,var(--teal),var(--blue));
+  border-radius:999px
+}
+.repCard p{
+  font-size:10px;
+  color:#626e79;
+  line-height:1.62;
+  margin:0
+}
+.pattern{
+  margin-top:14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:var(--shadow2)
+}
+.pattern h3{margin:5px 0 7px}
+.pattern p{
+  font-size:11px;
+  color:#5f6c77;
+  line-height:1.65
+}
+.evidenceReport{
+  display:grid;
+  gap:8px;
+  margin-top:10px
+}
+.evidenceItem{
+  padding:11px 12px;
+  border:1px solid #e5eaed;
+  border-radius:10px;
+  background:#fafcfc;
+  font-size:10px;
+  color:#586672
+}
+.reportFoot{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:15px
+}
+
+/* TOASTS */
+.toastStack{
+  position:fixed;
+  right:17px;
+  bottom:17px;
+  z-index:120;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  pointer-events:none
+}
+.toast{
+  min-width:260px;
+  max-width:340px;
+  padding:12px 13px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 18px 44px rgba(16,37,58,.16);
+  animation:toastIn .28s ease;
+  pointer-events:auto
+}
+.toastTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px
+}
+.toastTop b{font-size:10px}
+.toastTime{
+  font-size:8px;
+  color:#929aa3
+}
+.toast p{
+  font-size:10px;
+  color:#66727c;
+  line-height:1.5;
+  margin:4px 0 0
+}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(18px)}
+  to{opacity:1;transform:none}
+}
+.notificationRail{
+  position:fixed;
+  left:20px;
+  top:90px;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  pointer-events:none
+}
+.liveNotif{
+  pointer-events:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:0 15px 35px rgba(17,28,38,.12);
+  border-radius:12px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  animation:dropIn .38s ease;
+  max-width:305px
+}
+.liveNotif .miniCircle{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  overflow:hidden
+}
+.liveNotif b{font-size:10px}
+.liveNotif span{
+  display:block;
+  font-size:9px;
+  color:#79838c;
+  margin-top:2px
+}
+@keyframes dropIn{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:none}
+}
+
+/* RESPONSIVE */
+@media(max-width:1080px){
+ .simLayout{
+   grid-template-columns:160px minmax(0,1fr)
+ }
+ .activityPanel{display:none}
+ .leftNav{top:145px}
+ .reportGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+ .loginCard{grid-template-columns:1fr}
+ .loginVisual{min-height:410px}
+ .opening{grid-template-columns:1fr}
+ .teamBar{top:76px}
+ .simLayout{grid-template-columns:1fr}
+ .leftNav{
+   position:static;
+   display:flex;
+   gap:3px;
+   overflow:auto
+ }
+ .navTitle{display:none}
+ .navItem{min-width:125px}
+ .introGrid{grid-template-columns:1fr}
+ .portraitLarge{
+   width:180px;
+   height:210px
+ }
+ .stats,.cueGrid{
+   grid-template-columns:1fr 1fr
+ }
+ .recordMiniGrid{grid-template-columns:1fr 1fr}
+ .evidenceRow{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ h1{font-size:39px}
+ .screen{padding:21px 12px 55px}
+ .storyPanel{padding:28px}
+ .loginForm{padding:27px}
+ .morningFeed{grid-template-columns:1fr}
+ .stats,.cueGrid,.reportGrid,.profileGrid{grid-template-columns:1fr}
+ .eventContent{padding:18px}
+ .eventHero{padding:21px}
+ .eventHero h2{font-size:28px}
+ .recordMiniGrid,.evidenceRow{grid-template-columns:1fr}
+ .topRight .topPill{display:none}
+ .notificationRail{
+   left:10px;
+   right:10px
+ }
+ .toastStack{
+   left:10px;
+   right:10px
+ }
+ .toast{min-width:0}
+}
 </style>
 </head>
 
 <body>
-
 <div class="app">
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">MD</div>
-      <div>The Manager's Desk</div>
-    </div>
-
-    <div class="top-meta">
-      <span id="topName">Manager Simulation</span>
-      <span class="chip">Internal simulation</span>
-    </div>
-  </header>
-
-
-  <!-- LOGIN -->
-
-  <main id="loginScreen" class="login-wrap">
-
-    <section class="login-card">
-
-      <div class="login-hero">
-
-        <div class="eyebrow">
-          Manager effectiveness simulation
-        </div>
-
-        <h1>
-          A week. Your team.<br>
-          Decisions that matter.
-        </h1>
-
-        <p>
-          You have recently taken charge of an HR team.
-          Work will arrive quickly, people will ask for opportunities,
-          priorities will compete, and some decisions will be easier than others.
-        </p>
-
-      </div>
+<header class="topbar">
+  <div class="brand">
+    <div class="brandMark">MD</div>
+    <div>The Manager's Desk</div>
+  </div>
+  <div class="topInfo">
+    <span class="liveDot"></span>
+    <span id="topManager" class="topName">Manager Simulation</span>
+    <span class="topPill">LIVE WORKWEEK</span>
+  </div>
+</header>
 
 
-      <div class="login-form">
+<!-- LOGIN -->
 
-        <div class="field">
-          <label>Manager name</label>
-          <input
-            id="managerName"
-            placeholder="Enter your name"
-          />
-        </div>
+<section id="loginScreen" class="loginWrap">
 
-        <div class="field">
-          <label>Employee ID</label>
-          <input
-            id="employeeId"
-            placeholder="e.g. NV12345"
-          />
-        </div>
+  <div class="loginCard card">
 
-        <div class="field full">
-          <label>Work email</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="name@company.com"
-          />
-        </div>
+    <div class="loginVisual">
 
-        <div class="disclaimer">
-          Prototype note: this front-end stores responses in the current browser.
-          In the production build, Microsoft Entra ID + an API/database should
-          replace local storage.
-        </div>
+      <span class="visualBadge">
+        <span class="liveDot"></span>
+        Manager effectiveness simulation
+      </span>
 
-        <div class="login-actions">
-          <button class="primary" onclick="startSimulation()">
-            Enter the week
-          </button>
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- INTRO -->
-
-  <main id="introScreen" class="screen hidden fade-in">
-
-    <section class="intro">
-
-      <div class="intro-copy">
-
-        <div class="eyebrow">
-          Monday — 8:45 AM
-        </div>
-
-        <h2>
-          You have recently taken charge of the HR team.
-        </h2>
-
-        <p>
-          Nine people. Different roles. Different strengths.
-          Different levels of experience. Some naturally step forward.
-          Some wait to be asked. Some have had more exposure than others.
-          Some are still finding their feet.
-        </p>
-
-        <p>
-          Your calendar is already filling up.
-          But most of the week will be decided by what lands on your desk —
-          who gets the urgent work, who gets heard, who gets a stretch opportunity,
-          whose contribution gets noticed, and how you respond when two people
-          need the same thing.
-        </p>
-
-        <div class="quote">
-          There is no score on the screen.
-          Just your desk, your people, and the information available to you
-          at that moment.
-        </div>
-
-      </div>
-
-
-      <div class="intro-visual">
-
-        <div class="eyebrow">
-          Your workspace
-        </div>
-
-        <div class="desk-window">
-
-          <div class="window-bar">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-
-          <div class="fake-line w1"></div>
-          <div class="fake-line w3"></div>
-          <div class="fake-line w2"></div>
-
-          <div style="height:18px"></div>
-
-          <div class="fake-line w3"></div>
-          <div class="fake-line w4"></div>
-          <div class="fake-line w2"></div>
-
-          <div class="sticky-note">
-            9 people.<br>
-            Different strengths.<br>
-            One team.<br><br>
-            <b>Let's get started.</b>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <div class="team-head">
-
-      <div>
-        <div class="eyebrow">
-          Your team
-        </div>
-
-        <h2>
-          Meet the people on your desk
-        </h2>
-      </div>
+      <h1>
+        A week of HR decisions.
+      </h1>
 
       <p>
-        These are the same people you will work with throughout the week.
+        You manage a six-member HR team.
+        Work will arrive, people will ask, information will change,
+        and you will have to make decisions based on what is in front of you.
       </p>
 
-    </div>
+      <div class="visualDesk"></div>
 
-
-    <section class="team-grid" id="teamGrid"></section>
-
-
-    <div class="continue-row">
-      <button class="primary" onclick="startWeek()">
-        Start Monday
-      </button>
-    </div>
-
-  </main>
-
-
-  <!-- SIMULATION -->
-
-  <main id="simScreen" class="screen hidden fade-in">
-
-    <section class="workspace">
-
-      <aside class="side" id="timeline"></aside>
-
-      <section class="desk">
-
-        <div class="status">
-
-          <div class="status-left">
-            <span class="status-time" id="scenarioTime"></span>
-            <span class="status-context" id="scenarioContext"></span>
-          </div>
-
-          <div class="status-right">
-            <span class="pill" id="progressPill"></span>
-            <span class="pill">No scores shown</span>
-          </div>
-
+      <div class="visualScreen">
+        <div class="vsTop">
+          <span class="vsDot"></span>
+          <span class="vsDot"></span>
+          <span class="vsDot"></span>
         </div>
 
-
-        <div class="scene" id="scene"></div>
-
-      </section>
-
-    </section>
-
-  </main>
-
-
-  <!-- DONE -->
-
-  <main id="doneScreen" class="screen hidden fade-in">
-
-    <section class="done">
-
-      <div class="eyebrow">
-        Friday — 5:40 PM
+        <div class="vsBody">
+          <div class="vsBar a"></div>
+          <div class="vsBar b"></div>
+          <div class="vsBar c"></div>
+          <div class="vsBar d"></div>
+        </div>
       </div>
 
-      <h2>
-        The week is complete.
+      <div class="phone"></div>
+
+    </div>
+
+
+    <div class="loginForm">
+
+      <div class="eyebrow">
+        Enter your details
+      </div>
+
+      <h2 style="margin:8px 0 12px">
+        Start the week
+      </h2>
+
+      <div class="field">
+        <label>Manager name</label>
+        <input
+          id="managerName"
+          placeholder="Enter your name"
+        >
+      </div>
+
+      <div class="field">
+        <label>Employee ID</label>
+        <input
+          id="managerId"
+          placeholder="e.g. NV12345"
+        >
+      </div>
+
+      <div class="field">
+        <label>Work email</label>
+        <input
+          id="managerEmail"
+          type="email"
+          placeholder="name@company.com"
+        >
+      </div>
+
+      <div class="loginFoot">
+        <button
+          class="btn accent"
+          onclick="start()"
+        >
+          Enter the desk
+        </button>
+      </div>
+
+      <div class="loginHint">
+        Prototype: session data is stored in this browser.
+        The production version can later use company login and a secure database.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- OPENING -->
+
+<section id="openingScreen" class="screen hidden">
+
+  <div class="opening">
+
+    <div class="storyPanel card">
+
+      <div class="eyebrow">
+        Monday · 8:42 AM
+      </div>
+
+      <h2 style="margin:8px 0 15px">
+        You have just stepped into a new week.
       </h2>
 
       <p>
-        You have made a series of real-feeling manager decisions across
-        workload, visibility, development, recognition, consistency and promotion.
-        Your decisions have been captured for the review layer.
+        You manage six HR team members across different grades.
+        They have different levels of experience, different ways of working
+        and different expectations from you.
       </p>
 
-      <div class="meta-box" id="doneMeta"></div>
+      <p>
+        Your calendar is already filling up.
+        The weekly HR check-in is at 9:15.
+        A leadership request is waiting.
+        The governance calendar needs attention.
+      </p>
+
+      <p>
+        Nothing needs to be decided yet.
+      </p>
+
+      <div style="margin-top:22px">
+
+        <button
+          class="btn primary"
+          onclick="beginTeam()"
+        >
+          Meet the team
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="officePanel card">
+
+      <div class="officeScene">
+
+        <div class="sun"></div>
+
+        <div class="windowLarge"></div>
+
+        <div class="plant"></div>
+
+        <div class="deskSurface"></div>
+
+        <div class="monitor"></div>
+
+        <div class="keyboard"></div>
+
+        <div class="coffee"></div>
+
+        <div class="clockBig">
+          08:42 · MON
+        </div>
+
+        <div class="floatNote">
+          <b>09:15 AM</b>
+          Weekly HR team check-in
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- TEAM INTRO -->
+
+<section id="introScreen" class="screen hidden">
+
+  <div class="teamIntro card">
+
+    <div
+      class="eyebrow"
+      id="introEyebrow"
+    >
+      Your team
+    </div>
+
+    <div
+      id="introPerson"
+      style="margin-top:10px"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- TEAM MORNING -->
+
+<section id="morningScreen" class="screen hidden">
+
+  <div class="teamLive card">
+
+    <div class="eyebrow">
+      Monday · 9:02 AM
+    </div>
+
+    <h2 style="margin:7px 0 7px">
+      The team settles in.
+    </h2>
+
+    <p
+      style="
+        font-size:12px;
+        color:#697580;
+        max-width:720px
+      "
+    >
+      People are arriving, picking up their work and checking the morning agenda.
+      You are about to start the team check-in.
+    </p>
+
+    <div
+      class="morningStage"
+      id="morningStage"
+    ></div>
+
+    <div
+      class="morningFeed"
+      id="morningFeed"
+    ></div>
+
+    <div
+      style="
+        display:flex;
+        justify-content:flex-end;
+        margin-top:17px
+      "
+    >
 
       <button
-        class="primary download"
-        onclick="downloadResponses()"
+        class="btn primary"
+        onclick="enterDesk()"
       >
-        Download response log
+        Open the desk
       </button>
 
-    </section>
+    </div>
 
-  </main>
+  </div>
 
-</div>
+</section>
+
+
+<!-- SIMULATION -->
+
+<section
+  id="simulationScreen"
+  class="screen hidden"
+>
+
+  <div
+    id="teamBar"
+    class="teamBar"
+  ></div>
+
+
+  <div class="simLayout">
+
+    <aside
+      id="leftNav"
+      class="leftNav"
+    ></aside>
+
+
+    <main class="workArea">
+
+      <div class="clockBar">
+
+        <div>
+
+          <span
+            id="simClock"
+            class="clockMain"
+          ></span>
+
+          <span
+            id="simSub"
+            class="clockSub"
+          ></span>
+
+        </div>
+
+        <div class="liveBadge">
+
+          <span class="liveDot"></span>
+
+          Workday in progress
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="eventWindow"
+        class="eventWindow"
+      ></div>
+
+    </main>
+
+
+    <aside
+      id="activityPanel"
+      class="activityPanel"
+    ></aside>
+
+  </div>
+
+</section>
+
+
+<!-- REPORT -->
+
+<section
+  id="reportScreen"
+  class="screen hidden"
+>
+
+  <div class="reportHeader">
+
+    <div
+      class="eyebrow"
+      style="color:rgba(255,255,255,.6)"
+    >
+      Simulation complete
+    </div>
+
+    <h2>
+      Your manager profile
+    </h2>
+
+    <p>
+      Your profile is based on the decisions you made,
+      the information you reviewed,
+      how you responded to new evidence
+      and how you handled people affected by your decisions.
+    </p>
+
+  </div>
+
+
+  <div
+    id="reportGrid"
+    class="reportGrid"
+  ></div>
+
+
+  <div
+    id="patternCard"
+    class="pattern"
+  ></div>
+
+
+  <div class="pattern">
+
+    <div class="eyebrow">
+      Evidence trail
+    </div>
+
+    <div
+      id="reportEvidence"
+      class="evidenceReport"
+    ></div>
+
+  </div>
+
+
+  <div class="reportFoot">
+
+    <button
+      class="btn"
+      onclick="downloadSession()"
+    >
+      Download session
+    </button>
+
+    <button
+      class="btn primary"
+      onclick="restart()"
+    >
+      Start again
+    </button>
+
+  </div>
+
+</section>
 
 
 <!-- MODAL -->
 
 <div
-  class="modal"
-  id="modal"
+  id="modalBack"
+  class="modalBack"
   onclick="closeModal(event)"
 >
 
   <div
-    class="modal-card"
+    class="modal"
     onclick="event.stopPropagation()"
   >
 
-    <div class="modal-head">
+    <div class="modalHead">
 
       <h3 id="modalTitle">
-        Supporting information
+        Information
       </h3>
 
       <button
@@ -1287,8 +1861,8 @@
     </div>
 
     <div
-      class="modal-body"
       id="modalBody"
+      class="modalBody"
     ></div>
 
   </div>
@@ -1296,198 +1870,417 @@
 </div>
 
 
+<div
+  id="notificationRail"
+  class="notificationRail"
+></div>
+
+<div
+  id="toastStack"
+  class="toastStack"
+></div>
+
+</div>
+
+
 <script>
 
 /* =========================================================
-   TEAM
+   TEAM DATA
 ========================================================= */
 
-const people = [
+const team = [
 
   {
-    id:'amit',
-    name:'Amit Sharma',
-    role:'HR Business Partner',
-    years:'5 years',
-    known:'Reliable when pressure is on.',
-    history:'Led important HR projects; often the first person the team turns to when a deadline is tight.',
-    potential:'Broader strategic ownership',
-    skin:'#c98e6e',
-    hair:'#272321',
-    shirt:'#304a50',
-    bg:'#e8eded',
-    face:'amit'
+    id:"rohan",
+    name:"Rohan Mehta",
+    grade:"Sr. Manager – HR",
+    years:"7 years",
+    performance:"4.5 / 5",
+    potential:"High",
+    behavior:[
+      "Takes ownership",
+      "Reliable under pressure",
+      "Says yes"
+    ],
+    aspiration:"Larger HR leadership role",
+    dynamic:"Often becomes the go-to person for difficult work.",
+    experience:"11 years HR experience",
+    roleTenure:"2 years in current role",
+    skin:"#9c6650",
+    hair:"#242220",
+    shirt:"#4b5e67",
+    bg:"#dce8eb",
+
+    ratings:[
+      ["FY24","4.1"],
+      ["FY25","4.4"],
+      ["FY26","4.5"]
+    ],
+
+    potentials:[
+      ["FY24","Medium-High"],
+      ["FY25","High"],
+      ["FY26","High"]
+    ],
+
+    promotions:[
+      ["2020","Executive → Sr. Executive"],
+      ["2022","Sr. Executive → Manager"],
+      ["2025","Manager → Sr. Manager"]
+    ],
+
+    development:[
+      ["FY24","HR Leadership Programme"],
+      ["FY25","Advanced ER Masterclass"],
+      ["FY26","No external programme"]
+    ],
+
+    visibility:[
+      ["Q1","Business leadership review"],
+      ["Q2","ER transformation project"],
+      ["Q3","Workforce productivity review"]
+    ],
+
+    workload:"Highest in team",
+
+    records:[
+      "3 governance submissions missed in FY26",
+      "No previous formal warning"
+    ],
+
+    feedback:"Strong business credibility. Handles complexity well."
   },
 
-  {
-    id:'riya',
-    name:'Riya Mehta',
-    role:'HR Executive',
-    years:'3.5 years',
-    known:'Strong on execution and follow-through.',
-    history:'Has handled difficult coordination-heavy work, with fewer visible assignments than some peers.',
-    potential:'Broader exposure and ownership',
-    skin:'#9c6648',
-    hair:'#26201e',
-    shirt:'#5e4b57',
-    bg:'#eee9ed',
-    face:'riya'
-  },
 
   {
-    id:'sonal',
-    name:'Sonal Rao',
-    role:'HR Operations Specialist',
-    years:'2.5 years',
-    known:'Thorough and dependable.',
-    history:'Keeps detail-heavy work moving and rarely asks for the spotlight.',
-    potential:'Lead something end-to-end',
-    skin:'#b97d57',
-    hair:'#2c201b',
-    shirt:'#3d5d4d',
-    bg:'#e7eeea',
-    face:'sonal'
+    id:"amit",
+    name:"Amit Kapoor",
+    grade:"Manager – HR",
+    years:"6 years",
+    performance:"4.2 / 5",
+    potential:"High",
+    behavior:[
+      "Confident",
+      "Visible",
+      "Strong stakeholder relationships"
+    ],
+    aspiration:"Strategic HR responsibilities",
+    dynamic:"Often gets pulled into important, leadership-facing work.",
+    experience:"9 years HR experience",
+    roleTenure:"3 years in current role",
+    skin:"#875842",
+    hair:"#211f20",
+    shirt:"#54616b",
+    bg:"#dfe7eb",
+
+    ratings:[
+      ["FY24","3.9"],
+      ["FY25","4.1"],
+      ["FY26","4.2"]
+    ],
+
+    potentials:[
+      ["FY24","Medium-High"],
+      ["FY25","High"],
+      ["FY26","High"]
+    ],
+
+    promotions:[
+      ["2020","Executive → Sr. Executive"],
+      ["2023","Sr. Executive → Manager"]
+    ],
+
+    development:[
+      ["FY24","Stakeholder Masterclass"],
+      ["FY25","Leadership Essentials"],
+      ["FY26","CHRO sponsorship forum"]
+    ],
+
+    visibility:[
+      ["Q1","Annual strategy review"],
+      ["Q2","HR transformation project"],
+      ["Q4","Business leadership review"]
+    ],
+
+    workload:"Moderate",
+
+    records:[
+      "No formal warnings",
+      "Strong stakeholder feedback"
+    ],
+
+    feedback:"Strong communication and presence with senior stakeholders."
   },
 
-  {
-    id:'vikram',
-    name:'Vikram Shah',
-    role:'Employee Relations Partner',
-    years:'6 years',
-    known:'Calm in difficult situations.',
-    history:'Deep HR experience, strong internal relationships, frequently trusted with sensitive matters.',
-    potential:'Mentor newer HR team members',
-    skin:'#8a5a3f',
-    hair:'#201d1b',
-    shirt:'#5a4c42',
-    bg:'#eee9e4',
-    face:'vikram'
-  },
 
   {
-    id:'neha',
-    name:'Neha Joshi',
-    role:'Talent Acquisition Specialist',
-    years:'4 years',
-    known:'Fast and delivery-focused.',
-    history:'Strong on difficult hiring assignments and often volunteers when work is urgent.',
-    potential:'Broader talent responsibilities',
-    skin:'#b9795a',
-    hair:'#38251f',
-    shirt:'#40586a',
-    bg:'#e9edf0',
-    face:'neha'
+    id:"karan",
+    name:"Karan Shah",
+    grade:"Deputy Manager – HR",
+    years:"4.5 years",
+    performance:"4.0 / 5",
+    potential:"High",
+    behavior:[
+      "Independent",
+      "Direct",
+      "Challenges constructively"
+    ],
+    aspiration:"Broader HR ownership",
+    dynamic:"Often brings a different point of view to team discussions.",
+    experience:"6.5 years HR experience",
+    roleTenure:"1.5 years in current role",
+    skin:"#9d6a52",
+    hair:"#211f20",
+    shirt:"#4b5660",
+    bg:"#dbe5e9",
+
+    ratings:[
+      ["FY24","3.6"],
+      ["FY25","3.9"],
+      ["FY26","4.0"]
+    ],
+
+    potentials:[
+      ["FY24","Medium"],
+      ["FY25","Medium-High"],
+      ["FY26","High"]
+    ],
+
+    promotions:[
+      ["2023","Executive → Sr. Executive"],
+      ["2025","Sr. Executive → Deputy Manager"]
+    ],
+
+    development:[
+      ["FY24","HR Analytics Programme"],
+      ["FY25","No external programme"],
+      ["FY26","Business partnering workshop"]
+    ],
+
+    visibility:[
+      ["Q2","HR policy review"],
+      ["Q3","Transformation workstream"]
+    ],
+
+    workload:"Moderate",
+
+    records:[
+      "Two escalated disagreements on process decisions",
+      "No conduct action"
+    ],
+
+    feedback:"Strong judgement and technical depth."
   },
 
-  {
-    id:'karan',
-    name:'Karan Patel',
-    role:'HR Business Partner',
-    years:'4.5 years',
-    known:'Strong with senior stakeholders.',
-    history:'Frequently represents the team in leadership conversations and has built a strong internal network.',
-    potential:'Strategic project leadership',
-    skin:'#9b6349',
-    hair:'#1d1e21',
-    shirt:'#4a555c',
-    bg:'#e6ebed',
-    face:'karan'
-  },
 
   {
-    id:'meera',
-    name:'Meera Nair',
-    role:'Learning & Development Specialist',
-    years:'3 years',
-    known:'Creative and people-focused.',
-    history:'Built good learning initiatives but has had less leadership exposure than some peers.',
-    potential:'Programme leadership',
-    skin:'#bb8266',
-    hair:'#33251f',
-    shirt:'#6b534a',
-    bg:'#f0e7e2',
-    face:'meera'
+    id:"neha",
+    name:"Neha Rao",
+    grade:"Sr. Executive – HR",
+    years:"3 years",
+    performance:"4.3 / 5",
+    potential:"High",
+    behavior:[
+      "Quietly capable",
+      "Thoughtful",
+      "Seeks opportunities"
+    ],
+    aspiration:"Larger responsibilities and exposure",
+    dynamic:"Contributes strongly but does not always speak first.",
+    experience:"5 years HR experience",
+    roleTenure:"2 years in current role",
+    skin:"#ad755a",
+    hair:"#302420",
+    shirt:"#65525e",
+    bg:"#ebe4e1",
+
+    ratings:[
+      ["FY24","3.7"],
+      ["FY25","4.1"],
+      ["FY26","4.3"]
+    ],
+
+    potentials:[
+      ["FY24","Medium-High"],
+      ["FY25","High"],
+      ["FY26","High"]
+    ],
+
+    promotions:[
+      ["2024","Executive → Sr. Executive"]
+    ],
+
+    development:[
+      ["FY24","Internal talent programme"],
+      ["FY25","No external programme"],
+      ["FY26","No external programme"]
+    ],
+
+    visibility:[
+      ["Q1","No leadership-facing assignment"],
+      ["Q2","No leadership-facing assignment"],
+      ["Q4","Project support only"]
+    ],
+
+    workload:"Moderate",
+
+    records:[
+      "No formal warnings",
+      "Strong recent results"
+    ],
+
+    feedback:"Strong subject depth; lower visibility than peers."
   },
 
-  {
-    id:'arjun',
-    name:'Arjun Das',
-    role:'HR Analytics Specialist',
-    years:'2 years',
-    known:'Analytical and quietly persistent.',
-    history:'Solves difficult reporting problems behind the scenes; his work is useful even when it is less visible.',
-    potential:'More visible analytics ownership',
-    skin:'#7b4f3b',
-    hair:'#211e1d',
-    shirt:'#3f5061',
-    bg:'#e5eaef',
-    face:'arjun'
-  },
 
   {
-    id:'pooja',
-    name:'Pooja Singh',
-    role:'HR Coordinator',
-    years:'1.5 years',
-    known:'Positive and eager to learn.',
-    history:'Early in her HR career; does routine work well and picks up new processes quickly with structure.',
-    potential:'Develop quickly with stretch work',
-    skin:'#ad7254',
-    hair:'#30201d',
-    shirt:'#5a6350',
-    bg:'#e9ede5',
-    face:'pooja'
+    id:"meera",
+    name:"Meera Iyer",
+    grade:"Executive – HR",
+    years:"2.5 years",
+    performance:"3.4 / 5",
+    potential:"Medium-High",
+    behavior:[
+      "Process-focused",
+      "Cautious",
+      "Seeks clarity"
+    ],
+    aspiration:"Grow into a larger HR role",
+    dynamic:"Pays close attention to how expectations are applied across the team.",
+    experience:"3.5 years HR experience",
+    roleTenure:"2.5 years in current role",
+    skin:"#a77056",
+    hair:"#30221d",
+    shirt:"#5c675e",
+    bg:"#e5ece6",
+
+    ratings:[
+      ["FY24","3.2"],
+      ["FY25","3.3"],
+      ["FY26","3.4"]
+    ],
+
+    potentials:[
+      ["FY24","Medium"],
+      ["FY25","Medium"],
+      ["FY26","Medium-High"]
+    ],
+
+    promotions:[],
+
+    development:[
+      ["FY24","HR Operations Foundation"],
+      ["FY25","Process Excellence workshop"],
+      ["FY26","No external programme"]
+    ],
+
+    visibility:[
+      ["Q1","No leadership-facing assignment"],
+      ["Q2","Governance support"],
+      ["Q3","Governance support"]
+    ],
+
+    workload:"Moderate",
+
+    records:[
+      "Formal warning in FY25 for missed governance submission"
+    ],
+
+    feedback:"Structured and receptive to feedback."
+  },
+
+
+  {
+    id:"sakshi",
+    name:"Sakshi Verma",
+    grade:"Executive – HR",
+    years:"2 months in team",
+    performance:"Not rated",
+    potential:"To be assessed",
+    behavior:[
+      "New to the team",
+      "Eager to contribute",
+      "Still finding her place"
+    ],
+    aspiration:"Build credibility and take on more responsibility",
+    dynamic:"Still learning the team's informal ways of working.",
+    experience:"4 years HR experience overall",
+    roleTenure:"2 months in current team",
+    skin:"#a66d51",
+    hair:"#30211f",
+    shirt:"#52695d",
+    bg:"#e4ebe7",
+
+    ratings:[
+      ["FY26","Not yet rated"]
+    ],
+
+    potentials:[
+      ["FY26","To be assessed"]
+    ],
+
+    promotions:[],
+
+    development:[
+      ["Previous employer","HR Generalist certification"],
+      ["FY26","No internal programme yet"]
+    ],
+
+    visibility:[
+      ["Current","Support assignments while ramping up"]
+    ],
+
+    workload:"Low while ramping up",
+
+    records:[
+      "No company performance history yet"
+    ],
+
+    feedback:"New to the team; learning processes and relationships."
   }
 
 ];
 
 
 /* =========================================================
-   PORTRAITS
+   EMBEDDED PORTRAIT-STYLE SVGs
 ========================================================= */
 
-function portraitSVG(p, size=160){
+function faceSVG(p){
 
-  const skin=p.skin;
-  const hair=p.hair;
-  const shirt=p.shirt;
-  const bg=p.bg;
+  const seed =
+    [...p.id]
+      .reduce(
+        (a,c)=>a+c.charCodeAt(0),
+        0
+      );
 
-  const hairPath = {
+  const hairPath =
+    seed % 2 === 0
 
-    amit:
-      'M34 73 C35 28 74 13 112 25 C138 33 146 58 143 79 C127 62 122 43 98 39 C72 34 57 47 49 73 Z',
+      ?
 
-    riya:
-      'M26 82 C20 44 42 18 79 15 C120 12 145 38 139 82 L122 72 C117 48 98 37 73 39 C55 41 45 55 41 84 Z',
+    `M28 82
+     C18 45 42 16 82 15
+     C123 14 147 43 139 85
+     C126 58 113 44 91 41
+     C66 37 44 51 35 82 Z`
 
-    sonal:
-      'M32 72 C29 29 57 15 87 15 C121 15 141 37 137 73 C124 50 116 37 92 34 C63 31 49 46 43 77 Z',
+      :
 
-    vikram:
-      'M36 64 C37 31 57 17 89 17 C120 17 139 34 140 63 L124 54 C117 40 104 35 89 35 C70 35 56 44 48 61 Z',
+    `M34 68
+     C35 33 56 17 87 16
+     C119 16 141 34 143 66
+     L126 55
+     C117 41 103 35 87 35
+     C66 35 53 44 45 63 Z`;
 
-    neha:
-      'M28 85 C18 48 42 14 82 14 C124 13 148 44 138 87 C129 72 122 57 110 48 C96 37 67 39 51 55 C40 66 35 77 28 85 Z',
+  return (
 
-    karan:
-      'M31 66 C34 31 56 16 87 16 C119 16 141 34 144 67 L128 55 C119 40 105 35 88 35 C67 35 54 45 46 63 Z',
+    "data:image/svg+xml;charset=UTF-8," +
 
-    meera:
-      'M27 82 C24 42 46 17 83 16 C122 15 146 45 139 83 C130 65 117 47 96 42 C69 36 49 54 40 79 Z',
-
-    arjun:
-      'M34 64 C36 31 57 16 89 16 C121 16 141 33 143 65 L126 55 C118 40 103 34 87 34 C66 34 53 43 46 60 Z',
-
-    manager:
-      'M34 64 C36 31 57 16 89 16 C121 16 141 33 143 65 L126 55 C118 40 103 34 87 34 C66 34 53 43 46 60 Z',
-
-    pooja:
-      'M28 81 C23 42 47 16 84 15 C122 14 146 43 140 82 C128 55 113 43 91 40 C67 37 46 51 36 80 Z'
-
-  }[p.face];
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    encodeURIComponent(`
 
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -1497,36 +2290,39 @@ function portraitSVG(p, size=160){
       <defs>
 
         <radialGradient
-          id="bg"
+          id="b"
           cx="50%"
           cy="28%"
         >
+
           <stop
             offset="0"
-            stop-color="#ffffff"
-            stop-opacity=".52"
+            stop-color="#fff"
+            stop-opacity=".75"
           />
 
           <stop
             offset="1"
-            stop-color="${bg}"
+            stop-color="${p.bg}"
           />
+
         </radialGradient>
 
+
         <linearGradient
-          id="skin"
+          id="s"
           x2="0"
           y2="1"
         >
+
           <stop
             offset="0"
-            stop-color="${skin}"
+            stop-color="${p.skin}"
           />
 
           <stop
             offset="1"
-            stop-color="#80513e"
-            stop-opacity=".96"
+            stop-color="#794b39"
           />
 
         </linearGradient>
@@ -1537,16 +2333,16 @@ function portraitSVG(p, size=160){
       <rect
         width="160"
         height="160"
-        fill="url(#bg)"
+        fill="url(#b)"
       />
 
 
       <ellipse
         cx="80"
-        cy="154"
+        cy="155"
         rx="62"
-        ry="38"
-        fill="${shirt}"
+        ry="39"
+        fill="${p.shirt}"
       />
 
 
@@ -1556,89 +2352,92 @@ function portraitSVG(p, size=160){
         width="24"
         height="28"
         rx="10"
-        fill="${skin}"
+        fill="${p.skin}"
       />
 
 
       <ellipse
         cx="80"
-        cy="67"
+        cy="68"
         rx="40"
         ry="48"
-        fill="url(#skin)"
+        fill="url(#s)"
       />
 
 
       <ellipse
-        cx="45"
+        cx="44"
         cy="69"
         rx="7"
         ry="11"
-        fill="${skin}"
+        fill="${p.skin}"
       />
 
+
       <ellipse
-        cx="115"
+        cx="116"
         cy="69"
         rx="7"
         ry="11"
-        fill="${skin}"
+        fill="${p.skin}"
       />
 
 
       <path
         d="${hairPath}"
-        fill="${hair}"
+        fill="${p.hair}"
       />
 
 
       <ellipse
         cx="65"
         cy="69"
-        rx="4"
-        ry="5"
-        fill="#2b2827"
+        rx="3.8"
+        ry="4.8"
+        fill="#242728"
       />
+
 
       <ellipse
         cx="95"
         cy="69"
-        rx="4"
-        ry="5"
-        fill="#2b2827"
+        rx="3.8"
+        ry="4.8"
+        fill="#242728"
       />
 
 
       <path
-        d="M57 59 Q65 54 72 58"
-        stroke="#322a28"
-        stroke-width="2.5"
-        fill="none"
-        stroke-linecap="round"
-      />
-
-      <path
-        d="M88 58 Q96 54 103 59"
-        stroke="#322a28"
-        stroke-width="2.5"
+        d="M56 59 Q65 54 72 58"
+        stroke="#302623"
+        stroke-width="2.4"
         fill="none"
         stroke-linecap="round"
       />
 
 
       <path
-        d="M79 69 Q75 80 80 83 Q85 84 87 80"
-        stroke="#704535"
-        stroke-width="2"
+        d="M88 58 Q96 54 104 59"
+        stroke="#302623"
+        stroke-width="2.4"
         fill="none"
         stroke-linecap="round"
       />
 
 
       <path
-        d="M67 92 Q80 99 94 91"
-        stroke="#5d342f"
-        stroke-width="2.8"
+        d="M79 69 Q76 79 80 82 Q84 83 87 79"
+        stroke="#704536"
+        stroke-width="1.8"
+        fill="none"
+        stroke-linecap="round"
+      />
+
+
+      <path
+        d="M66 92 Q80 98 94 91"
+        stroke="#5f342e"
+        stroke-width="2.6"
         fill="none"
         stroke-linecap="round"
       />
@@ -1646,8 +2445,8 @@ function portraitSVG(p, size=160){
 
       <path
         d="M50 112 Q80 130 110 112"
-        fill="${shirt}"
-        opacity=".92"
+        fill="${p.shirt}"
+        opacity=".95"
       />
 
 
@@ -1657,1485 +2456,2163 @@ function portraitSVG(p, size=160){
         width="158"
         height="158"
         fill="none"
-        stroke="#ffffff"
+        stroke="#fff"
         stroke-opacity=".65"
       />
 
     </svg>
 
-  `)}`;
+  `)
+
+  );
 
 }
 
 
 /* =========================================================
-   TEAM GRID
+   STATE
 ========================================================= */
 
-const teamGrid = document.getElementById('teamGrid');
+const S = {
 
-teamGrid.innerHTML = people
-  .map(
-    p => `
+  manager:{},
 
-      <article class="person">
+  startedAt:null,
 
-        <img
-          class="portrait"
-          src="${portraitSVG(p)}"
-          alt="${p.name}"
-        >
+  caseIndex:0,
 
-        <div>
+  stepIndex:0,
 
-          <h3>
-            ${p.name}
-          </h3>
+  selected:null,
 
-          <div class="role">
-            ${p.role} · ${p.years}
-          </div>
+  evidenceViewed:[],
 
-          <p>
-            ${p.known} ${p.potential} ahead.
-          </p>
+  decisions:[],
 
-        </div>
+  activity:[],
 
-      </article>
+  employeeState:{}
 
-    `
-  )
-  .join('');
+};
+
+
+team.forEach(
+
+  p => {
+
+    S.employeeState[p.id] = {
+
+      opportunities:0,
+
+      visibility:0,
+
+      development:0,
+
+      leadershipExposure:0,
+
+      recognition:0,
+
+      workloadLevel:p.workload,
+
+      managerCommitments:[],
+
+      sentiment:"neutral"
+
+    };
+
+  }
+
+);
 
 
 /* =========================================================
-   SCENARIOS
+   CASES
 ========================================================= */
 
-const scenarios = [
+const cases = [
 
-  /* -------------------------------------------------------
-     S1
-  ------------------------------------------------------- */
+/* CASE 1 */
 
-  {
-    id:'s1',
-    day:'Monday',
-    time:'9:35 AM',
-    title:'A bigger piece of work',
+{
+  id:"c1",
+  day:"Monday",
+  time:"10:35 AM",
+  title:"A governance submission is overdue",
 
-    context:
-      'Riya has stayed late twice this week to close a coordination-heavy task. She catches you before the morning meeting.',
+  context:
+    "The monthly HR governance report flags Rohan for three missed submissions this quarter. Two were submitted after reminders. One was submitted late without a reminder.",
 
-    feed:[
+  chips:[
+    "Governance",
+    "Rohan",
+    "Previous case available"
+  ],
 
-      msg(
-        'riya',
-        'Riya',
-        'I wanted to speak to you about the workforce review work. I’ve handled the coordination and the follow-ups for the last two cycles. I’d like to take the next one end-to-end, not just support it.'
-      ),
+  person:"rohan",
 
-      msg(
-        'riya',
-        'Riya',
-        'I know Amit and Karan usually get the larger pieces. I’m not asking for a favour. I’d like a chance to show I can handle more.'
-      )
+  message:
+    "I know I missed the timelines. But I'm handling three times the workload of some people in the team. If we're expecting the same standard, shouldn't we also look at the workload?",
 
+  evidence:[
+
+    [
+      "Rohan's workload",
+      "Rohan has the highest active workload in the team and is carrying two business-critical assignments."
     ],
 
-    info:[
-
-      [
-        'Recent work',
-        'Riya closed three complex coordination items without missing a committed date.'
-      ],
-
-      [
-        'Previous feedback',
-        'Her last review noted strong execution, with a need for broader ownership.'
-      ]
-
+    [
+      "Meera's previous action",
+      "Meera received a formal warning last year for one missed governance submission."
     ],
 
-    question:
-      'You need one person to own the next review cycle. How do you take this forward?',
-
-    choices:[
-
-      [
-        'Give Riya the full ownership and define clear checkpoints.',
-        'You are willing to give her the opportunity while keeping the risk visible.'
-      ],
-
-      [
-        'Keep Riya in support and give the ownership to someone who has done it before.',
-        'The priority is immediate delivery with a known performer.'
-      ],
-
-      [
-        'Ask Riya to first demonstrate ownership on a smaller workstream.',
-        'You want evidence of end-to-end ownership before expanding the scope.'
-      ]
-
-    ],
-
-    consequence:[
-      'Riya responds positively to having a clear path. The work moves ahead, but the quality of the opportunity she gets will shape what happens next.'
+    [
+      "Rohan's performance",
+      "Current rating 4.5/5. Three-year ratings: 4.1 → 4.4 → 4.5. Potential: High."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S2
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s2',
-    day:'Monday',
-    time:'11:20 AM',
-    title:'The urgent pack',
+    {
 
-    context:
-      'An HR leadership pack is due by 4 PM. The numbers are spread across several files, and you know the turnaround will be tight.',
+      q:"What do you do before deciding the action?",
 
-    feed:[
-      msg(
-        'amit',
-        'Amit',
-        'I can pick it up. I’ve done the pack before and know what the leadership team usually asks for.'
-      )
-    ],
+      choices:[
 
-    info:[
+        [
+          "Speak to Rohan and review the relevant records",
+          "Hear his context and check the previous case before deciding."
+        ],
 
-      [
-        'Arjun’s contribution',
-        'Arjun built the underlying dashboard and corrected two recurring data issues last month.'
+        [
+          "Issue the same formal action used previously",
+          "Keep the same action because the governance requirement is unchanged."
+        ],
+
+        [
+          "Give an informal warning because of his overall contribution",
+          "Use his strong performance as a reason for lighter action."
+        ],
+
+        [
+          "Defer the issue for now",
+          "Prioritise his current business commitments and revisit the governance issue later."
+        ]
+
       ],
 
-      [
-        'Sonal’s contribution',
-        'Sonal maintains the source files and usually catches mismatches before submission.'
+      scores:[
+
+        [3,2,4,3],
+        [2,1,2,1],
+        [1,1,3,2],
+        [1,1,2,1]
+
       ]
 
-    ],
+    },
 
-    question:
-      'You have enough time for one owner and two supporting contributors. Who gets the lead?',
+    {
 
-    choices:[
+      q:"Rohan has explained his workload. How do you close the matter?",
 
-      [
-        'Amit leads; Arjun and Sonal support with data and validation.',
-        'A familiar lead owns the deadline while the technical work stays close to its source.'
+      choices:[
+
+        [
+          "Review the workload and circumstances, then decide the action",
+          "Keep the standard intact while considering relevant differences."
+        ],
+
+        [
+          "Proceed with the formal warning; workload is a separate issue",
+          "Treat the governance breach independently from capacity."
+        ],
+
+        [
+          "Reduce the action because Rohan is a strong performer",
+          "Make an exception based on overall contribution."
+        ],
+
+        [
+          "Treat it only as a coaching issue",
+          "Focus on improvement and close the matter informally."
+        ]
+
       ],
 
-      [
-        'Arjun leads; Amit supports the leadership storyline and Sonal validates.',
-        'The person closest to the underlying analysis gets the end-to-end opportunity.'
-      ],
+      scores:[
 
-      [
-        'Sonal leads the build; Amit reviews and Arjun validates.',
-        'The person closest to the source files gets ownership of the pack.'
+        [4,4,4,4],
+        [3,2,3,3],
+        [1,1,3,2],
+        [2,2,4,2]
+
       ]
 
+    }
+
+  ],
+
+  carry:
+    "Rohan's governance issue is now closed. The workload question remains relevant when you review team capacity later in the week."
+
+},
+
+
+/* CASE 2 */
+
+{
+  id:"c2",
+  day:"Monday",
+  time:"3:10 PM",
+  title:"One high-visibility project needs an owner",
+
+  context:
+    "The CHRO office needs one HR team member for a workforce transformation project. Amit is your first thought. Neha's recent work is more closely related to the subject.",
+
+  chips:[
+    "Leadership visibility",
+    "Amit",
+    "Neha"
+  ],
+
+  person:"neha",
+
+  message:
+    "I'd be interested in supporting this. I've been working on a similar piece recently, although I haven't had much exposure to these forums.",
+
+  evidence:[
+
+    [
+      "Amit's visibility",
+      "Amit has received 3 high-visibility assignments in the last 12 months."
     ],
 
-    consequence:[
-      'The pack goes out. During the review, the leadership team asks two follow-up questions about the numbers and the story behind them. The way ownership was distributed now becomes visible.'
+    [
+      "Neha's recent record",
+      "Neha's ratings moved 3.7 → 4.1 → 4.3 and she has had no leadership-facing assignment in the last 12 months."
+    ],
+
+    [
+      "Project requirement",
+      "The project needs subject depth, strong execution and the ability to work with senior stakeholders."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S3
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s3',
-    day:'Tuesday',
-    time:'10:10 AM',
-    title:'One seat, two interests',
+    {
 
-    context:
-      'The company is sending one person to an external development programme. Both Neha and Meera have asked to be considered.',
+      q:"Who do you nominate?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'meera',
-        'Meera',
-        'I’d like to put myself forward. I’ve been building learning initiatives internally, but I haven’t had much external exposure yet.'
-      ),
+        [
+          "Amit",
+          "He has strong stakeholder credibility and has handled similar senior-facing work."
+        ],
 
-      msg(
-        'neha',
-        'Neha',
-        'I’m also interested. I’ve had good results in difficult hiring situations, and I think the programme would help me take on broader talent work.'
-      )
+        [
+          "Neha",
+          "Her recent experience is more directly relevant to the project."
+        ],
 
-    ],
+        [
+          "Speak to both before deciding",
+          "Use the same project criteria and understand what each can bring."
+        ],
 
-    info:[
+        [
+          "Nominate Amit now and review exposure later",
+          "Protect immediate delivery and deal with development separately."
+        ]
 
-      [
-        'Development history',
-        'Neha attended an external programme last year. Meera’s recent development has mainly been internal.'
       ],
 
-      [
-        'Current role needs',
-        'Meera is building a manager programme. Neha is taking on a more complex talent portfolio.'
+      scores:[
+
+        [3,2,3,2],
+        [4,4,4,3],
+        [4,4,5,4],
+        [2,2,2,2]
+
       ]
 
-    ],
+    },
 
-    question:
-      'What information do you consider before deciding who gets the seat?',
+    {
 
-    choices:[
+      q:"You notice Amit has had three similar opportunities while Neha has had none. What do you do?",
 
-      [
-        'Look at current role needs and what the programme can unlock for each person.',
-        'The choice is tied to development need and future application, not only past visibility.'
+      choices:[
+
+        [
+          "Revisit the nomination against the project criteria",
+          "Check whether the initial choice still holds after seeing the opportunity pattern."
+        ],
+
+        [
+          "Keep Amit; past allocation should not change today's choice",
+          "Treat previous opportunities as a separate issue."
+        ],
+
+        [
+          "Change to Neha mainly because she has had fewer opportunities",
+          "Give access the strongest weight."
+        ],
+
+        [
+          "Split the project and give both defined responsibilities",
+          "Create exposure for Neha while retaining Amit's stakeholder capability."
+        ]
+
       ],
 
-      [
-        'Give it to the person who has shown the strongest recent results.',
-        'Recent delivery is the clearest signal for the investment.'
-      ],
+      scores:[
 
-      [
-        'Give it to the person who has had less development exposure.',
-        'You want the opportunity to broaden access where exposure has been limited.'
+        [5,5,4,5],
+        [2,2,2,2],
+        [3,4,3,3],
+        [5,5,5,5]
+
       ]
 
+    }
+
+  ],
+
+  carry:
+    "The nomination becomes part of the team's visibility history. That history can be reviewed during the talent discussion."
+
+},
+
+
+/* CASE 3 */
+
+{
+  id:"c3",
+  day:"Tuesday",
+  time:"10:15 AM",
+  title:"Karan challenges the approach",
+
+  context:
+    "During an HR process review, Karan challenges your proposed approach. He later escalates the concern to the HR Head after the issue is not resolved.",
+
+  chips:[
+    "Manager judgement",
+    "Karan",
+    "Stakeholder feedback"
+  ],
+
+  person:"karan",
+
+  message:
+    "Can I challenge one part of this? I don't think the current approach will work consistently across the team.",
+
+  evidence:[
+
+    [
+      "Karan's performance",
+      "Current rating 4.0/5. Three-year ratings: 3.6 → 3.9 → 4.0. Potential: High."
     ],
 
-    consequence:[
-      'Both employees understand the rationale you explain. The decision also creates a clear record of who gets development exposure and who does not.'
+    [
+      "Previous challenges",
+      "Two process disagreements were escalated. Neither resulted in a conduct action."
+    ],
+
+    [
+      "Stakeholder feedback",
+      "Feedback describes Karan as strong on judgement and technical depth."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S4
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s4',
-    day:'Tuesday',
-    time:'2:40 PM',
-    title:'Who joins the senior meeting?',
+    {
 
-    context:
-      'Tomorrow’s leadership meeting needs one HR representative to explain a new people initiative. Karan has represented HR in similar rooms. Meera built most of the initiative.',
+      q:"A strategic HR project needs an owner. Who do you choose?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'karan',
-        'Karan',
-        'Happy to join and take the questions. I know the leadership group and can handle the discussion.'
-      ),
+        [
+          "Karan",
+          "His capability is closely matched to the project requirements."
+        ],
 
-      msg(
-        'meera',
-        'Meera',
-        'I’d like to join as well. I’ve built the design and can explain the thinking behind it. I’m not expecting to lead the meeting — I’d value the exposure.'
-      )
+        [
+          "Meera",
+          "She is supportive, process-focused and less likely to create friction."
+        ],
 
-    ],
+        [
+          "Amit",
+          "He is experienced with senior stakeholders and usually works smoothly with leadership."
+        ],
 
-    info:[
+        [
+          "Split ownership between Karan and Amit",
+          "Use Karan's capability and Amit's stakeholder experience."
+        ]
 
-      [
-        'Project history',
-        'Meera designed the core content and pilot. Karan has handled senior stakeholder conversations on other HR topics.'
       ],
 
-      [
-        'Risk note',
-        'The meeting is important, but it is also a useful opportunity to build capability.'
+      scores:[
+
+        [4,4,5,4],
+        [2,2,4,3],
+        [3,2,3,3],
+        [5,5,5,4]
+
       ]
 
-    ],
+    },
 
-    question:
-      'How do you structure the representation?',
+    {
 
-    choices:[
+      q:"The HR Head says Karan is 'becoming difficult to manage'. What do you do with that feedback?",
 
-      [
-        'Karan presents; Meera joins for the relevant section.',
-        'You use Karan’s stakeholder experience while giving Meera direct exposure.'
+      choices:[
+
+        [
+          "Keep the feedback separate from Karan's capability and performance",
+          "Use evidence about the project and his work rather than his agreement with you."
+        ],
+
+        [
+          "Give the feedback significant weight",
+          "Working effectively with the manager is important."
+        ],
+
+        [
+          "Ask Karan about the feedback before confirming the project",
+          "Give him a chance to respond."
+        ],
+
+        [
+          "Move the project to someone easier to manage",
+          "Avoid additional management friction."
+        ]
+
       ],
 
-      [
-        'Meera presents; Karan joins as support.',
-        'You give the project owner the opportunity to lead the conversation.'
-      ],
+      scores:[
 
-      [
-        'Karan presents this time; Meera takes the next comparable forum.',
-        'You keep the immediate meeting low-risk and create a future exposure commitment.'
+        [5,4,5,4],
+        [2,2,2,2],
+        [5,4,5,5],
+        [1,1,2,1]
+
       ]
 
+    }
+
+  ],
+
+  carry:
+    "Karan's project exposure now reflects the way the manager separated performance from personal agreement."
+
+},
+
+
+/* CASE 4 */
+
+{
+  id:"c4",
+  day:"Wednesday",
+  time:"11:00 AM",
+  title:"A larger HR role is opening",
+
+  context:
+    "A Manager – HR role is opening. Before reviewing candidates, you need to establish what readiness should look like.",
+
+  chips:[
+    "Talent review",
+    "Promotion",
+    "Criteria first"
+  ],
+
+  candidates:[
+    "karan",
+    "neha"
+  ],
+
+  evidence:[
+
+    [
+      "Role profile",
+      "Broader ownership, independent judgement, stakeholder management, handling complexity and developing others."
     ],
 
-    consequence:[
-      'The meeting works. Afterwards, Meera asks what she would need to demonstrate to lead the next forum.'
+    [
+      "Karan",
+      "Deputy Manager – HR. Performance 4.0/5. High Potential. Strong judgement. Limited evidence of developing others."
+    ],
+
+    [
+      "Neha",
+      "Sr. Executive – HR. Performance 4.3/5. High Potential. Strong recent results. Less leadership exposure."
     ]
+
+  ],
+
+  steps:[
+
+    {
+
+      q:"Before reviewing the candidates, which criteria do you set?",
+
+      choices:[
+
+        [
+          "Use role requirements, sustained performance, readiness and evidence of broader responsibility",
+          "Set criteria before candidate preference influences the review."
+        ],
+
+        [
+          "Use current performance rating and stakeholder exposure",
+          "Prioritise established performance signals and visibility."
+        ],
+
+        [
+          "Use tenure, performance and potential",
+          "Use tenure alongside the standard talent indicators."
+        ],
+
+        [
+          "Use the Business Head and HR Head recommendations",
+          "Start with the strongest senior views."
+        ]
+
+      ],
+
+      scores:[
+
+        [5,5,5,5],
+        [3,3,3,3],
+        [2,2,2,2],
+        [2,2,2,2]
+
+      ]
+
+    },
+
+    {
+
+      q:"What do you review before the final recommendation?",
+
+      choices:[
+
+        [
+          "Performance, promotion history, potential history, projects, development and feedback",
+          "Use a comparable evidence set across both candidates."
+        ],
+
+        [
+          "Recent performance and stakeholder feedback",
+          "Keep the review focused on current signals."
+        ],
+
+        [
+          "Tenure and current rating",
+          "Use established indicators and time in role."
+        ],
+
+        [
+          "Only the evidence supporting your initial preference",
+          "Keep the review efficient."
+        ]
+
+      ],
+
+      scores:[
+
+        [5,5,4,5],
+        [3,3,3,3],
+        [2,2,2,2],
+        [1,1,1,1]
+
+      ]
+
+    },
+
+    {
+
+      q:"Who do you recommend?",
+
+      choices:[
+
+        [
+          "Karan",
+          "Stronger evidence of operating independently at the next level."
+        ],
+
+        [
+          "Neha",
+          "Higher current rating with strong recent performance and high potential."
+        ],
+
+        [
+          "Seek more evidence before recommending",
+          "The available evidence is not yet enough for a firm recommendation."
+        ],
+
+        [
+          "Use the Business Head's preferred candidate",
+          "Follow the senior business recommendation."
+        ]
+
+      ],
+
+      scores:[
+
+        [4,4,4,4],
+        [4,4,4,4],
+        [4,4,4,4],
+        [2,2,2,2]
+
+      ]
+
+    }
+
+  ],
+
+  candidateMessages:{
+
+    karan:
+      "I've already been handling work beyond my current role. I think the step up is realistic.",
+
+    neha:
+      "I know I haven't had the same visibility. I'd still like to be considered on what I've actually delivered."
+
   },
 
+  newEvidence:
+    "Additional evidence: Karan has strong stakeholder experience but limited evidence of developing others. Neha recently handled a difficult assignment independently and supported Sakshi through it.",
 
-  /* -------------------------------------------------------
-     S5
-  ------------------------------------------------------- */
+  carry:
+    "The promotion recommendation is now on record. The evidence you used and the criteria you established can be reviewed in the final report."
 
-  {
-    id:'s5',
-    day:'Wednesday',
-    time:'9:50 AM',
-    title:'The recognition note',
+},
 
-    context:
-      'A project has gone well. Karan presented it, Riya coordinated the moving parts, and Arjun fixed a reporting issue that almost delayed launch.',
 
-    feed:[
-      msg(
-        'karan',
-        'Karan',
-        'The leadership team was very positive yesterday. They appreciated how quickly we turned it around.'
-      )
+/* CASE 5 */
+
+{
+  id:"c5",
+  day:"Thursday",
+  time:"10:05 AM",
+  title:"One external development seat",
+
+  context:
+    "There is one seat on an expensive external HR leadership programme. Rohan has attended leadership programmes before. Neha has not.",
+
+  chips:[
+    "Development",
+    "One seat",
+    "Access history"
+  ],
+
+  evidence:[
+
+    [
+      "Rohan's development",
+      "HR Leadership Programme in FY24 and Advanced ER Masterclass in FY25."
     ],
 
-    info:[
-
-      [
-        'Contribution log',
-        'The project tracker shows Riya owned the coordination calendar and closed 18 dependencies. Arjun rebuilt a failing report on Sunday evening.'
-      ]
-
+    [
+      "Neha's development",
+      "No external HR programme in the last three years."
     ],
 
-    question:
-      'You have one formal recognition slot. What do you do?',
-
-    choices:[
-
-      [
-        'Recognise the project team and name the different contributions publicly.',
-        'You make contribution visible instead of tying recognition only to the person seen in the room.'
-      ],
-
-      [
-        'Recognise Karan because he represented the team with leadership.',
-        'You connect recognition to the visible outcome and senior-stakeholder impact.'
-      ],
-
-      [
-        'Recognise Riya because she carried the coordination load.',
-        'You recognise the person who kept the work moving day to day.'
-      ]
-
-    ],
-
-    consequence:[
-      'The note is shared with the wider HR team. The reaction from the quieter contributors is noticeably different depending on how specifically contributions are named.'
+    [
+      "HR Head's view",
+      "'Rohan has contributed a lot over the years. It would also be good recognition for him.'"
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S6
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s6',
-    day:'Wednesday',
-    time:'1:30 PM',
-    title:'The project owner',
+    {
 
-    context:
-      'A cross-functional HR improvement project needs a single owner. Karan is the safe choice. Riya and Arjun have not had many end-to-end opportunities.',
+      q:"What criteria will you use for the nomination?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'karan',
-        'Karan',
-        'I can take it. I already know the stakeholders and can get moving today.'
-      ),
+        [
+          "Current role need, development gap, future role requirement and past access",
+          "Balance business need with development need and prior opportunity."
+        ],
 
-      msg(
-        'arjun',
-        'Arjun',
-        'I’d also be interested. I’ve solved the reporting part of similar issues, but I’ve never owned the whole project.'
-      )
+        [
+          "Performance and potential",
+          "Use standard talent indicators as the main basis."
+        ],
 
-    ],
+        [
+          "Tenure and contribution",
+          "Use length of service and contribution as recognition factors."
+        ],
 
-    info:[
+        [
+          "Who will gain the most immediate business value",
+          "Prioritise near-term return from the programme."
+        ]
 
-      [
-        'Delivery pressure',
-        'The project has a firm six-week deadline and several stakeholders.'
       ],
 
-      [
-        'Capability view',
-        'Riya has strong execution; Arjun is technically strong; Karan has the strongest stakeholder network.'
+      scores:[
+
+        [5,5,5,5],
+        [3,3,3,3],
+        [2,3,3,2],
+        [3,4,3,3]
+
       ]
 
-    ],
+    },
 
-    question:
-      'What do you choose?',
+    {
 
-    choices:[
+      q:"Would tenure be one of your criteria?",
 
-      [
-        'Karan owns it, with Riya and Arjun leading two workstreams.',
-        'You protect delivery while creating clear ownership underneath the lead.'
+      choices:[
+
+        [
+          "Only as context, not as a standalone reason",
+          "Tenure may explain experience, but should not decide access by itself."
+        ],
+
+        [
+          "Yes. Longer tenure should generally get preference",
+          "Use tenure as a positive allocation factor."
+        ],
+
+        [
+          "No. Tenure should never be considered",
+          "Remove tenure entirely from the decision."
+        ],
+
+        [
+          "Yes, if performance is also strong",
+          "Use tenure together with contribution."
+        ]
+
       ],
 
-      [
-        'Riya owns it, with Karan as stakeholder support and Arjun on analytics.',
-        'You deliberately stretch someone who has had less end-to-end exposure.'
-      ],
+      scores:[
 
-      [
-        'Arjun owns the reporting-led project, with Karan handling stakeholders.',
-        'You use Arjun’s technical depth and pair it with stakeholder support.'
+        [5,5,4,5],
+        [2,2,3,2],
+        [3,3,3,3],
+        [3,3,3,3]
+
       ]
 
+    },
+
+    {
+
+      q:"Who gets the seat?",
+
+      choices:[
+
+        [
+          "Rohan",
+          "Recognise sustained contribution and experienced leadership."
+        ],
+
+        [
+          "Neha",
+          "Give the seat to a high-potential employee with less external exposure."
+        ],
+
+        [
+          "Rohan, with a defined development opportunity for Neha",
+          "Use the programme for Rohan and create another development commitment."
+        ],
+
+        [
+          "Defer until team needs are clearer",
+          "Hold the seat while gathering more context."
+        ]
+
+      ],
+
+      scores:[
+
+        [3,3,4,4],
+        [5,5,4,5],
+        [4,5,5,5],
+        [2,2,2,2]
+
+      ]
+
+    }
+
+  ],
+
+  carry:
+    "The development history now shows who received access and who did not. Any development commitment made to the other person is also recorded."
+
+},
+
+
+/* CASE 6 */
+
+{
+  id:"c6",
+  day:"Thursday",
+  time:"2:30 PM",
+  title:"The same process error, different impact",
+
+  context:
+    "Two HR team members used the same incorrect payroll approval process. One had no employee impact. The other resulted in 25 employees receiving salary one day late.",
+
+  chips:[
+    "Payroll",
+    "Consistency",
+    "Context"
+  ],
+
+  person:"karan",
+
+  message:
+    "I want to understand whether the action is based on the process error, the employee impact, or the fact that I raised the risk earlier.",
+
+  evidence:[
+
+    [
+      "Case A",
+      "No employee impact. Incorrect process followed once."
     ],
 
-    consequence:[
-      'The project starts. The way the support structure is set now will affect who gets visible ownership of the outcome six weeks later.'
+    [
+      "Case B",
+      "25 employees were paid one day late. Same incorrect process."
+    ],
+
+    [
+      "Additional context",
+      "Case B had identified the process weakness two weeks earlier and had already raised it."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S7
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s7',
-    day:'Thursday',
-    time:'10:05 AM',
-    title:'A familiar mistake',
+    {
 
-    context:
-      'Two similar process misses have happened this quarter. In the earlier case, a high-performing team member received an informal reminder. Sonal has made a similar miss now.',
+      q:"Should the corrective action be the same?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'sonal',
-        'Sonal',
-        'I know I missed the step. I’m happy to correct it. I just want to understand what you would expect from me because the earlier case was handled differently.'
-      )
+        [
+          "Start with the same standard, then consider relevant differences in context and impact",
+          "Use a consistent framework without assuming identical circumstances."
+        ],
 
-    ],
+        [
+          "Yes. Same error means same action",
+          "Apply the same response regardless of outcome or context."
+        ],
 
-    info:[
+        [
+          "No. Employee impact should determine the action",
+          "Let outcome be the main differentiator."
+        ],
 
-      [
-        'Earlier case',
-        'The previous miss was resolved informally because the employee corrected it immediately and the impact was limited.'
+        [
+          "Give the person who raised the risk more lenient treatment",
+          "Use prior escalation as the strongest mitigating factor."
+        ]
+
       ],
 
-      [
-        'Current case',
-        'Sonal’s miss had a similar process impact and was also corrected quickly.'
+      scores:[
+
+        [5,5,4,5],
+        [3,3,3,3],
+        [3,4,3,3],
+        [2,3,3,3]
+
       ]
 
-    ],
+    },
 
-    question:
-      'How do you respond?',
+    {
 
-    choices:[
+      q:"How do you handle the conversations?",
 
-      [
-        'Discuss the circumstances, compare the two cases and agree the same standard going forward.',
-        'You are willing to revisit the context rather than applying a reaction automatically.'
+      choices:[
+
+        [
+          "Explain the standard, the relevant differences and the action",
+          "Make the basis clear and comparable."
+        ],
+
+        [
+          "Focus only on employee impact",
+          "Keep the conversation outcome-focused."
+        ],
+
+        [
+          "Focus only on process adherence",
+          "Keep the discussion centred on the control failure."
+        ],
+
+        [
+          "Handle each case separately without comparison",
+          "Avoid comparison between employees."
+        ]
+
       ],
 
-      [
-        'Treat Sonal’s case separately based only on her current error.',
-        'You focus on the event in front of you and avoid being influenced by another case.'
-      ],
+      scores:[
 
-      [
-        'Give the same informal reminder and close it.',
-        'You seek consistency with the earlier handling.'
+        [5,5,5,5],
+        [2,3,3,2],
+        [3,3,4,3],
+        [2,2,3,2]
+
       ]
 
+    }
+
+  ],
+
+  carry:
+    "The team now has a clear record of how you distinguish consistent standards from identical treatment."
+
+},
+
+
+/* CASE 7 */
+
+{
+  id:"c7",
+  day:"Friday",
+  time:"10:30 AM",
+  title:"A concern about project allocation",
+
+  context:
+    "Neha asks for a private conversation and says she does not think high-visibility work is being allocated fairly.",
+
+  chips:[
+    "Opportunity allocation",
+    "Neha",
+    "Self-review"
+  ],
+
+  person:"neha",
+
+  message:
+    "I wanted to raise something. I don't think the way high-visibility projects are being allocated is working for everyone.",
+
+  evidence:[
+
+    [
+      "Neha's examples",
+      "She identifies four projects where Amit was selected and she was not."
     ],
 
-    consequence:[
-      'Sonal leaves with greater clarity when the basis of the decision is explained. You also notice the usefulness of keeping a consistent record of how similar situations are handled.'
+    [
+      "Actual allocation history",
+      "Last 10 high-visibility projects: Amit 7 · Karan 2 · Rohan 1 · Neha 0 · Meera 0 · Sakshi 0."
+    ],
+
+    [
+      "Amit's record",
+      "Performance 4.2/5, High Potential and 3 recent high-visibility assignments."
+    ],
+
+    [
+      "Neha's record",
+      "Performance 4.3/5, High Potential and no recent leadership-facing assignment."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S8
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s8',
-    day:'Thursday',
-    time:'2:15 PM',
-    title:'“What do I need to do?”',
+    {
 
-    context:
-      'Riya comes back to the desk after her earlier conversation.',
+      q:"What do you do with the concern?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'riya',
-        'Riya',
-        'I’ve been thinking about our conversation. I don’t want you to give me bigger work just because I asked. What would you actually need to see from me for you to trust me with it?'
-      )
+        [
+          "Review the allocation history and criteria used for recent projects",
+          "Test the perception against your own decision record."
+        ],
 
-    ],
+        [
+          "Explain that Amit receives the work because he performs well",
+          "Defend the existing allocation logic."
+        ],
 
-    info:[
+        [
+          "Tell Neha to focus on improving visibility",
+          "Make her development the immediate response."
+        ],
 
-      [
-        'Recent example',
-        'She independently closed a difficult employee-movement tracker after the original owner dropped out.'
+        [
+          "Change the next assignment to Neha immediately",
+          "Respond to the concern through allocation."
+        ]
+
       ],
 
-      [
-        'Career note',
-        'Her last development conversation focused on execution quality, but did not define a specific next-step assignment.'
+      scores:[
+
+        [5,5,5,5],
+        [2,2,3,3],
+        [2,3,4,2],
+        [3,5,4,3]
+
       ]
 
-    ],
+    },
 
-    question:
-      'How do you answer?',
+    {
 
-    choices:[
+      q:"The pattern is clear. What do you do next?",
 
-      [
-        'Give her two specific behaviours and a real assignment that lets her demonstrate them.',
-        'You turn ambition into observable evidence and a concrete opportunity.'
+      choices:[
+
+        [
+          "Define clearer criteria for high-visibility work and review upcoming allocations",
+          "Address the process as well as the individual concern."
+        ],
+
+        [
+          "Continue allocating based on who is most capable",
+          "Keep capability as the main decision rule."
+        ],
+
+        [
+          "Rotate opportunities evenly from now on",
+          "Use equal rotation as the primary solution."
+        ],
+
+        [
+          "Give Neha the next major project to correct the imbalance",
+          "Address the immediate pattern through one allocation."
+        ]
+
       ],
 
-      [
-        'Tell her to keep performing consistently and the opportunity will come.',
-        'You keep the message broad and leave the timing open.'
-      ],
+      scores:[
 
-      [
-        'Tell her she needs more experience before larger ownership.',
-        'You set a conservative expectation based on her current level.'
+        [5,5,5,5],
+        [3,3,3,3],
+        [4,5,4,4],
+        [3,5,4,4]
+
       ]
 
+    }
+
+  ],
+
+  carry:
+    "Your own allocation history is now visible to you as evidence. Future opportunities can be assigned using a clearer basis."
+
+},
+
+
+/* CASE 8 */
+
+{
+  id:"c8",
+  day:"Friday",
+  time:"3:20 PM",
+  title:"The urgent workforce project",
+
+  context:
+    "The HR Head needs a critical workforce intervention in ten days. Rohan is the strongest immediate delivery option, but he already has the highest workload.",
+
+  chips:[
+    "Capacity",
+    "Business urgency",
+    "Stretch opportunity"
+  ],
+
+  person:"rohan",
+
+  message:
+    "I can take it. But being dependable seems to mean I automatically get the difficult assignments.",
+
+  evidence:[
+
+    [
+      "Current workload",
+      "Rohan has the highest workload. Amit, Karan, Neha and Meera are at moderate capacity. Sakshi is ramping up."
     ],
 
-    consequence:[
-      'Riya now knows what “ready for more” is expected to look like. That clarity will matter in later talent discussions.'
+    [
+      "Capability",
+      "Rohan has the strongest immediate delivery track record for complex assignments."
+    ],
+
+    [
+      "Opportunity history",
+      "Rohan has also received more critical assignments than other team members."
+    ],
+
+    [
+      "Team readiness",
+      "Karan and Neha can take stretch responsibilities with defined support."
     ]
-  },
 
+  ],
 
-  /* -------------------------------------------------------
-     S9
-  ------------------------------------------------------- */
+  steps:[
 
-  {
-    id:'s9',
-    day:'Thursday',
-    time:'4:30 PM',
-    title:'The person nobody asked',
+    {
 
-    context:
-      'The team is planning next month’s new HR dashboard. In the conversation, Amit and Karan quickly begin dividing the visible pieces between themselves.',
+      q:"Who should lead the 10-day project?",
 
-    feed:[
+      choices:[
 
-      msg(
-        'arjun',
-        'Arjun',
-        'I can take the data model and the first version of the dashboard if that helps.'
-      ),
+        [
+          "Rohan, but reduce or redistribute existing work first",
+          "Protect delivery while addressing the workload issue."
+        ],
 
-      msg(
-        'pooja',
-        'Pooja',
-        'I’d like to learn how it works too. I can take some of the data cleaning if there’s a defined task.'
-      )
+        [
+          "Rohan without changing his workload",
+          "Use the strongest executor and keep the rest of the team stable."
+        ],
 
-    ],
+        [
+          "Karan",
+          "Give a high-potential team member a stretch opportunity."
+        ],
 
-    info:[
+        [
+          "Neha",
+          "Give a capable but less visible team member the lead."
+        ]
 
-      [
-        'Team pattern',
-        'Amit and Karan tend to speak early in group discussions. Arjun and Pooja usually wait until someone asks them directly.'
+      ],
+
+      scores:[
+
+        [5,5,5,5],
+        [2,2,2,2],
+        [4,5,4,4],
+        [4,5,4,4]
+
       ]
 
-    ],
+    },
 
-    question:
-      'What do you do in the room?',
+    {
 
-    choices:[
+      q:"How do you structure the work?",
 
-      [
-        'Pause the discussion and ask each person what part they would like to own.',
-        'You create a deliberate opening rather than relying on who speaks first.'
+      choices:[
+
+        [
+          "Rohan leads the critical piece; Karan or Neha owns a defined workstream",
+          "Use capability and stretch together."
+        ],
+
+        [
+          "Keep Rohan as sole owner because the timeline is tight",
+          "Minimise delivery risk."
+        ],
+
+        [
+          "Give the whole project to Karan as a stretch",
+          "Use the assignment mainly as development."
+        ],
+
+        [
+          "Ask everyone to volunteer",
+          "Let the team decide ownership themselves."
+        ]
+
       ],
 
-      [
-        'Let the strongest voices divide the work, then check the plan afterwards.',
-        'You allow the team to self-organise and review the result later.'
-      ],
+      scores:[
 
-      [
-        'Assign the work yourself based on capability.',
-        'You use what you know about each person rather than waiting for preferences.'
+        [5,5,5,5],
+        [2,2,2,2],
+        [3,5,4,4],
+        [3,4,4,3]
+
       ]
 
-    ],
+    }
 
-    consequence:[
-      'The meeting changes once everyone is asked to put their hand up. A quieter team member takes visible ownership of a piece that would otherwise have gone to a familiar name.'
-    ]
-  },
+  ],
 
+  carry:
+    "The week closes with a capacity decision that affects delivery, workload and future opportunity access across the team."
 
-  /* -------------------------------------------------------
-     PROMOTION 1
-  ------------------------------------------------------- */
-
-  {
-    id:'p1',
-    day:'Friday',
-    time:'10:00 AM',
-    title:'A role is opening',
-    type:'promotion',
-
-    context:
-      'People Review is next week. One role is opening for a higher-responsibility HR position. It will involve independent project ownership, senior stakeholder management, mentoring others and broader decision-making.',
-
-    feed:[
-
-      msg(
-        'manager',
-        'You',
-        'You open the role note before the review meeting. The role requires sustained delivery, independence, judgement, stakeholder management, people leadership and ownership beyond the current job.'
-      )
-
-    ],
-
-    candidates:[
-      'amit',
-      'karan',
-      'riya'
-    ],
-
-    info:[
-
-      [
-        'Role expectations',
-        'The role is broader than the candidates’ current responsibilities. Consistent performance matters, but so does evidence of readiness for the next level.'
-      ],
-
-      [
-        'Available evidence',
-        'You can review project history, performance feedback, development conversations, recognition, and examples of independent ownership.'
-      ]
-
-    ],
-
-    question:
-      'Before you form a view, which evidence do you want to inspect?',
-
-    choices:[
-
-      [
-        'Performance + project ownership + development conversations.',
-        'You want evidence of both current delivery and readiness for broader responsibility.'
-      ],
-
-      [
-        'Performance + stakeholder feedback.',
-        'You focus on recent delivery and how others experience the person in the role.'
-      ],
-
-      [
-        'Tenure + recent results + manager recommendation.',
-        'You start with the established indicators already used in talent discussions.'
-      ]
-
-    ],
-
-    consequence:[
-      'You choose what to look at first. The order matters because the first story you see can shape the way you interpret everything that follows.'
-    ],
-
-    promotionStep:1
-  },
-
-
-  /* -------------------------------------------------------
-     PROMOTION 2
-  ------------------------------------------------------- */
-
-  {
-    id:'p2',
-    day:'Friday',
-    time:'11:05 AM',
-    title:'The names on the page',
-    type:'promotion',
-
-    context:
-      'Three people stand out for different reasons. A senior leader has already said Amit is dependable. Karan has strong stakeholder exposure. Riya has a strong execution record but fewer visible assignments.',
-
-    candidates:[
-      'amit',
-      'karan',
-      'riya'
-    ],
-
-    info:[
-
-      [
-        'Amit',
-        'Five years in HR. Frequently trusted with urgent work. Two recent projects show strong delivery, but one required your intervention during the final week.'
-      ],
-
-      [
-        'Karan',
-        'Four and a half years. Strong senior relationships and repeated leadership exposure. His project history shows consistent stakeholder influence.'
-      ],
-
-      [
-        'Riya',
-        'Three and a half years. Strong execution and difficult coordination work. Fewer end-to-end assignments; one recent project was independently rescued after the original owner dropped out.'
-      ]
-
-    ],
-
-    feed:[
-
-      msg(
-        'karan',
-        'Karan',
-        'I’ve been operating at a broader level for a while. I think experience and the kind of stakeholder work I’ve already been doing should count.'
-      ),
-
-      msg(
-        'riya',
-        'Riya',
-        'I know I haven’t had the same number of visible opportunities. I’d still like to be considered on what I’ve actually delivered and what I’ve shown I can take on.'
-      ),
-
-      msg(
-        'amit',
-        'Amit',
-        'I’ve had the chance to demonstrate I can handle pressure and deliver when the stakes are high.'
-      )
-
-    ],
-
-    question:
-      'What do you do next?',
-
-    choices:[
-
-      [
-        'Speak to each candidate before forming a final recommendation.',
-        'You want to test the evidence against each person’s own perspective and examples.'
-      ],
-
-      [
-        'Take the senior leader’s view and recent performance as the main signal.',
-        'You use the strongest existing signals to keep the decision practical.'
-      ],
-
-      [
-        'Focus on the candidate whose current role is closest to the opening.',
-        'You prioritise immediate transferability into the new role.'
-      ]
-
-    ],
-
-    consequence:[
-      'The conversations surface different examples of ownership, judgement and exposure. You now have more information than you had when the names first appeared on the page.'
-    ],
-
-    promotionStep:2
-  },
-
-
-  /* -------------------------------------------------------
-     PROMOTION 3
-  ------------------------------------------------------- */
-
-  {
-    id:'p3',
-    day:'Friday',
-    time:'12:20 PM',
-    title:'One last piece of evidence',
-    type:'promotion',
-
-    context:
-      'Before the review, you check one final set of project notes. The record is more mixed than the first impression.',
-
-    info:[
-
-      [
-        'New evidence — Amit',
-        'His strongest project was high-impact, but the project log shows that you personally stepped in twice to unblock delivery.'
-      ],
-
-      [
-        'New evidence — Karan',
-        'He has strong senior exposure, but his last two projects involved established stakeholder relationships and limited people-leadership responsibility.'
-      ],
-
-      [
-        'New evidence — Riya',
-        'Her recent workforce project had a difficult escalation. She resolved it independently, documented the decision trail, and coached a junior coordinator through the close-out.'
-      ]
-
-    ],
-
-    question:
-      'Who are you recommending for the role?',
-
-    candidates:[
-      'amit',
-      'karan',
-      'riya'
-    ],
-
-    choices:[
-
-      [
-        'Amit',
-        'Strong pressure-handling and sustained delivery record.'
-      ],
-
-      [
-        'Karan',
-        'Strong stakeholder management and visible leadership exposure.'
-      ],
-
-      [
-        'Riya',
-        'Strong execution with newer evidence of independent judgement and ownership.'
-      ],
-
-      [
-        'I need more evidence before deciding',
-        'You decide the available record is not sufficient for a promotion recommendation.'
-      ]
-
-    ],
-
-    reasonChoices:[
-      'Consistent performance',
-      'Readiness for broader responsibility',
-      'Leadership / mentoring',
-      'Stakeholder management',
-      'Independent judgement',
-      'Business impact',
-      'Potential for the next role',
-      'Experience / tenure'
-    ],
-
-    consequence:[
-      'The recommendation is recorded. The next conversation is not the end of the decision — the person selected will need a clear transition plan, and the people not selected will need a clear explanation of what they should build next.'
-    ],
-
-    promotionStep:3
-  },
-
-
-  /* -------------------------------------------------------
-     PROMOTION 4
-  ------------------------------------------------------- */
-
-  {
-    id:'p4',
-    day:'Friday',
-    time:'3:10 PM',
-    title:'The conversation afterwards',
-    type:'promotion',
-
-    context:
-      'You now have two conversations to handle. One person asks what made the difference. Another asks what they need to demonstrate to be ready next time.',
-
-    feed:[
-
-      msg(
-        'riya',
-        'Riya',
-        'I’d like to understand the decision. Not just who got it — what evidence did you feel I was missing?'
-      ),
-
-      msg(
-        'karan',
-        'Karan',
-        'I respect the process. I also want to know what I should change if the next role opens.'
-      )
-
-    ],
-
-    question:
-      'How do you structure the feedback?',
-
-    choices:[
-
-      [
-        'Explain the evidence used, the role requirements and the specific gaps or next steps.',
-        'You connect the conversation to observable expectations rather than personal preference.'
-      ],
-
-      [
-        'Explain who was selected and keep the detail limited to avoid debate.',
-        'You aim to keep the conversation brief and controlled.'
-      ],
-
-      [
-        'Focus mainly on what the employee should improve from here.',
-        'You use the conversation as a forward-looking development discussion.'
-      ]
-
-    ],
-
-    consequence:[
-      'The week ends with two different conversations, but both are easier when the basis for decisions has been clear throughout the process.'
-    ],
-
-    promotionStep:4
-  }
+}
 
 ];
 
 
 /* =========================================================
-   HELPERS
+   OPENING / TEAM
 ========================================================= */
 
-function msg(
-  personId,
-  from,
-  text
-){
-  return {
-    personId,
-    from,
-    text
-  };
+function show(id){
+  document
+    .getElementById(id)
+    .classList
+    .remove("hidden")
 }
 
 
-let session = {
-  manager:{},
-  responses:[],
-  scenarioIndex:0,
-  selected:null,
-  infoViewed:[],
-  startedAt:null
-};
+function hide(id){
+  document
+    .getElementById(id)
+    .classList
+    .add("hidden")
+}
 
 
-/* =========================================================
-   LOGIN
-========================================================= */
-
-function startSimulation(){
+function start(){
 
   const name =
     document
-      .getElementById('managerName')
+      .getElementById("managerName")
       .value
       .trim();
 
   const id =
     document
-      .getElementById('employeeId')
+      .getElementById("managerId")
       .value
       .trim();
 
   const email =
     document
-      .getElementById('email')
+      .getElementById("managerEmail")
       .value
       .trim();
 
-  if(!name || !id || !email){
+
+  if(
+    !name ||
+    !id ||
+    !email
+  ){
 
     alert(
-      'Please enter your name, employee ID and work email.'
+      "Please enter your name, employee ID and work email."
     );
 
     return;
   }
 
-  session.manager = {
+
+  S.manager = {
     name,
     id,
     email
   };
 
-  session.startedAt =
+
+  S.startedAt =
     new Date().toISOString();
 
+
   document
-    .getElementById('topName')
+    .getElementById("topManager")
     .textContent = name;
 
-  document
-    .getElementById('loginScreen')
-    .classList.add('hidden');
 
-  document
-    .getElementById('introScreen')
-    .classList.remove('hidden');
+  hide("loginScreen");
 
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
+  show("openingScreen");
 
-}
-
-
-/* =========================================================
-   START WEEK
-========================================================= */
-
-function startWeek(){
-
-  document
-    .getElementById('introScreen')
-    .classList.add('hidden');
-
-  document
-    .getElementById('simScreen')
-    .classList.remove('hidden');
-
-  renderTimeline();
-
-  renderScenario();
-
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
-
-}
-
-
-/* =========================================================
-   TIMELINE
-========================================================= */
-
-function renderTimeline(){
-
-  const side =
-    document.getElementById('timeline');
-
-  const days = [];
-
-  let current = '';
-  let count = 0;
-
-  scenarios.forEach(
-    (s,i) => {
-
-      if(s.day !== current){
-
-        current = s.day;
-
-        count++;
-
-        days.push({
-          day:s.day,
-          n:count,
-          first:i
-        });
-
-      }
-
-    }
+  addActivity(
+    "Simulation started",
+    "Your desk is ready."
   );
 
-  side.innerHTML =
-    `<div class="side-title">The week</div>` +
+}
 
-    days
-      .map(
-        d => `
 
-          <div
-            class="day ${
-              scenarios[session.scenarioIndex].day === d.day
-                ? 'active'
-                : ''
-            }"
+function beginTeam(){
+
+  hide("openingScreen");
+
+  show("introScreen");
+
+  renderIntro(0);
+
+}
+
+
+let introI=0;
+
+
+function renderIntro(i){
+
+  introI=i;
+
+  const p =
+    team[i];
+
+
+  document
+    .getElementById("introEyebrow")
+    .textContent =
+      `Your team · ${i+1} of ${team.length}`;
+
+
+  document
+    .getElementById("introPerson")
+    .innerHTML = `
+
+      <div class="introGrid">
+
+        <div class="portraitLarge">
+
+          <img
+            src="${faceSVG(p)}"
+            alt="${p.name}"
           >
 
-            <span class="n">
-              ${d.n}
-            </span>
+        </div>
 
-            ${d.day}
+
+        <div>
+
+          <div class="gradeLine">
+            ${p.grade} · ${p.years}
+          </div>
+
+          <div class="personName">
+            ${p.name}
+          </div>
+
+
+          <div class="stats">
+
+            <div class="stat">
+
+              <span>
+                Performance
+              </span>
+
+              <b>
+                ${p.performance}
+              </b>
+
+            </div>
+
+
+            <div class="stat">
+
+              <span>
+                Potential
+              </span>
+
+              <b>
+                ${p.potential}
+              </b>
+
+            </div>
+
+
+            <div class="stat">
+
+              <span>
+                Experience
+              </span>
+
+              <b>
+                ${p.experience}
+              </b>
+
+            </div>
 
           </div>
 
-        `
-      )
-      .join('') +
 
-    `
+          <div class="cueGrid">
 
-      <div class="private-note">
+            <div class="cue">
 
-        Your choices are saved locally in this prototype.
-        The HR review layer would analyse repeated patterns
-        across the full week.
+              <span>
+                Known for
+              </span>
+
+              <p>
+                ${p.behavior.join(" · ")}
+              </p>
+
+            </div>
+
+
+            <div class="cue">
+
+              <span>
+                Aspires to
+              </span>
+
+              <p>
+                ${p.aspiration}
+              </p>
+
+            </div>
+
+
+            <div
+              class="cue"
+              style="grid-column:1/-1"
+            >
+
+              <span>
+                In the team
+              </span>
+
+              <p>
+                ${p.dynamic}
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="introBottom">
+
+            <button
+              class="btn small"
+              onclick="openRecord('${p.id}')"
+            >
+              View full record
+            </button>
+
+
+            <button
+              class="btn primary"
+              onclick="nextIntro()"
+            >
+              ${
+                i < team.length-1
+                  ? "Next"
+                  : "See the team in action"
+              }
+            </button>
+
+          </div>
+
+        </div>
 
       </div>
 
-    `;
+  `;
 
 }
 
 
-/* =========================================================
-   SCENARIO RENDER
-========================================================= */
+function nextIntro(){
 
-function renderScenario(){
+  if(
+    introI <
+    team.length - 1
+  ){
 
-  const s =
-    scenarios[session.scenarioIndex];
-
-  session.selected = null;
-  session.infoViewed = [];
-
-  document
-    .getElementById('scenarioTime')
-    .textContent = s.time;
-
-  document
-    .getElementById('scenarioContext')
-    .textContent =
-      s.day +
-      ' · ' +
-      (
-        s.type === 'promotion'
-          ? 'People review'
-          : 'Team management'
-      );
-
-  document
-    .getElementById('progressPill')
-    .textContent =
-      `${session.scenarioIndex + 1} / ${scenarios.length}`;
-
-
-  let html = `
-
-    <div class="scene-head">
-
-      <div class="eyebrow">
-        ${s.day} — ${s.time}
-      </div>
-
-      <h2>
-        ${s.title}
-      </h2>
-
-      <p>
-        ${s.context}
-      </p>
-
-    </div>
-
-    <div class="feed">
-
-  `;
-
-
-  /* ---------------------------------------------
-     FEED
-  --------------------------------------------- */
-
-  if(s.feed){
-
-    s.feed.forEach(
-      m => {
-
-        const p =
-          people.find(
-            x => x.id === m.personId
-          );
-
-        const isManager =
-          m.personId === 'manager';
-
-
-        if(isManager){
-
-          html += `
-
-            <div class="message manager">
-
-              <img
-                class="mini"
-                src="${portraitSVG({
-                  skin:'#b8896f',
-                  hair:'#253038',
-                  shirt:'#3f5e61',
-                  bg:'#e8eeee',
-                  face:'manager'
-                })}"
-              />
-
-              <div class="bubble manager">
-
-                <div class="meta">
-                  You
-                </div>
-
-                ${m.text}
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-
-        else{
-
-          html += `
-
-            <div class="message">
-
-              <img
-                class="mini"
-                src="${portraitSVG(p)}"
-              />
-
-              <div class="bubble">
-
-                <div class="meta">
-                  ${m.from} · ${p.role}
-                </div>
-
-                ${m.text}
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-
-      }
+    renderIntro(
+      introI + 1
     );
 
   }
 
+  else{
 
-  /* ---------------------------------------------
-     CANDIDATES
-  --------------------------------------------- */
+    hide("introScreen");
 
-  if(s.candidates){
+    show("morningScreen");
 
-    html += `
-
-      <div style="margin-top:3px">
-
-        <div class="eyebrow">
-          People in consideration
-        </div>
-
-        <div class="candidate-grid">
-
-          ${s.candidates
-            .map(
-              id => candidateCard(id)
-            )
-            .join('')}
-
-        </div>
-
-      </div>
-
-    `;
+    renderMorning();
 
   }
 
+}
 
-  /* ---------------------------------------------
-     INFORMATION BUTTONS
-  --------------------------------------------- */
 
-  html += `
+function renderMorning(){
 
-    <div class="info-row">
+  const peopleLine = [
 
-      ${(s.info || [])
-        .map(
-          (x,i) => `
+    [
+      "rohan",
+      "Rohan",
+      "I have two items from last week's review to close."
+    ],
 
-            <button
-              class="info-btn"
-              onclick="openInfo(${i})"
+    [
+      "amit",
+      "Amit",
+      "Have you seen the leadership review agenda?"
+    ],
+
+    [
+      "karan",
+      "Karan",
+      "There is one part of the workforce plan I want to revisit."
+    ],
+
+    [
+      "neha",
+      "Neha",
+      "I've sent the updated tracker."
+    ],
+
+    [
+      "meera",
+      "Meera",
+      "The governance calendar needs one correction."
+    ],
+
+    [
+      "sakshi",
+      "Sakshi",
+      "I can pick up the tracker once the review is done."
+    ]
+
+  ];
+
+
+  document
+    .getElementById("morningStage")
+    .innerHTML = `
+
+      <div class="morningFloor"></div>
+
+      <div class="morningDesk"></div>
+
+      ${
+        peopleLine.map(
+
+          (x,i) => {
+
+            const p =
+              team.find(
+                t => t.id === x[0]
+              );
+
+            return `
+
+              <div
+                class="staff s${i+1}"
+              >
+
+                <div class="staffFace">
+
+                  <img
+                    src="${faceSVG(p)}"
+                    alt="${p.name}"
+                  >
+
+                </div>
+
+                <div class="staffName">
+                  ${x[1]}
+                </div>
+
+                <div class="staffRole">
+                  ${p.grade.split("–")[0].trim()}
+                </div>
+
+              </div>
+
+            `;
+
+          }
+
+        ).join("")
+
+      }
+
+  `;
+
+
+  document
+    .getElementById("morningFeed")
+    .innerHTML =
+
+    peopleLine.map(
+
+      x => `
+
+        <div class="morningMsg">
+
+          <b>
+            ${x[1]}
+          </b>
+
+          <p>
+            ${x[2]}
+          </p>
+
+        </div>
+
+      `
+
+    ).join("");
+
+}
+
+
+function enterDesk(){
+
+  hide("morningScreen");
+
+  show("simulationScreen");
+
+  renderTeamBar();
+
+  renderLeftNav();
+
+  renderActivity();
+
+  scheduleAutomation();
+
+  renderCase();
+
+}
+
+
+/* =========================================================
+   TEAM BAR
+========================================================= */
+
+function renderTeamBar(){
+
+  document
+    .getElementById("teamBar")
+    .innerHTML =
+
+    `<div class="teamLabel">
+      Team
+    </div>` +
+
+    team.map(
+
+      p => `
+
+        <button
+          class="teamPill"
+          onclick="openRecord('${p.id}')"
+        >
+
+          <span class="teamThumb">
+
+            <img
+              src="${faceSVG(p)}"
+              alt="${p.name}"
             >
-              + ${x[0]}
-            </button>
 
-          `
-        )
-        .join('')}
+          </span>
+
+
+          <span>
+
+            <b>
+              ${p.name.split(" ")[0]}
+            </b>
+
+            <small>
+              ${p.grade.split("–")[0].trim()}
+            </small>
+
+          </span>
+
+        </button>
+
+      `
+
+    ).join("");
+
+}
+
+
+/* =========================================================
+   LEFT NAV
+========================================================= */
+
+function renderLeftNav(){
+
+  document
+    .getElementById("leftNav")
+    .innerHTML = `
+
+      <div class="navTitle">
+        Workday
+      </div>
+
+
+      <div class="navItem active">
+        <span class="navIcon">
+          ⌂
+        </span>
+        Desk
+      </div>
+
+
+      <div class="navItem">
+        <span class="navIcon">
+          ✉
+        </span>
+        Inbox
+      </div>
+
+
+      <div class="navItem">
+        <span class="navIcon">
+          ◷
+        </span>
+        Calendar
+      </div>
+
+
+      <div class="navItem">
+        <span class="navIcon">
+          ◎
+        </span>
+        Team
+      </div>
+
+
+      <div class="navItem">
+        <span class="navIcon">
+          ▤
+        </span>
+        Talent
+      </div>
+
+
+      <div class="navItem">
+        <span class="navIcon">
+          ✓
+        </span>
+        HR tasks
+      </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+function renderActivity(){
+
+  const activity =
+    [
+      ...S.activity
+    ].reverse();
+
+
+  document
+    .getElementById("activityPanel")
+    .innerHTML =
+
+    `<div class="actTitle">
+      Live activity
+    </div>` +
+
+    (
+
+      activity.length
+
+        ?
+
+      activity.map(
+
+        x => `
+
+          <div class="activityItem">
+
+            <b>
+              ${x.title}
+            </b>
+
+            <span>
+              ${x.text}
+            </span>
+
+          </div>
+
+        `
+
+      ).join("")
+
+        :
+
+      `<div class="activityItem">
+        <span>
+          No new activity.
+        </span>
+      </div>`
+
+    );
+
+}
+
+
+function addActivity(title,text){
+
+  S.activity.push({
+
+    title,
+
+    text,
+
+    time:
+      new Date().toLocaleTimeString(
+        [],
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      )
+
+  });
+
+
+  if(
+    document.getElementById(
+      "activityPanel"
+    )
+  ){
+
+    renderActivity();
+
+  }
+
+}
+
+
+/* =========================================================
+   TOASTS / NOTIFICATIONS
+========================================================= */
+
+function toast(title,text){
+
+  const stack =
+    document.getElementById(
+      "toastStack"
+    );
+
+
+  const el =
+    document.createElement(
+      "div"
+    );
+
+
+  el.className="toast";
+
+
+  el.innerHTML = `
+
+    <div class="toastTop">
+
+      <b>
+        ${title}
+      </b>
+
+      <span class="toastTime">
+        now
+      </span>
+
+    </div>
+
+    <p>
+      ${text}
+    </p>
+
+  `;
+
+
+  stack.appendChild(el);
+
+
+  setTimeout(
+    () => el.remove(),
+    5600
+  );
+
+}
+
+
+function notifyPerson(id,text){
+
+  const p =
+    team.find(
+      x => x.id === id
+    );
+
+
+  const rail =
+    document.getElementById(
+      "notificationRail"
+    );
+
+
+  const el =
+    document.createElement(
+      "div"
+    );
+
+
+  el.className =
+    "liveNotif";
+
+
+  el.innerHTML = `
+
+    <div class="miniCircle">
+
+      <img
+        src="${faceSVG(p)}"
+        alt="${p.name}"
+      >
+
+    </div>
+
+
+    <div>
+
+      <b>
+        ${p.name}
+      </b>
+
+      <span>
+        ${text}
+      </span>
 
     </div>
 
   `;
 
 
-  /* ---------------------------------------------
-     PROMOTION EVIDENCE
-  --------------------------------------------- */
+  rail.appendChild(el);
 
-  if(
-    s.type === 'promotion' &&
-    s.id === 'p3'
-  ){
 
-    html += `
+  setTimeout(
+    () => el.remove(),
+    5400
+  );
 
-      <div class="evidence show">
+}
 
-        <h4>
-          Evidence available before the review
-        </h4>
 
-        <ul>
+function scheduleAutomation(){
 
-          ${s.info
-            .map(
-              x => `
-                <li>
-                  <b>${x[0]}</b> — ${x[1]}
-                </li>
-              `
-            )
-            .join('')}
+  setTimeout(
 
-        </ul>
+    () => {
 
+      toast(
+        "09:09 AM · Teams",
+        "Riya has sent you a message before the team check-in."
+      );
+
+      notifyPerson(
+        "neha",
+        "New message"
+      );
+
+      addActivity(
+        "Teams",
+        "A new employee message has arrived."
+      );
+
+    },
+
+    1200
+
+  );
+
+
+  setTimeout(
+
+    () => {
+
+      toast(
+        "10:15 AM · HR governance",
+        "A governance item needs your attention."
+      );
+
+      addActivity(
+        "Governance",
+        "New exception visible in the HR governance report."
+      );
+
+    },
+
+    3600
+
+  );
+
+
+  setTimeout(
+
+    () => {
+
+      toast(
+        "11:20 AM · Talent",
+        "A leadership project request has arrived."
+      );
+
+      addActivity(
+        "Leadership project",
+        "Nomination request received."
+      );
+
+    },
+
+    6200
+
+  );
+
+}
+
+
+/* =========================================================
+   CLOCK
+========================================================= */
+
+function setClock(time){
+
+  document
+    .getElementById(
+      "simClock"
+    )
+    .textContent = time;
+
+
+  document
+    .getElementById(
+      "simSub"
+    )
+    .textContent =
+      `${cases[S.caseIndex].day} · HR workday`;
+
+}
+
+
+/* =========================================================
+   CASE RENDER
+========================================================= */
+
+function renderCase(){
+
+  const c =
+    cases[S.caseIndex];
+
+
+  const p =
+    c.person
+
+      ?
+
+    team.find(
+      x => x.id === c.person
+    )
+
+      :
+
+    null;
+
+
+  setClock(
+    c.time
+  );
+
+
+  S.selected = null;
+
+  S.evidenceViewed = [];
+
+
+  let html = `
+
+    <div class="eventHero">
+
+      <div class="eyebrow">
+        ${c.day} · ${c.time}
       </div>
 
-    `;
+      <h2>
+        ${c.title}
+      </h2>
 
-  }
+      <p>
+        ${c.context}
+      </p>
+
+    </div>
 
 
-  /* ---------------------------------------------
-     DECISION BOX
-  --------------------------------------------- */
+    <div class="eventContent">
 
-  html += `
+      <div class="contextStrip">
+
+        ${
+          c.chips
+
+            .map(
+              x => `<span class="contextChip">${x}</span>`
+            )
+
+            .join("")
+        }
 
       </div>
-
-      <div class="decision-box">
-
-        <h3>
-          ${s.question}
-        </h3>
-
-        <div class="hint">
-          Choose based on the information available to you
-          at this point. The simulation will reveal what happens next.
-        </div>
-
-        <div class="choices">
-
-          ${s.choices
-            .map(
-              (c,i) =>
-                choiceButton(
-                  i,
-                  c[0],
-                  c[1]
-                )
-            )
-            .join('')}
-
-        </div>
 
   `;
 
 
-  /* ---------------------------------------------
-     REASONS
-  --------------------------------------------- */
-
-  if(s.reasonChoices){
+  if(
+    c.message &&
+    p
+  ){
 
     html += `
 
-      <div
-        style="margin-top:17px;display:none"
-        id="reasonWrap"
-      >
+      <div class="message">
 
-        <div class="eyebrow">
-          What is driving your recommendation?
-        </div>
+        <div class="msgFace">
 
-        <div
-          class="choices"
-          id="reasonChoices"
-        >
-
-          ${s.reasonChoices
-            .map(
-              (r,i) =>
-                `
-                <button
-                  class="choice reason"
-                  onclick="toggleReason(${i})"
-                >
-                  ${r}
-                </button>
-                `
-            )
-            .join('')}
+          <img
+            src="${faceSVG(p)}"
+            alt="${p.name}"
+          >
 
         </div>
 
-        <div
-          class="note"
-          style="margin-top:8px"
-        >
-          Choose up to two.
+
+        <div class="bubble">
+
+          <div class="msgMeta">
+            ${p.name} · ${p.grade}
+          </div>
+
+          <p>
+            ${c.message}
+          </p>
+
         </div>
 
       </div>
@@ -3145,23 +4622,260 @@ function renderScenario(){
   }
 
 
-  /* ---------------------------------------------
-     FOOTER
-  --------------------------------------------- */
+  if(
+    c.candidates
+  ){
+
+    html += `
+
+      <div class="recordMiniGrid">
+
+        ${
+          c.candidates.map(
+
+            id => {
+
+              const x =
+                team.find(
+                  t => t.id === id
+                );
+
+
+              return `
+
+                <div class="recordMini">
+
+                  <span>
+                    ${x.name}
+                  </span>
+
+                  <b>
+                    ${x.grade}
+                  </b>
+
+                  <div
+                    style="
+                      font-size:9px;
+                      color:#7a858e;
+                      margin-top:4px
+                    "
+                  >
+
+                    Performance
+                    ${x.performance}
+
+                    ·
+
+                    ${x.potential}
+                    potential
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+
+          ).join("")
+
+        }
+
+      </div>
+
+
+      <div class="notice">
+
+        <b>
+          Before you decide:
+        </b>
+
+        The role profile is available.
+        The candidate evidence is not the same for everyone.
+
+      </div>
+
+    `;
+
+
+    if(
+      c.id === "c4" &&
+      S.stepIndex >= 2
+    ){
+
+      html += `
+
+        <div class="message">
+
+          <div class="msgFace">
+
+            <img
+              src="${faceSVG(
+                team.find(
+                  t => t.id === "karan"
+                )
+              )}"
+            >
+
+          </div>
+
+
+          <div class="bubble">
+
+            <div class="msgMeta">
+              Karan
+            </div>
+
+            <p>
+              ${c.candidateMessages.karan}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="message">
+
+          <div class="msgFace">
+
+            <img
+              src="${faceSVG(
+                team.find(
+                  t => t.id === "neha"
+                )
+              )}"
+            >
+
+          </div>
+
+
+          <div class="bubble">
+
+            <div class="msgMeta">
+              Neha
+            </div>
+
+            <p>
+              ${c.candidateMessages.neha}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="notice">
+
+          <b>
+            New evidence:
+          </b>
+
+          ${c.newEvidence}
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
 
   html += `
 
-      <div class="decision-footer">
+    <div class="evidenceRow">
 
-        <div class="note">
-          There is no visible score or “correct” answer.
-        </div>
+      ${
+        c.evidence.map(
+
+          (e,i) => `
+
+            <button
+              class="evidenceBtn"
+              onclick="openEvidence(${i})"
+            >
+
+              <b>
+                ${e[0]}
+              </b>
+
+              <span>
+                View information
+              </span>
+
+            </button>
+
+          `
+
+        ).join("")
+
+      }
+
+    </div>
+
+  `;
+
+
+  const s =
+    c.steps[S.stepIndex];
+
+
+  html += `
+
+    <div class="decisionBlock">
+
+      <h3>
+        ${s.q}
+      </h3>
+
+      <div class="decisionHint">
+
+        Choose one action.
+        You can review information before submitting your decision.
+
+      </div>
+
+
+      <div class="choiceGrid">
+
+        ${
+          s.choices.map(
+
+            (x,i) => `
+
+              <button
+                class="choice"
+                data-choice="${i}"
+                onclick="selectChoice(${i})"
+              >
+
+                <strong>
+                  ${x[0]}
+                </strong>
+
+                <span>
+                  ${x[1]}
+                </span>
+
+              </button>
+
+            `
+
+          ).join("")
+
+        }
+
+      </div>
+
+
+      <div class="actionRow">
 
         <button
-          class="primary"
-          id="submitBtn"
-          onclick="submitChoice()"
+          id="continueButton"
+          class="btn primary"
           disabled
+          onclick="submitStep()"
         >
           Continue
         </button>
@@ -3170,28 +4884,10 @@ function renderScenario(){
 
     </div>
 
+  `;
 
-    <div
-      class="consequence"
-      id="consequence"
-    >
 
-      <h4>
-        What happens next
-      </h4>
-
-      <p id="consequenceText"></p>
-
-      <div class="next-row">
-
-        <button
-          class="secondary"
-          onclick="advance()"
-        >
-          Go to the next moment
-        </button>
-
-      </div>
+  html += `
 
     </div>
 
@@ -3199,170 +4895,83 @@ function renderScenario(){
 
 
   document
-    .getElementById('scene')
+    .getElementById(
+      "eventWindow"
+    )
     .innerHTML = html;
 
 }
 
 
 /* =========================================================
-   CANDIDATE CARD
-========================================================= */
-
-function candidateCard(id){
-
-  const p =
-    people.find(
-      x => x.id === id
-    );
-
-  return `
-
-    <div class="candidate">
-
-      <div class="candidate-top">
-
-        <img
-          class="portrait"
-          src="${portraitSVG(p)}"
-        >
-
-        <div>
-
-          <h4>
-            ${p.name}
-          </h4>
-
-          <div class="role">
-            ${p.role}
-          </div>
-
-        </div>
-
-      </div>
-
-      <p>
-        ${p.known} ${p.history}
-      </p>
-
-      <button
-        onclick="openCandidate('${id}')"
-      >
-        View record
-      </button>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   CHOICE BUTTON
-========================================================= */
-
-function choiceButton(
-  i,
-  title,
-  sub
-){
-
-  return `
-
-    <button
-      class="choice"
-      data-index="${i}"
-      onclick="selectChoice(${i})"
-    >
-
-      ${title}
-
-      <small>
-        ${sub}
-      </small>
-
-    </button>
-
-  `;
-
-}
-
-
-/* =========================================================
-   CHOICE SELECTION
+   CHOICE
 ========================================================= */
 
 function selectChoice(i){
 
-  session.selected = i;
+  S.selected=i;
+
 
   document
-    .querySelectorAll('.choice[data-index]')
+    .querySelectorAll(
+      "[data-choice]"
+    )
     .forEach(
+
       (el,idx) => {
 
         el.classList.toggle(
-          'selected',
+          "selected",
           idx === i
         );
 
       }
+
     );
 
 
-  const s =
-    scenarios[
-      session.scenarioIndex
-    ];
-
-
   document
-    .getElementById('submitBtn')
-    .disabled = false;
-
-
-  if(s.reasonChoices){
-
-    document
-      .getElementById('reasonWrap')
-      .style.display = 'block';
-
-  }
+    .getElementById(
+      "continueButton"
+    )
+    .disabled=false;
 
 }
 
 
 /* =========================================================
-   REASON SELECTION
+   EVIDENCE
 ========================================================= */
 
-function toggleReason(i){
+function openEvidence(i){
 
-  const el =
-    document
-      .querySelectorAll('.reason')[i];
-
-  el.classList.toggle(
-    'selected'
-  );
-
-
-  const selected =
-    [
-      ...document.querySelectorAll(
-        '.reason.selected'
-      )
+  const c =
+    cases[
+      S.caseIndex
     ];
 
 
-  if(selected.length > 2){
+  S.evidenceViewed.push(
+    c.evidence[i][0]
+  );
 
-    selected[0]
-      .classList
-      .remove('selected');
 
-  }
+  showModalWith(
+    c.evidence[i][0],
+    `
+
+      <p
+        style="
+          font-size:12px;
+          color:#586571;
+          line-height:1.7
+        "
+      >
+        ${c.evidence[i][1]}
+      </p>
+
+    `
+  );
 
 }
 
@@ -3371,117 +4980,416 @@ function toggleReason(i){
    SUBMIT
 ========================================================= */
 
-function submitChoice(){
+function submitStep(){
 
   if(
-    session.selected === null
+    S.selected === null
   ){
+
     return;
+
   }
 
 
-  const s =
-    scenarios[
-      session.scenarioIndex
+  const c =
+    cases[
+      S.caseIndex
     ];
 
 
-  const chosen =
-    s.choices[
-      session.selected
-    ][0];
+  const step =
+    c.steps[
+      S.stepIndex
+    ];
 
 
-  const reasons =
-    [
-      ...document.querySelectorAll(
-        '.reason.selected'
-      )
-    ]
-    .map(
-      x => x.textContent.trim()
-    );
+  const choice =
+    step.choices[
+      S.selected
+    ];
 
 
-  session.responses.push({
+  const sc =
+    step.scores[
+      S.selected
+    ];
 
-    scenarioId:s.id,
-    day:s.day,
-    time:s.time,
-    title:s.title,
-    choice:chosen,
-    reasons,
-    infoViewed:[
-      ...session.infoViewed
+
+  S.decisions.push({
+
+    caseId:c.id,
+
+    caseTitle:c.title,
+
+    day:c.day,
+
+    time:c.time,
+
+    step:S.stepIndex+1,
+
+    question:step.q,
+
+    choice:choice[0],
+
+    evidenceViewed:[
+      ...S.evidenceViewed
     ],
+
+    scores:{
+
+      procedural:sc[0],
+
+      distributive:sc[1],
+
+      interpersonal:sc[2],
+
+      informational:sc[3]
+
+    },
+
     timestamp:
       new Date().toISOString()
 
   });
 
 
-  const c =
-    document.getElementById(
-      'consequence'
+  updateEmployeeState(
+    c,
+    S.selected
+  );
+
+
+  if(
+    c.id === "c2" &&
+    S.stepIndex === 1
+  ){
+
+    S.employeeState.neha.visibility++;
+
+  }
+
+
+  if(
+    c.id === "c5" &&
+    S.stepIndex === 2
+  ){
+
+    S.employeeState[
+      choice[0].includes("Rohan")
+        ? "rohan"
+        : "neha"
+    ].development++;
+
+  }
+
+
+  if(
+    S.stepIndex <
+    c.steps.length - 1
+  ){
+
+    S.stepIndex++;
+
+    S.selected=null;
+
+    renderCase();
+
+
+    if(
+      c.id === "c4" &&
+      S.stepIndex === 2
+    ){
+
+      toast(
+        "New evidence",
+        "You can now review candidate conversations and the latest evidence."
+      );
+
+
+      addActivity(
+        "Talent review",
+        "Additional candidate evidence is available."
+      );
+
+    }
+
+  }
+
+  else{
+
+    showCarry(
+      c.carry
     );
 
-
-  document
-    .getElementById(
-      'consequenceText'
-    )
-    .textContent =
-      s.consequence[0];
-
-
-  c.classList.add('show');
-
-
-  document
-    .getElementById(
-      'submitBtn'
-    )
-    .disabled = true;
-
-
-  document
-    .querySelectorAll(
-      '.choice'
-    )
-    .forEach(
-      x => x.disabled = true
+    addActivity(
+      c.label || c.title,
+      "Decision submitted and recorded."
     );
 
+    toast(
+      "Decision recorded",
+      c.title
+    );
 
-  c.scrollIntoView({
-    behavior:'smooth',
-    block:'center'
-  });
+    maybeConsequence(
+      c
+    );
+
+  }
 
 }
 
 
 /* =========================================================
-   ADVANCE
+   EMPLOYEE STATE
 ========================================================= */
 
-function advance(){
+function updateEmployeeState(
+  c,
+  i
+){
+
+  const choice =
+    c.steps[
+      S.stepIndex
+    ].choices[i][0];
+
 
   if(
-    session.scenarioIndex <
-    scenarios.length - 1
+    c.id === "c2"
   ){
 
-    session.scenarioIndex++;
+    if(
+      choice.startsWith("Amit")
+    ){
 
-    renderTimeline();
+      S.employeeState
+        .amit
+        .visibility++;
 
-    renderScenario();
+    }
+
+
+    if(
+      choice.startsWith("Neha")
+    ){
+
+      S.employeeState
+        .neha
+        .visibility++;
+
+    }
+
+  }
+
+
+  if(
+    c.id === "c4"
+  ){
+
+    if(
+      choice.startsWith("Karan")
+    ){
+
+      S.employeeState
+        .karan
+        .opportunities++;
+
+    }
+
+
+    if(
+      choice.startsWith("Neha")
+    ){
+
+      S.employeeState
+        .neha
+        .opportunities++;
+
+    }
+
+  }
+
+
+  if(
+    c.id === "c8"
+  ){
+
+    if(
+      choice.startsWith("Rohan")
+    ){
+
+      S.employeeState
+        .rohan
+        .workloadLevel =
+          "Redistribution required";
+
+    }
+
+
+    if(
+      choice.startsWith("Karan")
+    ){
+
+      S.employeeState
+        .karan
+        .opportunities++;
+
+    }
+
+
+    if(
+      choice.startsWith("Neha")
+    ){
+
+      S.employeeState
+        .neha
+        .opportunities++;
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   CONSEQUENCES
+========================================================= */
+
+function maybeConsequence(c){
+
+  if(
+    c.id === "c1"
+  ){
+
+    S.employeeState
+      .rohan
+      .managerCommitments
+      .push(
+        "Workload to be reviewed in Friday capacity discussion"
+      );
+
+  }
+
+
+  if(
+    c.id === "c7"
+  ){
+
+    S.employeeState
+      .neha
+      .managerCommitments
+      .push(
+        "Upcoming visibility allocation to be reviewed"
+      );
+
+  }
+
+}
+
+
+function showCarry(text){
+
+  const old =
+    document.querySelector(
+      ".carry"
+    );
+
+
+  if(old){
+    old.remove();
+  }
+
+
+  const box =
+    document.createElement(
+      "div"
+    );
+
+
+  box.className =
+    "carry show";
+
+
+  box.innerHTML = `
+
+    <div class="eyebrow">
+      What carries forward
+    </div>
+
+    <p>
+      ${text}
+    </p>
+
+
+    <div class="actionRow">
+
+      <button
+        class="btn primary"
+        onclick="nextCase()"
+      >
+
+        ${
+          S.caseIndex <
+          cases.length - 1
+
+            ?
+
+          "Continue"
+
+            :
+
+          "Finish the week"
+        }
+
+      </button>
+
+    </div>
+
+  `;
+
+
+  document
+    .getElementById(
+      "eventWindow"
+    )
+    .appendChild(
+      box
+    );
+
+}
+
+
+function nextCase(){
+
+  if(
+    S.caseIndex <
+    cases.length - 1
+  ){
+
+    S.caseIndex++;
+
+    S.stepIndex=0;
+
+    S.selected=null;
+
+    renderCase();
+
+    renderTeamBar();
 
     window.scrollTo({
+
       top:0,
-      behavior:'smooth'
+
+      behavior:"smooth"
+
     });
+
+
+    autoLaterEvent(
+      S.caseIndex
+    );
 
   }
 
@@ -3494,90 +5402,433 @@ function advance(){
 }
 
 
-/* =========================================================
-   INFORMATION MODAL
-========================================================= */
+function autoLaterEvent(
+  idx
+){
 
-function openInfo(i){
+  if(
+    idx === 1
+  ){
 
-  const s =
-    scenarios[
-      session.scenarioIndex
-    ];
+    setTimeout(
+      () => notifyPerson(
+        "amit",
+        "Calendar update"
+      ),
+      900
+    );
+
+  }
 
 
-  session.infoViewed.push(
-    s.info[i][0]
-  );
+  if(
+    idx === 2
+  ){
+
+    setTimeout(
+      () => notifyPerson(
+        "karan",
+        "Follow-up on process review"
+      ),
+      900
+    );
+
+  }
 
 
-  showModal(
-    s.info[i][0],
-    s.info[i][1]
-  );
+  if(
+    idx === 3
+  ){
+
+    setTimeout(
+      () => toast(
+        "Talent review",
+        "Confidential role profile is ready to review."
+      ),
+      900
+    );
+
+  }
+
+
+  if(
+    idx === 4
+  ){
+
+    setTimeout(
+      () => toast(
+        "Development",
+        "One external leadership programme seat is available."
+      ),
+      900
+    );
+
+  }
+
+
+  if(
+    idx === 5
+  ){
+
+    setTimeout(
+      () => toast(
+        "Payroll",
+        "Two HR process cases need review."
+      ),
+      900
+    );
+
+  }
+
+
+  if(
+    idx === 6
+  ){
+
+    setTimeout(
+      () => notifyPerson(
+        "neha",
+        "Private message"
+      ),
+      900
+    );
+
+  }
+
+
+  if(
+    idx === 7
+  ){
+
+    setTimeout(
+      () => notifyPerson(
+        "rohan",
+        "Urgent project request"
+      ),
+      900
+    );
+
+  }
 
 }
 
 
-function openCandidate(id){
+/* =========================================================
+   RECORD MODAL
+========================================================= */
+
+function openRecord(id){
 
   const p =
-    people.find(
+    team.find(
       x => x.id === id
     );
 
 
-  showModal(
-    p.name,
+  const rows =
+    (
+      arr,
+      head1,
+      head2
+    ) => `
 
-    `
-      <b>${p.role}</b>
+      <table class="tbl">
 
-      <br><br>
+        <thead>
 
-      <b>Known for:</b>
-      ${p.known}
+          <tr>
 
-      <br>
+            <th>
+              ${head1}
+            </th>
 
-      <b>History:</b>
-      ${p.history}
+            <th>
+              ${head2}
+            </th>
 
-      <br>
+          </tr>
 
-      <b>Potential:</b>
-      ${p.potential}
-    `
-  );
+        </thead>
+
+
+        <tbody>
+
+          ${
+            arr.map(
+              r => `
+
+                <tr>
+
+                  <td>
+                    ${r[0]}
+                  </td>
+
+                  <td>
+                    ${r[1]}
+                  </td>
+
+                </tr>
+
+              `
+            ).join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    `;
+
+
+  document
+    .getElementById(
+      "modalTitle"
+    )
+    .textContent =
+      p.name;
+
+
+  document
+    .getElementById(
+      "modalBody"
+    )
+    .innerHTML = `
+
+      <div class="profileTop">
+
+        <div class="profilePhoto">
+
+          <img
+            src="${faceSVG(p)}"
+            alt="${p.name}"
+          >
+
+        </div>
+
+        <div>
+
+          <div class="profileName">
+            ${p.name}
+          </div>
+
+          <div class="profileGrade">
+            ${p.grade} · ${p.years}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="profileGrid">
+
+        <div class="profileBlock">
+
+          <span>
+            Performance
+          </span>
+
+          <b>
+            ${p.performance}
+          </b>
+
+        </div>
+
+
+        <div class="profileBlock">
+
+          <span>
+            Potential
+          </span>
+
+          <b>
+            ${p.potential}
+          </b>
+
+        </div>
+
+
+        <div class="profileBlock">
+
+          <span>
+            Workload
+          </span>
+
+          <b>
+            ${S.employeeState[p.id].workloadLevel}
+          </b>
+
+        </div>
+
+      </div>
+
+
+      <div class="sectionHead">
+        Known for
+      </div>
+
+      <div class="noteBox">
+        ${p.behavior.join(" · ")}
+      </div>
+
+
+      <div class="sectionHead">
+        Aspiration
+      </div>
+
+      <div class="noteBox">
+        ${p.aspiration}
+      </div>
+
+
+      <div class="sectionHead">
+        Team dynamic
+      </div>
+
+      <div class="noteBox">
+        ${p.dynamic}
+      </div>
+
+
+      <div class="sectionHead">
+        Performance history
+      </div>
+
+      ${
+        rows(
+          p.ratings,
+          "Period",
+          "Rating"
+        )
+      }
+
+
+      <div class="sectionHead">
+        Potential history
+      </div>
+
+      ${
+        rows(
+          p.potentials,
+          "Period",
+          "Potential"
+        )
+      }
+
+
+      <div class="sectionHead">
+        Promotion history
+      </div>
+
+      ${
+        p.promotions.length
+
+          ?
+
+        rows(
+          p.promotions,
+          "Year",
+          "Movement"
+        )
+
+          :
+
+        `<div class="noteBox">
+          No promotion history recorded in the current company.
+        </div>`
+
+      }
+
+
+      <div class="sectionHead">
+        Development history
+      </div>
+
+      ${
+        rows(
+          p.development,
+          "Period",
+          "Opportunity"
+        )
+      }
+
+
+      <div class="sectionHead">
+        Visibility history
+      </div>
+
+      ${
+        rows(
+          p.visibility,
+          "Period",
+          "Exposure"
+        )
+      }
+
+
+      <div class="sectionHead">
+        Previous records
+      </div>
+
+      <div class="noteBox">
+        ${p.records.join("<br>")}
+      </div>
+
+
+      <div class="sectionHead">
+        Feedback
+      </div>
+
+      <div class="noteBox">
+        ${p.feedback}
+      </div>
+
+    `;
+
+
+  showModal();
 
 }
 
 
-function showModal(
+/* =========================================================
+   MODAL
+========================================================= */
+
+function showModal(){
+
+  document
+    .getElementById(
+      "modalBack"
+    )
+    .classList
+    .add("show");
+
+}
+
+
+function showModalWith(
   title,
   body
 ){
 
   document
     .getElementById(
-      'modalTitle'
+      "modalTitle"
     )
-    .textContent = title;
+    .textContent =
+      title;
 
 
   document
     .getElementById(
-      'modalBody'
+      "modalBody"
     )
-    .innerHTML = body;
+    .innerHTML =
+      body;
 
 
-  document
-    .getElementById(
-      'modal'
-    )
-    .classList
-    .add('show');
+  showModal();
 
 }
 
@@ -3586,10 +5837,10 @@ function hideModal(){
 
   document
     .getElementById(
-      'modal'
+      "modalBack"
     )
     .classList
-    .remove('show');
+    .remove("show");
 
 }
 
@@ -3597,7 +5848,7 @@ function hideModal(){
 function closeModal(e){
 
   if(
-    e.target.id === 'modal'
+    e.target.id === "modalBack"
   ){
 
     hideModal();
@@ -3607,104 +5858,563 @@ function closeModal(e){
 }
 
 
+document.addEventListener(
+  "keydown",
+  e => {
+
+    if(
+      e.key === "Escape"
+    ){
+
+      hideModal();
+
+    }
+
+  }
+);
+
+
 /* =========================================================
-   FINISH
+   REPORT
 ========================================================= */
+
+function avg(a){
+
+  return a.length
+
+    ?
+
+    a.reduce(
+      (x,y)=>x+y,
+      0
+    ) / a.length
+
+    :
+
+    0;
+
+}
+
+
+function level(v){
+
+  if(v>=4.35)
+    return "Strong";
+
+  if(v>=3.8)
+    return "Consistent";
+
+  if(v>=3.15)
+    return "Developing";
+
+  return "Needs attention";
+
+}
+
+
+function levelPct(v){
+
+  return Math.round(
+    (v/5)*100
+  );
+
+}
+
+
+function reportSentence(
+  dim,
+  v
+){
+
+  const l =
+    level(v);
+
+
+  const text = {
+
+    procedural:{
+
+      Strong:
+        "You usually establish a clear basis, review relevant information and distinguish consistent standards from identical treatment.",
+
+      Consistent:
+        "You generally use a sound process, although some decisions were made before all relevant information was checked.",
+
+      Developing:
+        "Your process varies across situations. A more consistent evidence set would strengthen difficult people decisions.",
+
+      "Needs attention":
+        "Several decisions were made quickly or without enough comparable information."
+
+    },
+
+
+    distributive:{
+
+      Strong:
+        "You generally balance business need with workload, access to opportunity and relevant individual circumstances.",
+
+      Consistent:
+        "Business contribution carries clear weight, with some attention to broader workload and opportunity patterns.",
+
+      Developing:
+        "Immediate delivery often carries more weight than the longer-term distribution of workload and opportunity.",
+
+      "Needs attention":
+        "Repeated decisions concentrated workload or opportunity without enough review of the broader team pattern."
+
+    },
+
+
+    interpersonal:{
+
+      Strong:
+        "You generally make room for employee context and separate disagreement from personal judgement.",
+
+      Consistent:
+        "You usually treat people respectfully, with a few decisions where employee voice was less central.",
+
+      Developing:
+        "Some situations moved quickly to the action, leaving less room for the employee's perspective.",
+
+      "Needs attention":
+        "Several decisions placed the action ahead of the employee conversation."
+
+    },
+
+
+    informational:{
+
+      Strong:
+        "You generally explain the basis of difficult people decisions clearly and consistently.",
+
+      Consistent:
+        "The basis of most decisions is clear, though explanations are not always equally detailed.",
+
+      Developing:
+        "The decision may be reasonable, but the rationale is not always made explicit.",
+
+      "Needs attention":
+        "Several decisions relied on judgement without a clear explanation of the basis."
+
+    }
+
+  };
+
+
+  return text[dim][l];
+
+}
+
 
 function finish(){
 
-  document
-    .getElementById(
-      'simScreen'
-    )
-    .classList
-    .add('hidden');
-
-
-  document
-    .getElementById(
-      'doneScreen'
-    )
-    .classList
-    .remove('hidden');
-
-
-  const meta = `
-
-    Manager:
-    <b>${escapeHtml(session.manager.name)}</b>
-
-    <br>
-
-    Employee ID:
-    ${escapeHtml(session.manager.id)}
-
-    <br>
-
-    Work email:
-    ${escapeHtml(session.manager.email)}
-
-    <br>
-
-    Started:
-    ${new Date(session.startedAt).toLocaleString()}
-
-    <br>
-
-    Completed:
-    ${new Date().toLocaleString()}
-
-    <br>
-
-    Decisions captured:
-    <b>${session.responses.length}</b>
-
-  `;
-
-
-  document
-    .getElementById(
-      'doneMeta'
-    )
-    .innerHTML = meta;
+  S.finishedAt =
+    new Date().toISOString();
 
 
   localStorage.setItem(
-    'managersDeskResponse',
-    JSON.stringify(session)
+    "managersDeskSession",
+    JSON.stringify(S)
   );
 
 
+  hide(
+    "simulationScreen"
+  );
+
+
+  show(
+    "reportScreen"
+  );
+
+
+  renderReport();
+
+
   window.scrollTo({
+
     top:0,
-    behavior:'smooth'
+
+    behavior:"smooth"
+
   });
 
 }
 
 
+function renderReport(){
+
+  const dims={
+
+    procedural:[],
+
+    distributive:[],
+
+    interpersonal:[],
+
+    informational:[]
+
+  };
+
+
+  S.decisions.forEach(
+
+    d => {
+
+      dims
+        .procedural
+        .push(
+          d.scores.procedural
+        );
+
+      dims
+        .distributive
+        .push(
+          d.scores.distributive
+        );
+
+      dims
+        .interpersonal
+        .push(
+          d.scores.interpersonal
+        );
+
+      dims
+        .informational
+        .push(
+          d.scores.informational
+        );
+
+    }
+
+  );
+
+
+  const items = [
+
+    [
+      "procedural",
+      "PROCESS"
+    ],
+
+    [
+      "distributive",
+      "OUTCOMES"
+    ],
+
+    [
+      "interpersonal",
+      "PEOPLE"
+    ],
+
+    [
+      "informational",
+      "EXPLANATION"
+    ]
+
+  ];
+
+
+  document
+    .getElementById(
+      "reportGrid"
+    )
+    .innerHTML =
+
+    items.map(
+
+      ([k,label]) => {
+
+        const v =
+          avg(
+            dims[k]
+          );
+
+
+        const l =
+          level(v);
+
+
+        return `
+
+          <div class="repCard">
+
+            <div class="repLabel">
+              ${label}
+            </div>
+
+            <div class="repLevel">
+              ${l}
+            </div>
+
+            <div class="bar">
+
+              <i
+                style="
+                  width:${levelPct(v)}%
+                "
+              ></i>
+
+            </div>
+
+            <p>
+              ${reportSentence(
+                k,
+                v
+              )}
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+    ).join("");
+
+
+  const performanceFirst =
+    S.decisions.filter(
+
+      d =>
+        /performance|capability|strong performer|immediate/i
+          .test(
+            d.choice
+          )
+
+    ).length;
+
+
+  const evidence =
+    S.decisions.filter(
+
+      d =>
+        d.evidenceViewed.length > 0
+
+    ).length;
+
+
+  const revisit =
+    S.decisions.filter(
+
+      d =>
+        /revisit|review|criteria|evidence|workload/i
+          .test(
+            d.choice
+          )
+
+    ).length;
+
+
+  let title =
+    "Balanced decision maker";
+
+
+  let desc =
+    "Your choices show a mix of business focus, evidence use and attention to team experience.";
+
+
+  if(
+    performanceFirst >= 6
+  ){
+
+    title =
+      "Performance-first decision maker";
+
+
+    desc =
+      "You tend to rely heavily on proven performance and immediate capability when making difficult team decisions. This can support delivery, but repeated use of the same people can concentrate workload and visibility.";
+
+  }
+
+
+  else if(
+    evidence >= 8 &&
+    revisit >= 5
+  ){
+
+    title =
+      "Evidence-led decision maker";
+
+
+    desc =
+      "You regularly reviewed the available record, reconsidered initial views and used evidence before finalising important people decisions.";
+
+  }
+
+
+  else if(
+    revisit >= 5
+  ){
+
+    title =
+      "Reconsidering decision maker";
+
+
+    desc =
+      "You were willing to revisit an initial view when new information or patterns became visible.";
+
+  }
+
+
+  document
+    .getElementById(
+      "patternCard"
+    )
+    .innerHTML = `
+
+      <div class="eyebrow">
+        Decision pattern identified
+      </div>
+
+      <h3>
+        ${title}
+      </h3>
+
+      <p>
+        ${desc}
+      </p>
+
+    `;
+
+
+  const items2=[];
+
+
+  const counts={};
+
+
+  S.decisions.forEach(
+
+    d =>
+
+      d.evidenceViewed.forEach(
+
+        x =>
+          counts[x] =
+            (counts[x] || 0) + 1
+
+      )
+
+  );
+
+
+  Object
+    .entries(counts)
+    .sort(
+      (a,b)=>b[1]-a[1]
+    )
+    .slice(0,7)
+    .forEach(
+
+      ([k,v]) =>
+
+        items2.push(`
+
+          <div class="evidenceItem">
+
+            <b>
+              ${k}
+            </b>
+
+            was reviewed in
+
+            ${v}
+
+            decision${v===1?"":"s"}.
+
+          </div>
+
+        `)
+
+    );
+
+
+  const allocations=[
+
+    `Amit high-visibility assignments: ${S.employeeState.amit.visibility}`,
+
+    `Neha high-visibility assignments: ${S.employeeState.neha.visibility}`,
+
+    `Rohan current workload state: ${S.employeeState.rohan.workloadLevel}`
+
+  ];
+
+
+  allocations.forEach(
+
+    x =>
+
+      items2.push(`
+
+        <div class="evidenceItem">
+          ${x}
+        </div>
+
+      `)
+
+  );
+
+
+  document
+    .getElementById(
+      "reportEvidence"
+    )
+    .innerHTML =
+      items2.join("");
+
+}
+
+
 /* =========================================================
-   DOWNLOAD
+   SESSION DOWNLOAD / RESET
 ========================================================= */
 
-function downloadResponses(){
+function downloadSession(){
+
+  const payload={
+
+    simulation:
+      "The Manager's Desk",
+
+    manager:
+      S.manager,
+
+    startedAt:
+      S.startedAt,
+
+    finishedAt:
+      S.finishedAt,
+
+    decisions:
+      S.decisions,
+
+    employeeState:
+      S.employeeState
+
+  };
+
 
   const blob =
     new Blob(
+
       [
         JSON.stringify(
-          session,
+          payload,
           null,
           2
         )
       ],
+
       {
-        type:'application/json'
+        type:"application/json"
       }
+
     );
 
 
-  const url =
+  const u =
     URL.createObjectURL(
       blob
     );
@@ -3712,54 +6422,34 @@ function downloadResponses(){
 
   const a =
     document.createElement(
-      'a'
+      "a"
     );
 
 
-  a.href = url;
+  a.href=u;
 
   a.download =
-    `managers-desk-${
-      (
-        session.manager.id ||
-        'manager'
-      ).replace(
-        /[^a-z0-9]/gi,
-        '_'
-      )
-    }.json`;
+    "the-managers-desk-session.json";
 
 
   a.click();
 
-  URL.revokeObjectURL(
-    url
-  );
+
+  URL.revokeObjectURL(u);
 
 }
 
 
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
+function restart(){
 
-function escapeHtml(s){
-
-  return String(s).replace(
-    /[&<>'"]/g,
-
-    c => ({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      "'":'&#39;',
-      '"':'&quot;'
-    }[c])
+  localStorage.removeItem(
+    "managersDeskSession"
   );
+
+  location.reload();
 
 }
 
 </script>
-
 </body>
 </html>
